@@ -3,9 +3,9 @@
 window.App = window.App || {};
 
 (function () {
-  const { useState } = React;
-  const { Card, Button } = window.App.UI;
-  const { QuestionBlock, isCorrectAnswer } = window.App.QuizQuestion;
+  const { useState, useMemo } = React;
+  const { Card, Button, BackButton, RefreshButton } = window.App.UI;
+  const { QuestionBlock, useShuffledQuestion } = window.App.QuizQuestion;
 
   const CATEGORIES = [
     { key: "mixed", label: "Mixed Grammar", emoji: "🔀", color: "teal", blurb: "A mix of grammar rules for your level." },
@@ -13,28 +13,47 @@ window.App = window.App || {};
     { key: "preposition", label: "Prepositions", emoji: "🧭", color: "violet", blurb: "Practice tricky words like at, in, on, and to." },
   ];
 
+  function shuffleArray(arr) {
+    const copy = arr.slice();
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+  }
+
   function GrammarModule({ tier, onBack, onComplete }) {
     const [category, setCategory] = useState(null);
+    const [runSeed, setRunSeed] = useState(0);
     const [index, setIndex] = useState(0);
     const [selected, setSelected] = useState(null);
     const [doneAll, setDoneAll] = useState(false);
 
     function pickCategory(key) {
       setCategory(key);
+      setRunSeed(0);
       setIndex(0);
       setSelected(null);
       setDoneAll(false);
     }
 
+    // Hooks must run unconditionally on every render (Rules of Hooks), so
+    // these are computed before the early-return below, with a safe fallback
+    // bank while no category has been picked yet.
+    const catMeta = CATEGORIES.find((c) => c.key === category) || CATEGORIES[0];
+    const bank = window.App.Content.GRAMMAR_ITEMS[category || "mixed"];
+    const baseItems = bank[tier] || bank.easy;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const items = useMemo(() => shuffleArray(baseItems), [baseItems, runSeed]);
+    const rawQ = items[index];
+    const q = useShuffledQuestion(rawQ);
+    const locked = selected !== null;
+    const isLast = index === items.length - 1;
+
     if (!category) {
       return (
         <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-between">
-            <button onClick={onBack} className="text-sm font-extrabold text-indigo-500">
-              ← Back
-            </button>
-            <span className="text-sm font-extrabold text-stone-400">Grammar Drills</span>
-          </div>
+          <BackButton onClick={onBack} />
           <div className="flex flex-col gap-3">
             {CATEGORIES.map((c) => (
               <button
@@ -54,16 +73,16 @@ window.App = window.App || {};
       );
     }
 
-    const catMeta = CATEGORIES.find((c) => c.key === category);
-    const bank = window.App.Content.GRAMMAR_ITEMS[category];
-    const items = bank[tier] || bank.easy;
-    const q = items[index];
-    const correct = isCorrectAnswer(q, selected);
-    const isLast = index === items.length - 1;
-
     function selectOption(i) {
-      if (correct) return;
+      if (selected !== null) return;
       setSelected(i);
+    }
+
+    function handleRefresh() {
+      setRunSeed((s) => s + 1);
+      setIndex(0);
+      setSelected(null);
+      setDoneAll(false);
     }
 
     function handleNext() {
@@ -84,16 +103,20 @@ window.App = window.App || {};
           <Button color={catMeta.color} className="w-full" onClick={onComplete}>
             Back to Missions
           </Button>
+          <button onClick={handleRefresh} className="mt-3 text-xs font-bold text-stone-400 underline decoration-dotted">
+            🔄 Try again with new order
+          </button>
         </Card>
       );
     }
 
     return (
       <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <button onClick={() => setCategory(null)} className="text-sm font-extrabold text-indigo-500">
-            ← Categories
-          </button>
+        <div className="flex items-center justify-between gap-2">
+          <BackButton onClick={() => setCategory(null)}>← Categories</BackButton>
+          <RefreshButton onClick={handleRefresh} />
+        </div>
+        <div className="text-center">
           <span className="text-sm font-extrabold text-stone-400">
             {catMeta.emoji} {catMeta.label} · {index + 1}/{items.length}
           </span>
@@ -101,7 +124,7 @@ window.App = window.App || {};
 
         <Card>
           <QuestionBlock q={q} selected={selected} onSelect={selectOption} />
-          {correct && (
+          {locked && (
             <Button color={catMeta.color} className="w-full mt-4" onClick={handleNext}>
               {isLast ? "Finish 🎉" : "Next →"}
             </Button>

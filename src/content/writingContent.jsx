@@ -1,4 +1,5 @@
-// Module 6: Writing — one prompt per tier, plus structure hints and sentence starters
+// Module 6: Writing — one prompt per tier, structure hints, sentence starters,
+// and a model essay shown after the child submits their own writing.
 window.App = window.App || {};
 window.App.Content = window.App.Content || {};
 
@@ -43,5 +44,16 @@ window.App.Content = window.App.Content || {};
       ],
       starters: ["I believe that...", "For example,...", "Another reason is...", "In conclusion,..."],
     },
+  };
+
+  window.App.Content.WRITING_MODEL_ESSAYS = {
+    easy:
+      "My favorite animal is the red panda. It has soft, reddish-brown fur, a long fluffy tail, and a face that almost looks like a mask. Red pandas live in trees in the mountains and are very good climbers. They mostly eat bamboo, but they also like fruit! I love red pandas because they look so gentle and curious, and I think it would be amazing to watch one climb through the trees in real life.",
+    medium:
+      "One sunny Saturday, I spent the whole afternoon with my cousin at the park near our house. First, we rode our bikes around the big pond, racing each other to the old oak tree. Then we stopped to feed the ducks the bread crumbs we'd brought, laughing every time one duck chased the others away from the food. Later, we lay on the grass and made up funny shapes out of the clouds until it started getting dark. By the end of the day, I felt happy and a little sleepy, and I couldn't wait to tell my mom about the duck that stole all the bread.",
+    hard:
+      "The first time I ever tried rock climbing, I almost didn't go through with it. Standing at the bottom of the wall, looking up at how high it went, my stomach felt tight with nerves. At first I felt like everyone around me was probably a better climber, but then my instructor reminded me that everyone starts somewhere. I took a deep breath and grabbed the first hold. Slowly, one hand and one foot at a time, I made it about halfway up before my arms started shaking too much to continue. Looking back, I learned that trying something new doesn't mean you have to be good at it right away — it just means being brave enough to start.",
+    expert:
+      "I believe that kindness is more important than pure honesty, though the two don't have to be opposites. Being honest matters, but honesty delivered without any care for someone's feelings can do real harm. For example, telling a friend their artwork is \"bad\" might be technically true, but it rarely helps them improve and often just makes them want to give up. Another reason is that most situations allow room for both — you can be truthful about a problem while still choosing kind, encouraging words to explain it. In conclusion, I think the best approach isn't choosing between honesty and kindness, but finding honest words that are also kind.",
   };
 })();

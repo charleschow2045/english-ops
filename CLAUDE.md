@@ -1,8 +1,16 @@
-# Project: English Ops
+# Project: English Quest
 
-A web app to help a child (age 10-11) practice English across six skill areas:
-Listening, Speaking, Storytelling, Reading, Comprehension, and Writing.
-Includes daily missions and progress tracking across four difficulty tiers.
+(Repo/folder name stays `english-ops` — only the in-app display name and
+branding changed, after feedback that "English Ops" + an owl mascot read as
+an odd combination. Visual style takes inspiration from bright, game-like kids'
+English platforms like British Council LearnEnglish Kids and Funbrain's
+Grammar Gorillas — colorful, playful, activity-framed — without copying their
+names, logos, or content.)
+
+A web app to help a child (age 10-11) practice English across nine activities:
+Listening, Speaking, Storytelling, Reading, Comprehension, Writing, Grammar
+Drills, Word Guess (Wordle-style), and Vocabulary Builder. Includes daily
+missions and progress tracking across four difficulty tiers.
 
 ## Tech stack
 - Single-page web app: React + Tailwind CSS
@@ -46,17 +54,39 @@ on short passages; Expert = inference/"why" questions on denser passages).
    inference and "why" questions, not just recall
 6. **Writing** — app gives a simple prompt (e.g. "describe your favorite animal"),
    child types a response in a text box, app gives gentle feedback on grammar/
-   spelling (keep feedback encouraging, not harsh — this is for a child)
+   spelling (keep feedback encouraging, not harsh — this is for a child), then
+   lets the child reveal a model essay for that prompt/tier to compare against
+7. **Word Guess** — a Wordle-style game: guess a 5-letter word in 6 tries, with
+   green/yellow/gray tile feedback and an on-screen keyboard. "Today's word" is
+   date-seeded (same word all day per tier); Refresh picks a new random word
+8. **Vocabulary Builder** — flashcards through 10 tier-appropriate words per
+   session: English word + part of speech, flip to reveal Traditional Chinese
+   translation + definition + example sentence
+
+Grammar Drills (category picker: Mixed Grammar / Tenses / Prepositions) is a
+supporting activity alongside these, not part of the original numbered list.
 
 ## Supporting features
-- **Daily missions** — a checklist/dashboard of today's tasks across modules
-  (the 6 core modules + Grammar Drills); tapping an incomplete task jumps into
-  that module
-- **Grammar drills** — short exercises testing grammar rules, tier-appropriate
+- **Daily missions** — a checklist/dashboard of today's tasks across all 9
+  activities; tapping an incomplete task jumps into that module
+- **Grammar drills** — category picker (Mixed / Tenses / Prepositions), each
+  with tier-scaled fill-in-the-blank exercises
 - **Progress/streak tracking** — consecutive days where all *currently built*
   daily tasks are completed; the streak target automatically grows as more
   modules ship (a module only counts toward the day's checklist once it's
   actually implemented — see Build status below)
+- **Refresh button** — every module has a 🔄 button that resets its session
+  with newly shuffled content/order (a different story/passage where more than
+  one exists, a reshuffled item order, or a new Wordle word), so replaying a
+  module doesn't mean seeing the exact same run
+- **Shuffled answer order + lock-and-explain** — multiple-choice/fill-in-blank
+  options are shuffled per question (`QuizQuestion.useShuffledQuestion`, plus
+  the same logic inlined in Listening) so the correct answer isn't predictably
+  in the same position. The first tap locks the question: the correct option
+  is always revealed (green), the child's pick is marked, and a short
+  explanation of the underlying rule is shown — no more infinite re-guessing
+  loops. See `q.explanation` in content files (falls back to a generic hint
+  for older/generated content that hasn't been given one yet).
 
 ## Design notes
 - Bright, playful, encouraging tone throughout — this is for a child learner
@@ -64,9 +94,10 @@ on short passages; Expert = inference/"why" questions on denser passages).
   on mistakes (never a red "wrong" — use warm amber "try again" language)
 - Large tap targets, simple navigation
 - Navigation is hub-and-spoke: a single "Daily Missions" home screen lists all
-  modules; tapping one opens that module full-screen with a "← Back" button,
-  rather than a persistent tab bar (keeps each module screen focused for a
-  young reader)
+  modules; tapping one opens that module full-screen with a chunky, bordered
+  `BackButton` (`src/theme.jsx` — not a plain text link; feedback was that the
+  original text-only "← Back" was too small/easy to miss), rather than a
+  persistent tab bar (keeps each module screen focused for a young reader)
 - Font: "Baloo 2" (Google Fonts) — rounded, bold, playful (same as beetle-care-app)
 - Palette: sky-blue/cream background, white cards with soft indigo-tinted
   border and drop shadow; saturated sky/rose/violet/emerald/orange/amber/teal
@@ -120,19 +151,51 @@ Finishing any one category marks the day's Grammar Drills mission done; the
 session without leaving the module.
 
 ## Comprehension question types
-Comprehension passages (~300 words each) mix standard multiple-choice with a
-`shortanswer` type: the child types a free-text response, taps "Check My
-Answer," and a model answer is revealed for self-comparison rather than being
-auto-graded (no external grading API — see out-of-scope below). `PassageModule`
-handles both types; `shortanswer` items just need `prompt` + `modelAnswer`
-instead of `options`/`correctIndex`.
+Comprehension has 2 passages per tier (~300 words each), mixing standard
+multiple-choice with a `shortanswer` type: the child types a free-text
+response, taps "Check My Answer," and a model answer is revealed for
+self-comparison rather than being auto-graded (no external grading API — see
+out-of-scope below). `PassageModule` handles both types; `shortanswer` items
+just need `prompt` + `modelAnswer` instead of `options`/`correctIndex`.
 
 ## Storytelling technique tips
-Each Storytelling item can carry `tipTitle` + `tip` fields — a short "writing
-trick" callout (e.g. hooks, show-don't-tell, planting a problem, leaving a bit
-of mystery) shown between the passage and the questions. Rendered generically
-in `PassageModule` off those two fields, so it only appears where content
-supplies them (currently Storytelling only).
+Each Storytelling item (2 per tier) can carry `tipTitle` + `tip` fields — a
+short "writing trick" callout (e.g. hooks, show-don't-tell, planting a
+problem, leaving a bit of mystery, character growth) shown between the
+passage and the questions. Rendered generically in `PassageModule` off those
+two fields, so it only appears where content supplies them (currently
+Storytelling only). Stories run ~200-350 words depending on tier.
+
+## Writing model essays
+After a child submits their writing and sees the heuristic feedback (word
+count, capitalization, punctuation, repeated words, a small common-misspelling
+check, and a "vary your sentence starts" check if most sentences begin with
+"I"), they can tap "📖 See an example of strong writing for this topic" to
+reveal a full model essay for that tier/prompt (`WRITING_MODEL_ESSAYS` in
+`src/content/writingContent.jsx`) — a comparison point, not a correction of
+their own text.
+
+## Word Guess (Wordle-style)
+`src/WordleModule.jsx` + `src/content/wordleContent.jsx`. Standard Wordle
+mechanics (5 letters, 6 guesses, green/yellow/gray feedback via a duplicate-
+letter-aware evaluator, on-screen QWERTY keyboard with best-known-status
+coloring). Word length is fixed at 5 across all tiers so the mechanic stays
+familiar; only word obscurity scales with tier. "Today's word" is picked by a
+day-of-year seed (same word all day per tier, like real Wordle); the Refresh
+button overrides this with a random word from the tier's list. Any 5-letter
+A-Z guess is accepted — there's no full dictionary validator bundled (would
+require a large embedded word list), which is a reasonable v1 tradeoff for a
+kids' app where the answer list itself is small and curated. Finishing (win
+or lose) marks the mission done — losing a Wordle isn't a failure state here.
+
+## Vocabulary Builder
+`src/VocabularyModule.jsx` + `src/content/vocabularyContent.jsx`. 10 words per
+tier (40 total), each with `word`, `pos` (noun/verb/adj), `zh` (Traditional
+Chinese), `definition`, and an `example` sentence. Flashcard flow: see the
+English word + POS badge + 🔊 Hear It, tap "Show Meaning" to flip and reveal
+the rest, then Next. Refresh reshuffles the session's word order. The 10-per-
+tier bank is a fixed set for now (not yet a larger rotating daily pool) —
+expanding `VOCABULARY_ITEMS` is the natural next step if more variety is wanted.
 
 ## Explicitly out of scope for v1
 - No backend, accounts, or login
@@ -160,14 +223,20 @@ supplies them (currently Storytelling only).
 
 ## Build status
 - [x] Project scaffold — theme, storage, Daily Missions home screen, hub-and-spoke nav
-- [x] Module 1 — Listening
-- [x] Module 2 — Speaking
-- [x] Module 3 — Story-telling
-- [x] Module 4 — Reading
-- [x] Module 5 — Comprehension
-- [x] Module 6 — Writing
-- [x] Grammar drills
+- [x] Module 1 — Listening (3 passages/tier)
+- [x] Module 2 — Speaking (4 sentences/tier, raised past toddler-level words)
+- [x] Module 3 — Story-telling (2 longer stories/tier + writing-technique tips)
+- [x] Module 4 — Reading (2 passages/tier)
+- [x] Module 5 — Comprehension (2 ~300-word passages/tier, mixed question types)
+- [x] Module 6 — Writing (structure hints + model essay reveal)
+- [x] Grammar drills (3 categories × 4 tiers × 4 items, with explanations)
+- [x] Word Guess (Wordle-style)
+- [x] Vocabulary Builder (10 words/tier, EN + Traditional Chinese + POS + example)
 - [x] Vocabulary glossary (tap-to-reveal Traditional Chinese on hard words)
-- [ ] More content per tier — each module currently ships with 1 item per tier
-      (3 for Listening/Speaking); expand the content files under `src/content/`
-      as more material is written
+- [x] Answer-order shuffling (no more predictably-first-option correct answers)
+- [x] Lock-and-explain on every MC/fill-blank question
+- [x] Refresh button per module
+- [x] Rebrand: "English Ops" + owl → "English Quest" + 🚀
+- [ ] Even more content per tier — current counts above are a solid step up
+      from the original single-item banks, but there's room to keep growing
+      (especially Vocabulary's fixed 10-per-tier set and Wordle's 5-word lists)

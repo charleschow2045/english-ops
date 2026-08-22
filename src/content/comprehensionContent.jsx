@@ -1,6 +1,7 @@
-// Module 5: Comprehension — standalone ~300-word passages, mixing multiple-choice
-// with "shortanswer" self-check questions (type an answer, then compare against
-// a model answer — no external grading, focused on inference and "why").
+// Module 5: Comprehension — two ~300-word passages per tier, mixing
+// multiple-choice (with explanations) with "shortanswer" self-check questions
+// (type an answer, then compare against a model answer — no external grading,
+// focused on inference and "why").
 window.App = window.App || {};
 window.App.Content = window.App.Content || {};
 
@@ -17,6 +18,7 @@ window.App.Content = window.App.Content || {};
             prompt: "Why did Theo know exactly what to plant?",
             options: ["His grandmother used to grow the same things in her garden", "He read about it online", "His teacher told him what to plant"],
             correctIndex: 0,
+            explanation: "The passage says his grandmother used to grow carrots, tomatoes, and sunflowers before she moved away.",
           },
           {
             type: "shortanswer",
@@ -33,6 +35,34 @@ window.App.Content = window.App.Content || {};
               "They started arguing about the garden",
             ],
             correctIndex: 0,
+            explanation: "The passage says they were comfortable just kneeling in the dirt together, without needing to fill every silence.",
+          },
+        ],
+      },
+      {
+        id: "comp-easy-2",
+        passage:
+          "When Sofia moved to a new school in the middle of the year, she expected the hardest part to be making new friends. What she hadn't expected was how different the lunchroom seating worked — at her old school, kids just sat wherever they wanted, but here, it seemed like every table already belonged to a specific group, and nobody had explained the unwritten rules to her. On her first day, she stood holding her tray for what felt like an eternity, scanning the room for an empty seat that wouldn't mean sitting with strangers who might not want her there. Just as she was about to give up and eat alone near the door, a girl from her math class, Priya, waved her over to a table with three other kids. Sofia later learned that Priya had noticed new students struggling with exactly this problem before, ever since her own first day two years earlier had gone badly. From then on, Sofia made a habit of watching for the same lost, hesitant look on new students' faces — and always made sure to wave them over, the same way Priya once had for her.",
+        questions: [
+          {
+            type: "mc",
+            prompt: "What was the hardest part of Sofia's first day, according to the passage?",
+            options: ["Figuring out the unwritten lunchroom seating rules", "Finding her classroom", "Understanding her homework"],
+            correctIndex: 0,
+            explanation: "The passage focuses on how confusing the unwritten lunchroom seating rules were for Sofia.",
+          },
+          {
+            type: "shortanswer",
+            prompt: "Why do you think Priya made a point of waving new students over to her table?",
+            modelAnswer:
+              "She remembered how hard her own first day had been as a new student, so she wanted to make sure other new kids didn't have to feel that same way alone.",
+          },
+          {
+            type: "mc",
+            prompt: "What did Sofia start doing after her own experience?",
+            options: ["Watching for new students and inviting them to sit with her", "Avoiding new students", "Telling teachers to assign seats"],
+            correctIndex: 0,
+            explanation: "The passage says Sofia made a habit of waving new students over, the same way Priya had for her.",
           },
         ],
       },
@@ -48,6 +78,7 @@ window.App.Content = window.App.Content || {};
             prompt: "What was actually causing the robot's arm to drop the blocks?",
             options: ["The gripping speed in the code, not the mechanical design", "A broken motor", "The wrong type of blocks"],
             correctIndex: 0,
+            explanation: "Slowing down the gripping speed in the code fixed the problem — it wasn't the mechanical gripper.",
           },
           {
             type: "shortanswer",
@@ -64,12 +95,40 @@ window.App.Content = window.App.Content || {};
               "Aaliyah is smarter than him",
             ],
             correctIndex: 0,
+            explanation: "The passage says they succeeded by looking at the whole system, not just one part — a new question, not more effort on the old one.",
           },
           {
             type: "shortanswer",
             prompt: "What does Diego's decision to credit Aaliyah in front of the judges tell you about him?",
             modelAnswer:
               "It shows he is honest and generous — he cared more about giving credit where it was due than taking all the credit for the team's success himself.",
+          },
+        ],
+      },
+      {
+        id: "comp-medium-2",
+        passage:
+          "Marcus had always assumed that the kids who made the all-star basketball team were simply more naturally talented than he was, until his coach posted everyone's self-reported practice logs on the locker room wall as part of a team motivation exercise. Marcus was stunned to see that Devon, a guard who'd made the all-star team two years running, had logged barely more practice time per week than Marcus himself — the real difference was in how that time was spent. While Marcus's log was full of casual pickup games with friends, Devon's log showed short, focused sessions: fifteen minutes of nothing but free throws, twenty minutes of dribbling drills using only his weaker hand, ten minutes of defensive footwork against an imaginary opponent. Marcus realized that he'd been mistaking activity for improvement; playing basketball with friends was fun and kept him moving, but it rarely forced him to work on the specific weaknesses that were actually holding his game back. He started restructuring his own practice time that same week, and while he didn't make the all-star team that season, his coach pulled him aside in March to say his shooting percentage had improved more than anyone else's on the roster.",
+        questions: [
+          {
+            type: "mc",
+            prompt: "What was the real difference between Marcus's and Devon's practice time?",
+            options: ["How focused and deliberate the practice was", "Devon practiced for many more hours", "Marcus never practiced at all"],
+            correctIndex: 0,
+            explanation: "The passage says the logs showed similar total time — the real difference was how focused the practice was.",
+          },
+          {
+            type: "shortanswer",
+            prompt: "What is the difference between 'activity' and 'improvement,' based on how the passage uses those ideas?",
+            modelAnswer:
+              "Activity is just being busy or playing (like casual pickup games), while improvement comes from focused, deliberate practice that specifically targets your weaknesses — being active doesn't automatically mean you're getting better.",
+          },
+          {
+            type: "mc",
+            prompt: "What was the result of Marcus changing his practice habits?",
+            options: ["His shooting percentage improved more than anyone else's", "He immediately made the all-star team", "He quit basketball"],
+            correctIndex: 0,
+            explanation: "The passage says his coach told him his shooting percentage improved more than anyone else's on the roster.",
           },
         ],
       },
@@ -89,6 +148,7 @@ window.App.Content = window.App.Content || {};
               "He thought teachers didn't need help managing the classroom",
             ],
             correctIndex: 0,
+            explanation: "Kai argued a full ban would punish responsible students to solve a problem caused by a smaller group.",
           },
           {
             type: "shortanswer",
@@ -105,12 +165,40 @@ window.App.Content = window.App.Content || {};
               "How much phones cost",
             ],
             correctIndex: 0,
+            explanation: "The passage ends by framing the real question as teaching attention management in a world built to interrupt it.",
           },
           {
             type: "shortanswer",
             prompt: "Do you agree with the council's compromise? Explain one reason why it might work well, or one reason why it might not.",
             modelAnswer:
               "There's no single right answer — a strong response gives one clear reason, such as: it balances access needs with focus (a reason it might work), or that phones being merely 'off in a locker' doesn't address why students feel the urge to check them constantly (a reason it might not fully solve the problem).",
+          },
+        ],
+      },
+      {
+        id: "comp-hard-2",
+        passage:
+          "When a screenshot of a private group chat was leaked and shared around school, showing several students making unkind jokes about a classmate, the fallout extended in directions no one quite anticipated. The classmate who was mocked, understandably hurt, expected an apology from everyone who had participated in the conversation. But the group chat members themselves were split: some had actively written the jokes, others had simply reacted with laughing emojis without adding anything, and at least two had been silently present in the chat the entire time without responding to the messages at all. When the school counselor met with the group to discuss what had happened, a disagreement emerged about how much responsibility each type of participation actually deserved. The students who had only reacted with emojis argued they hadn't \"really\" said anything unkind. The students who had stayed silent argued they hadn't participated at all. The counselor pointed out that every person in that chat had, in some way, allowed the conversation to continue rather than objecting to it or leaving, and asked the group to consider what it would have taken for even one person to have changed the conversation's direction.",
+        questions: [
+          {
+            type: "mc",
+            prompt: "What disagreement emerged among the group chat members?",
+            options: ["How much responsibility different types of participation deserved", "Who leaked the screenshot", "Whether the classmate deserved an apology"],
+            correctIndex: 0,
+            explanation: "The passage says the disagreement was about how much responsibility each type of participation deserved.",
+          },
+          {
+            type: "shortanswer",
+            prompt: "Do you agree with the counselor's point that everyone in the chat shares some responsibility, even those who stayed silent? Explain your reasoning.",
+            modelAnswer:
+              "There's no single right answer — a strong response takes a clear position and explains it, such as: silence can still enable harmful behavior to continue unchallenged (agreeing), or that not actively participating is meaningfully different from writing the jokes (disagreeing), with reasoning either way.",
+          },
+          {
+            type: "mc",
+            prompt: "What did the counselor ask the group to consider?",
+            options: ["What it would have taken for one person to change the conversation's direction", "Who should be punished the most", "Whether the classmate overreacted"],
+            correctIndex: 0,
+            explanation: "The passage says the counselor asked what it would have taken for even one person to have changed the direction of the conversation.",
           },
         ],
       },
@@ -130,6 +218,7 @@ window.App.Content = window.App.Content || {};
               "They are required to by law",
             ],
             correctIndex: 0,
+            explanation: "The passage says selling early risks looking foolish and losing profit if the bubble takes longer to burst.",
           },
           {
             type: "shortanswer",
@@ -146,12 +235,40 @@ window.App.Content = window.App.Content || {};
               "Nobody reads economic warnings",
             ],
             correctIndex: 0,
+            explanation: "The passage says being right too early carries almost the same cost as being wrong entirely.",
           },
           {
             type: "shortanswer",
             prompt: "Can you think of another real-life situation (outside of finance) where being 'right too early' might be treated almost the same as being wrong? Briefly explain.",
             modelAnswer:
               "Answers will vary — a strong response identifies a situation where acting on an early, correct warning carries real social or practical cost before consequences seem obvious to everyone else (e.g., warning a friend about a bad decision, an early safety warning that goes unheeded until an accident happens), and briefly explains the parallel to the passage's idea.",
+          },
+        ],
+      },
+      {
+        id: "comp-expert-2",
+        passage:
+          "Beginning in the early 2010s, researchers across several fields of psychology grew increasingly alarmed by a pattern that came to be known as the \"replication crisis\": a substantial number of well-known, frequently cited psychological studies, when independently repeated by other research teams under the same conditions, failed to produce the same results as the original experiments. This was troubling not merely because individual findings turned out to be wrong, but because it raised uncomfortable questions about the incentive structures underlying scientific publishing itself. Journals had long shown a strong preference for publishing novel, surprising, statistically significant findings over studies that confirmed existing knowledge or reported null results, which meant researchers faced substantial career pressure to produce exactly the kind of striking results that, evidence later suggested, were disproportionately likely to be false positives or the product of subtle methodological flaws. In response, some journals began requiring researchers to publicly register their hypotheses and methods before collecting data, a practice designed to prevent researchers from unconsciously reshaping their analysis after seeing results that didn't match their expectations. Proponents of these reforms argue they represent a necessary, if painful, correction; skeptics counter that overcorrecting toward caution risks discouraging the kind of bold, exploratory research that leads to genuine scientific breakthroughs in the first place.",
+        questions: [
+          {
+            type: "mc",
+            prompt: "What is the \"replication crisis,\" according to the passage?",
+            options: ["Many well-known studies failed to produce the same results when independently repeated", "A shortage of funding for psychology research", "A crisis caused by fake data being published"],
+            correctIndex: 0,
+            explanation: "The passage defines it as well-known studies failing to produce the same results when independently repeated.",
+          },
+          {
+            type: "shortanswer",
+            prompt: "How did publishing incentives contribute to the replication crisis, according to the passage?",
+            modelAnswer:
+              "Journals preferred publishing surprising, statistically significant findings over confirmatory or null results, which pressured researchers to produce striking results — results that were later found more likely to be false positives or flawed.",
+          },
+          {
+            type: "mc",
+            prompt: "What is one criticism of pre-registering hypotheses and methods before research?",
+            options: ["It might discourage bold, exploratory research that leads to breakthroughs", "It is illegal in most countries", "It makes research faster and cheaper"],
+            correctIndex: 0,
+            explanation: "Skeptics counter that overcorrecting toward caution risks discouraging bold, exploratory research.",
           },
         ],
       },

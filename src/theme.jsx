@@ -35,5 +35,29 @@ window.App = window.App || {};
     );
   }
 
-  window.App.UI = { COLORS, Button, Card };
+  function BackButton({ onClick, children = "← Back" }) {
+    return (
+      <button
+        onClick={onClick}
+        className="flex items-center gap-1 rounded-2xl border-4 border-indigo-300 bg-white text-indigo-600 font-extrabold px-4 py-2 text-sm
+          shadow-[0_3px_0_#a5b4fc] active:translate-y-[3px] active:shadow-none transition-all"
+      >
+        {children}
+      </button>
+    );
+  }
+
+  function RefreshButton({ onClick, label = "New questions" }) {
+    return (
+      <button
+        onClick={onClick}
+        className="flex items-center gap-1 rounded-2xl border-4 border-emerald-300 bg-white text-emerald-600 font-extrabold px-3 py-2 text-xs sm:text-sm
+          shadow-[0_3px_0_#6ee7b7] active:translate-y-[3px] active:shadow-none transition-all"
+      >
+        🔄 {label}
+      </button>
+    );
+  }
+
+  window.App.UI = { COLORS, Button, Card, BackButton, RefreshButton };
 })();

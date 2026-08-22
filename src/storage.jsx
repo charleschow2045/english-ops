@@ -22,6 +22,8 @@ window.App = window.App || {};
     { key: "comprehension", label: "Comprehension", emoji: "🧠", color: "orange", implemented: true },
     { key: "writing", label: "Writing", emoji: "✏️", color: "amber", implemented: true },
     { key: "grammar", label: "Grammar Drills", emoji: "🔤", color: "teal", implemented: true },
+    { key: "wordle", label: "Word Guess", emoji: "🟩", color: "rose", implemented: true },
+    { key: "vocabulary", label: "Vocabulary Builder", emoji: "📔", color: "teal", implemented: true },
   ];
 
   function todayStr() {

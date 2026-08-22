@@ -12,6 +12,7 @@ window.App.Content = window.App.Content || {};
         question: "Where was Maya's class going?",
         options: ["The science museum", "The zoo", "The beach"],
         correctIndex: 0,
+        explanation: "The passage says Maya was excited to visit the science museum with her class.",
       },
       {
         id: "easy-2",
@@ -19,6 +20,7 @@ window.App.Content = window.App.Content || {};
         question: "What did Liam find near the fence?",
         options: ["A beetle", "A frog", "A bird"],
         correctIndex: 0,
+        explanation: "Liam noticed a beetle crawling near the fence, then picked it up.",
       },
       {
         id: "easy-3",
@@ -26,6 +28,7 @@ window.App.Content = window.App.Content || {};
         question: "What did the team do first?",
         options: ["Stretching", "Playing the game", "Going home"],
         correctIndex: 0,
+        explanation: "After lining up, the team began stretching — that happened before the game.",
       },
     ],
     medium: [
@@ -39,6 +42,7 @@ window.App.Content = window.App.Content || {};
           "They were going home early",
         ],
         correctIndex: 0,
+        explanation: "The passage says they couldn't wait to see the volcano model erupt.",
       },
       {
         id: "medium-2",
@@ -46,6 +50,7 @@ window.App.Content = window.App.Content || {};
         question: "Why did Noah and his dad go to the hardware store?",
         options: ["They ran out of nails", "They wanted snacks", "They needed a ladder"],
         correctIndex: 0,
+        explanation: "They realized they didn't have enough nails, which is why they went to the store.",
       },
       {
         id: "medium-3",
@@ -53,6 +58,7 @@ window.App.Content = window.App.Content || {};
         question: "What did Sophie do before her solo?",
         options: ["She took a deep breath", "She left the stage", "She asked for help"],
         correctIndex: 0,
+        explanation: "The passage says she took a deep breath before starting her solo.",
       },
     ],
     hard: [
@@ -62,6 +68,7 @@ window.App.Content = window.App.Content || {};
         question: "How did the team likely feel when they found the waterfall?",
         options: ["Exhausted but thrilled", "Bored and disappointed", "Angry and confused"],
         correctIndex: 0,
+        explanation: "The passage directly describes them as \"exhausted but thrilled\" after finding it.",
       },
       {
         id: "hard-2",
@@ -73,6 +80,7 @@ window.App.Content = window.App.Content || {};
           "It was about volcanoes",
         ],
         correctIndex: 0,
+        explanation: "Being invited to the regional competition shows the judges were impressed, even without first place.",
       },
       {
         id: "hard-3",
@@ -84,6 +92,7 @@ window.App.Content = window.App.Content || {};
           "The storm never came",
         ],
         correctIndex: 0,
+        explanation: "By the time they turned around, waves were already crashing — so they reacted too late.",
       },
     ],
     expert: [
@@ -97,6 +106,7 @@ window.App.Content = window.App.Content || {};
           "Migration has been fully explained by scientists",
         ],
         correctIndex: 0,
+        explanation: "The passage states one theory points to subtle genetic differences passed down over generations.",
       },
       {
         id: "expert-2",
@@ -108,6 +118,7 @@ window.App.Content = window.App.Content || {};
           "They thought the park was too expensive",
         ],
         correctIndex: 0,
+        explanation: "The historians argued the tracks should have been preserved as a monument, not turned into a park.",
       },
       {
         id: "expert-3",
@@ -119,6 +130,7 @@ window.App.Content = window.App.Content || {};
           "Only one side needs to compromise",
         ],
         correctIndex: 0,
+        explanation: "The passage says compromise \"often requires giving up more than either party expects.\"",
       },
     ],
   };

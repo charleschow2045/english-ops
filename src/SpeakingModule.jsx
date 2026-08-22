@@ -11,11 +11,20 @@
 window.App = window.App || {};
 
 (function () {
-  const { useState, useEffect, useRef } = React;
-  const { Card, Button } = window.App.UI;
+  const { useState, useEffect, useRef, useMemo } = React;
+  const { Card, Button, BackButton, RefreshButton } = window.App.UI;
   const { GlossaryText, speak, VoicePicker } = window.App;
 
   const LISTEN_TIMEOUT_MS = 7000;
+
+  function shuffleArray(arr) {
+    const copy = arr.slice();
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+  }
 
   function normalize(s) {
     return s
@@ -34,7 +43,10 @@ window.App = window.App || {};
   }
 
   function SpeakingModule({ tier, onBack, onComplete, voicePref, onVoiceChange }) {
-    const items = window.App.Content.SPEAKING_ITEMS[tier] || window.App.Content.SPEAKING_ITEMS.easy;
+    const baseItems = window.App.Content.SPEAKING_ITEMS[tier] || window.App.Content.SPEAKING_ITEMS.easy;
+    const [runSeed, setRunSeed] = useState(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const items = useMemo(() => shuffleArray(baseItems), [baseItems, runSeed]);
     const [index, setIndex] = useState(0);
     const [status, setStatus] = useState("idle"); // idle | listening | correct | tryAgain | unsupported | micBlocked
     const [heard, setHeard] = useState("");
@@ -131,6 +143,15 @@ window.App = window.App || {};
       }, LISTEN_TIMEOUT_MS);
     }
 
+    function handleRefresh() {
+      setRunSeed((s) => s + 1);
+      setIndex(0);
+      setStatus("idle");
+      setHeard("");
+      setAttempts(0);
+      setDoneAll(false);
+    }
+
     function handleNext() {
       setStatus("idle");
       setHeard("");
@@ -148,16 +169,20 @@ window.App = window.App || {};
           <Button color="rose" className="w-full" onClick={onComplete}>
             Back to Missions
           </Button>
+          <button onClick={handleRefresh} className="mt-3 text-xs font-bold text-stone-400 underline decoration-dotted">
+            🔄 Do it again with new sentences
+          </button>
         </Card>
       );
     }
 
     return (
       <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <button onClick={onBack} className="text-sm font-extrabold text-indigo-500">
-            ← Back
-          </button>
+        <div className="flex items-center justify-between gap-2">
+          <BackButton onClick={onBack} />
+          <RefreshButton onClick={handleRefresh} />
+        </div>
+        <div className="text-center">
           <span className="text-sm font-extrabold text-stone-400">
             {index + 1} of {items.length}
           </span>

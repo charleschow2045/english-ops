@@ -3,7 +3,17 @@ window.App = window.App || {};
 
 (function () {
   const { useState, useEffect } = React;
-  const { Storage, DailyMissions, ListeningModule, SpeakingModule, PassageModule, GrammarModule, WritingModule } = window.App;
+  const {
+    Storage,
+    DailyMissions,
+    ListeningModule,
+    SpeakingModule,
+    PassageModule,
+    GrammarModule,
+    WritingModule,
+    WordleModule,
+    VocabularyModule,
+  } = window.App;
 
   function Root() {
     const [state, setState] = useState(() => Storage.loadState());
@@ -45,7 +55,7 @@ window.App = window.App || {};
 
         <div className="relative px-4 pb-10">
         <header className="pt-6 pb-4">
-          <h1 className="text-3xl font-extrabold tracking-tight text-indigo-600">🦉 English Ops</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight text-indigo-600">🚀 English Quest</h1>
         </header>
 
         <main>
@@ -111,6 +121,17 @@ window.App = window.App || {};
           )}
           {view === "grammar" && (
             <GrammarModule tier={state.tier} onBack={() => setView("home")} onComplete={() => completeModule("grammar")} />
+          )}
+          {view === "wordle" && (
+            <WordleModule tier={state.tier} onBack={() => setView("home")} onComplete={() => completeModule("wordle")} />
+          )}
+          {view === "vocabulary" && (
+            <VocabularyModule
+              tier={state.tier}
+              voicePref={state.voicePref}
+              onBack={() => setView("home")}
+              onComplete={() => completeModule("vocabulary")}
+            />
           )}
         </main>
         </div>
