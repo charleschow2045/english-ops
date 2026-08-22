@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="English Ops" />
+  <title>English Ops</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Baloo 2"', "ui-rounded", "system-ui", "sans-serif"],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body { font-family: "Baloo 2", ui-rounded, system-ui, sans-serif; }
+  </style>
+</head>
+<body class="bg-sky-50">
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel" src="./src/storage.jsx"></script>
+  <script type="text/babel" src="./src/theme.jsx"></script>
+  <script type="text/babel" src="./src/util.jsx"></script>
+  <script type="text/babel" src="./src/VoicePicker.jsx"></script>
+  <script type="text/babel" src="./src/content/glossary.jsx"></script>
+  <script type="text/babel" src="./src/GlossaryText.jsx"></script>
+  <script type="text/babel" src="./src/QuizQuestion.jsx"></script>
+  <script type="text/babel" src="./src/content/listeningContent.jsx"></script>
+  <script type="text/babel" src="./src/content/storytellingContent.jsx"></script>
+  <script type="text/babel" src="./src/content/readingContent.jsx"></script>
+  <script type="text/babel" src="./src/content/comprehensionContent.jsx"></script>
+  <script type="text/babel" src="./src/content/grammarContent.jsx"></script>
+  <script type="text/babel" src="./src/content/speakingContent.jsx"></script>
+  <script type="text/babel" src="./src/content/writingContent.jsx"></script>
+  <script type="text/babel" src="./src/DailyMissions.jsx"></script>
+  <script type="text/babel" src="./src/ListeningModule.jsx"></script>
+  <script type="text/babel" src="./src/SpeakingModule.jsx"></script>
+  <script type="text/babel" src="./src/PassageModule.jsx"></script>
+  <script type="text/babel" src="./src/GrammarModule.jsx"></script>
+  <script type="text/babel" src="./src/WritingModule.jsx"></script>
+  <script type="text/babel" src="./src/Root.jsx"></script>
+  <script type="text/babel" src="./src/main.jsx"></script>
+</body>
+</html>
