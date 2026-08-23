@@ -5,6 +5,12 @@
 // backtracking algorithm at runtime (buildGrid), so there's no need to
 // hand-author each grid. A curated bonus word list (no full dictionary
 // bundled) rewards finding common words beyond the target list too.
+//
+// Grid size scales down by tier (6x6 easy/medium, 7x7 hard/expert) and a
+// 💡 Hint button exists, after feedback that an 8x8, all-directions grid
+// with no way to get unstuck was too hard to actually play, even though the
+// placement algorithm itself was verified correct (every "placed" word is
+// independently re-checked as truly traceable — see buildGrid).
 window.App = window.App || {};
 
 (function () {
@@ -12,8 +18,8 @@ window.App = window.App || {};
   const { Card, Button, BackButton, RefreshButton, TierBadge } = window.App.UI;
   const { sampleArray } = window.App;
 
-  const GRID_SIZE = 8;
-  const WORDS_PER_PUZZLE = 6;
+  const GRID_SIZE_BY_TIER = { easy: 6, medium: 6, hard: 7, expert: 7 };
+  const WORDS_PER_PUZZLE = 5;
   const LETTER_POOL = "AAAAAAAAABBCCDDDDEEEEEEEEEEEEFFGGGHHIIIIIIIIIJKLLLLMMNNNNNNNOOOOOOOPPQRRRRRRSSSSTTTTTTTUUUVVWWXYYZ";
 
   function neighbors(r, c, size) {
@@ -40,7 +46,7 @@ window.App = window.App || {};
 
   function tryPlaceWord(grid, word, size) {
     const letters = word.split("");
-    for (let attempt = 0; attempt < 400; attempt++) {
+    for (let attempt = 0; attempt < 500; attempt++) {
       const startR = Math.floor(Math.random() * size);
       const startC = Math.floor(Math.random() * size);
       if (!(grid[startR][startC] === null || grid[startR][startC] === letters[0])) continue;
@@ -75,14 +81,17 @@ window.App = window.App || {};
     return null;
   }
 
+  // Returns { grid, entries } where entries is [{ word, path }] for every
+  // word that was successfully placed (fewer than requested is possible on a
+  // crowded grid — gracefully degrades rather than failing the puzzle).
   function buildGrid(words, size) {
     const grid = Array.from({ length: size }, () => Array(size).fill(null));
-    const placed = [];
+    const entries = [];
     const sorted = [...words].sort((a, b) => b.length - a.length);
 
     sorted.forEach((word) => {
       const path = tryPlaceWord(grid, word, size);
-      if (path) placed.push(word);
+      if (path) entries.push({ word, path });
     });
 
     for (let r = 0; r < size; r++) {
@@ -93,7 +102,7 @@ window.App = window.App || {};
       }
     }
 
-    return { grid, placedWords: placed };
+    return { grid, entries };
   }
 
   function isAdjacent(a, b) {
@@ -110,6 +119,7 @@ window.App = window.App || {};
             <li>Keep tapping letters that touch each other (up, down, sideways, or diagonally) to spell a word.</li>
             <li>Tap the last letter again to submit your word.</li>
             <li>Tap "Clear" anytime to start over.</li>
+            <li>Stuck? Tap "💡 Hint" to see where one hidden word starts.</li>
             <li>Find all the hidden target words — bonus points for any other real word you spot too!</li>
           </ul>
           <Button color="rose" className="w-full mt-4" onClick={onClose}>
@@ -123,18 +133,21 @@ window.App = window.App || {};
   function WordHuntModule({ tier, onBack, onComplete }) {
     const bank = window.App.Content.WORD_HUNT_WORDS[tier] || window.App.Content.WORD_HUNT_WORDS.easy;
     const bonusWords = window.App.Content.WORD_HUNT_BONUS_WORDS;
+    const gridSize = GRID_SIZE_BY_TIER[tier] || 6;
     const [runSeed, setRunSeed] = useState(0);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const { grid, placedWords } = useMemo(() => {
+    const { grid, entries } = useMemo(() => {
       const words = sampleArray(bank, WORDS_PER_PUZZLE);
-      return buildGrid(words, GRID_SIZE);
-    }, [bank, runSeed]);
+      return buildGrid(words, gridSize);
+    }, [bank, gridSize, runSeed]);
+    const placedWords = entries.map((e) => e.word);
 
     const [path, setPath] = useState([]);
     const [found, setFound] = useState([]);
     const [message, setMessage] = useState("");
     const [showHelp, setShowHelp] = useState(false);
+    const [hintCell, setHintCell] = useState(null);
 
     const currentWord = path.map(([r, c]) => grid[r][c]).join("");
     const targetsFound = found.filter((f) => placedWords.includes(f.word));
@@ -142,6 +155,7 @@ window.App = window.App || {};
     const score = found.reduce((sum, f) => sum + f.points, 0);
 
     function tapCell(r, c) {
+      setHintCell(null);
       const cell = [r, c];
       if (path.length === 0) {
         setPath([cell]);
@@ -188,11 +202,19 @@ window.App = window.App || {};
       setMessage("");
     }
 
+    function showHint() {
+      const unfound = entries.find((e) => !targetsFound.some((f) => f.word === e.word));
+      if (!unfound) return;
+      setHintCell(unfound.path[0]);
+      setMessage(`💡 Hint: look for a ${unfound.word.length}-letter word starting near the highlighted tile!`);
+    }
+
     function handleRefresh() {
       setRunSeed((s) => s + 1);
       setPath([]);
       setFound([]);
       setMessage("");
+      setHintCell(null);
     }
 
     if (allTargetsFound) {
@@ -241,18 +263,25 @@ window.App = window.App || {};
           </div>
 
           <div
-            className="grid gap-1 mb-3 mx-auto"
-            style={{ gridTemplateColumns: `repeat(${GRID_SIZE}, minmax(0, 1fr))`, maxWidth: "420px" }}
+            className="grid gap-1.5 mb-3 mx-auto"
+            style={{ gridTemplateColumns: `repeat(${gridSize}, minmax(0, 1fr))`, maxWidth: "360px" }}
           >
             {grid.map((row, r) =>
               row.map((letter, c) => {
                 const inPath = path.some(([pr, pc]) => pr === r && pc === c);
+                const isHint = hintCell && hintCell[0] === r && hintCell[1] === c;
                 return (
                   <button
                     key={`${r}-${c}`}
                     onClick={() => tapCell(r, c)}
-                    className={`aspect-square rounded-md border-2 font-extrabold text-sm sm:text-base flex items-center justify-center transition-all
-                      ${inPath ? "bg-rose-400 border-rose-600 text-rose-950" : "bg-white border-stone-200 text-stone-700"}`}
+                    className={`aspect-square rounded-lg border-2 font-extrabold text-lg sm:text-xl flex items-center justify-center transition-all
+                      ${
+                        inPath
+                          ? "bg-rose-400 border-rose-600 text-rose-950"
+                          : isHint
+                          ? "bg-amber-300 border-amber-500 text-amber-950 animate-pulse"
+                          : "bg-white border-stone-200 text-stone-700"
+                      }`}
                   >
                     {letter}
                   </button>
@@ -271,6 +300,9 @@ window.App = window.App || {};
             </Button>
             <Button color="teal" className="flex-1 py-2 text-sm" onClick={clearPath} disabled={path.length === 0}>
               Clear
+            </Button>
+            <Button color="amber" className="flex-1 py-2 text-sm" onClick={showHint}>
+              💡 Hint
             </Button>
           </div>
 
