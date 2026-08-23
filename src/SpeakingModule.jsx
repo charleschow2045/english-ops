@@ -1,7 +1,7 @@
 // Module 2: Speaking — Web Speech API recognition checks the child's spoken
 // word/sentence against the target; gentle "try again" on a mismatch.
 //
-// Robustness notes: recognition support/behavior varies wildly across
+// Robustness notes: recognition support/behaviour varies wildly across
 // browsers and devices (notably, it's unreliable or entirely unsupported on
 // iOS Safari — the primary target device per CLAUDE.md). So this module:
 //   - explicitly requests mic permission first, so failures are caught early
@@ -165,7 +165,7 @@ window.App = window.App || {};
         <Card className="text-center">
           <p className="text-5xl mb-2">🎤</p>
           <h2 className="text-xl font-extrabold text-stone-800 mb-1">Great speaking today!</h2>
-          <p className="text-stone-500 font-bold mb-4">You practiced {items.length} words and sentences.</p>
+          <p className="text-stone-500 font-bold mb-4">You practised {items.length} words and sentences.</p>
           <Button color="rose" className="w-full" onClick={onComplete}>
             Back to Missions
           </Button>
@@ -232,7 +232,7 @@ window.App = window.App || {};
               {heard && <p className="text-stone-400 text-xs font-bold mb-3">I heard: "{heard}"</p>}
               {attempts >= 2 ? (
                 <Button color="emerald" className="w-full" onClick={handleNext}>
-                  That's okay, keep practicing → Next
+                  That's okay, keep practising → Next
                 </Button>
               ) : (
                 <Button color="rose" className="w-full" onClick={startListening}>

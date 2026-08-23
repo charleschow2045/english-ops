@@ -1,6 +1,6 @@
 // Word Hunt (Bookworm / Word Wipe style) — target words per tier, embedded
 // into a random letter grid at runtime (see WordHuntModule.jsx's buildGrid).
-// A bonus list of common short words is also recognized so exploring beyond
+// A bonus list of common short words is also recognised so exploring beyond
 // the target words is rewarded too (there's no full dictionary bundled).
 window.App = window.App || {};
 window.App.Content = window.App.Content || {};
@@ -13,7 +13,7 @@ window.App.Content = window.App.Content || {};
     expert: ["PARADOX", "CATALYST", "ECLIPSE", "GRANITE", "TAPESTRY", "VELOCITY", "CIPHER", "SANCTUARY", "MOMENTUM", "LABYRINTH"],
   };
 
-  // Common 3-5 letter words recognized as bonus finds (smaller reward than a
+  // Common 3-5 letter words recognised as bonus finds (smaller reward than a
   // target word) — a curated list, not a full dictionary.
   window.App.Content.WORD_HUNT_BONUS_WORDS = [
     "CAT", "DOG", "SUN", "RUN", "FUN", "BIG", "RED", "TOP", "MAP", "CUP", "PEN", "BOX", "BAT", "HAT", "SIT",

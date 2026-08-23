@@ -16,7 +16,7 @@ window.App.Content = window.App.Content || {};
       },
       {
         id: "easy-2",
-        text: "During recess, Liam noticed a strange beetle crawling near the fence. He carefully picked it up and showed it to his friends.",
+        text: "During break time, Liam noticed a strange beetle crawling near the fence. He carefully picked it up and showed it to his friends.",
         question: "What did Liam find near the fence?",
         options: ["A beetle", "A frog", "A bird"],
         correctIndex: 0,
@@ -34,7 +34,7 @@ window.App.Content = window.App.Content || {};
     medium: [
       {
         id: "medium-1",
-        text: "The class had been studying volcanoes for two weeks, so when the teacher announced a field trip to the science center, everyone cheered. They couldn't wait to see the volcano model erupt.",
+        text: "The class had been studying volcanoes for two weeks, so when the teacher announced a field trip to the science centre, everyone cheered. They couldn't wait to see the volcano model erupt.",
         question: "Why were the students excited?",
         options: [
           "They were going to see a volcano model erupt",
@@ -46,11 +46,11 @@ window.App.Content = window.App.Content || {};
       },
       {
         id: "medium-2",
-        text: "Noah spent his Saturday morning building a treehouse with his dad. Halfway through, they realized they didn't have enough nails, so they had to walk to the hardware store.",
+        text: "Noah spent his Saturday morning building a treehouse with his dad. Halfway through, they realised they didn't have enough nails, so they had to walk to the hardware store.",
         question: "Why did Noah and his dad go to the hardware store?",
         options: ["They ran out of nails", "They wanted snacks", "They needed a ladder"],
         correctIndex: 0,
-        explanation: "They realized they didn't have enough nails, which is why they went to the store.",
+        explanation: "They realised they didn't have enough nails, which is why they went to the store.",
       },
       {
         id: "medium-3",

@@ -5,7 +5,7 @@ window.App.Content = window.App.Content || {};
 
 (function () {
   window.App.Content.WRITING_PROMPTS = {
-    easy: "Describe your favorite animal. What does it look like, and why do you like it?",
+    easy: "Describe your favourite animal. What does it look like, and why do you like it?",
     medium: "Write about a fun day you had with a friend or family member. What did you do together?",
     hard: "Describe a time you tried something new. How did it make you feel?",
     expert: "Do you think it's more important to be honest or to be kind? Explain your opinion with reasons.",
@@ -16,9 +16,9 @@ window.App.Content = window.App.Content || {};
       structure: [
         "Beginning: Name your animal and say what it looks like.",
         "Middle: Tell us what it likes to do, or a fun fact about it.",
-        "End: Explain why it's your favorite!",
+        "End: Explain why it's your favourite!",
       ],
-      starters: ["My favorite animal is...", "It has...", "I love it because..."],
+      starters: ["My favourite animal is...", "It has...", "I love it because..."],
     },
     medium: {
       structure: [
@@ -58,9 +58,9 @@ window.App.Content = window.App.Content || {};
 
   window.App.Content.WRITING_MODEL_ESSAYS = {
     easy:
-      "My favorite animal is the red panda. It has soft, reddish-brown fur, a long fluffy tail, and a face that almost looks like a mask. Red pandas live in trees in the mountains and are very good climbers. They mostly eat bamboo, but they also like fruit! I love red pandas because they look so gentle and curious, and I think it would be amazing to watch one climb through the trees in real life.",
+      "My favourite animal is the red panda. It has soft, reddish-brown fur, a long fluffy tail, and a face that almost looks like a mask. Red pandas live in trees in the mountains and are very good climbers. They mostly eat bamboo, but they also like fruit! I love red pandas because they look so gentle and curious, and I think it would be amazing to watch one climb through the trees in real life.",
     medium:
-      "One sunny Saturday, I spent the whole afternoon with my cousin at the park near our house. First, we rode our bikes around the big pond, racing each other to the old oak tree. Then we stopped to feed the ducks the bread crumbs we'd brought, laughing every time one duck chased the others away from the food. Later, we lay on the grass and made up funny shapes out of the clouds until it started getting dark. By the end of the day, I felt happy and a little sleepy, and I couldn't wait to tell my mom about the duck that stole all the bread.",
+      "One sunny Saturday, I spent the whole afternoon with my cousin at the park near our house. First, we rode our bikes around the big pond, racing each other to the old oak tree. Then we stopped to feed the ducks the bread crumbs we'd brought, laughing every time one duck chased the others away from the food. Later, we lay on the grass and made up funny shapes out of the clouds until it started getting dark. By the end of the day, I felt happy and a little sleepy, and I couldn't wait to tell my mum about the duck that stole all the bread.",
     hard:
       "The first time I ever tried rock climbing, I almost didn't go through with it. Standing at the bottom of the wall, looking up at how high it went, my stomach felt tight with nerves. At first I felt like everyone around me was probably a better climber, but then my instructor reminded me that everyone starts somewhere. I took a deep breath and grabbed the first hold. Slowly, one hand and one foot at a time, I made it about halfway up before my arms started shaking too much to continue. Looking back, I learned that trying something new doesn't mean you have to be good at it right away — it just means being brave enough to start.",
     expert:

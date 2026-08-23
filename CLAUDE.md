@@ -4,8 +4,17 @@
 branding changed, after feedback that "English Ops" + an owl mascot read as
 an odd combination. Visual style takes inspiration from bright, game-like kids'
 English platforms like British Council LearnEnglish Kids and Funbrain's
-Grammar Gorillas — colorful, playful, activity-framed — without copying their
-names, logos, or content.)
+Grammar Gorillas — colourful, playful, activity-framed — without copying
+their names, logos, or content.)
+
+## Language convention: British English
+All content (passages, questions, explanations, model essays, UI copy) uses
+British English spelling and, where natural, British vocabulary — e.g.
+"recognise" not "recognize", "colour" not "color", "favourite" not
+"favorite", "practise" (verb) vs "practice" (noun), "mum" not "mom",
+"football" not "soccer", "maths" not "math", "holiday" not "vacation". When
+writing new content, default to British spelling throughout; when in doubt,
+prefer the `-ise`/`-our`/`-re` British forms over `-ize`/`-or`/`-er`.
 
 A web app to help a child (age 10-11) practice English across ten activities:
 Listening, Speaking, Storytelling, Reading, Comprehension, Writing, Grammar
