@@ -11,7 +11,7 @@ window.App = window.App || {};
     PassageModule,
     GrammarModule,
     WritingModule,
-    WordleModule,
+    WordHuntModule,
     VocabularyModule,
   } = window.App;
 
@@ -122,8 +122,8 @@ window.App = window.App || {};
           {view === "grammar" && (
             <GrammarModule tier={state.tier} onBack={() => setView("home")} onComplete={() => completeModule("grammar")} />
           )}
-          {view === "wordle" && (
-            <WordleModule tier={state.tier} onBack={() => setView("home")} onComplete={() => completeModule("wordle")} />
+          {view === "wordhunt" && (
+            <WordHuntModule tier={state.tier} onBack={() => setView("home")} onComplete={() => completeModule("wordhunt")} />
           )}
           {view === "vocabulary" && (
             <VocabularyModule
@@ -131,6 +131,18 @@ window.App = window.App || {};
               voicePref={state.voicePref}
               onBack={() => setView("home")}
               onComplete={() => completeModule("vocabulary")}
+            />
+          )}
+          {view === "knowledge" && (
+            <PassageModule
+              items={window.App.Content.KNOWLEDGE_ITEMS}
+              tier={state.tier}
+              itemLabel="Story"
+              color="violet"
+              completionEmoji="🏛️"
+              completionTitle="Great learning today!"
+              onBack={() => setView("home")}
+              onComplete={() => completeModule("knowledge")}
             />
           )}
         </main>

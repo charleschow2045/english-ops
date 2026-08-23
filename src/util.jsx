@@ -21,6 +21,22 @@ window.App = window.App || {};
     return window.speechSynthesis.getVoices().filter((v) => v.lang && v.lang.toLowerCase().startsWith("en"));
   }
 
+  function shuffleArray(arr) {
+    const copy = arr.slice();
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+  }
+
+  // Picks `count` random items from `arr` without replacement.
+  function sampleArray(arr, count) {
+    return shuffleArray(arr).slice(0, Math.min(count, arr.length));
+  }
+
   window.App.speak = speak;
   window.App.getEnglishVoices = getEnglishVoices;
+  window.App.shuffleArray = shuffleArray;
+  window.App.sampleArray = sampleArray;
 })();

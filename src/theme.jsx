@@ -59,5 +59,14 @@ window.App = window.App || {};
     );
   }
 
-  window.App.UI = { COLORS, Button, Card, BackButton, RefreshButton };
+  function TierBadge({ tier }) {
+    const label = ((window.App.Storage && window.App.Storage.TIERS.find((t) => t.key === tier)) || {}).label || tier;
+    return (
+      <span className="inline-block text-xs font-extrabold px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-500 uppercase tracking-wide">
+        {label} level
+      </span>
+    );
+  }
+
+  window.App.UI = { COLORS, Button, Card, BackButton, RefreshButton, TierBadge };
 })();

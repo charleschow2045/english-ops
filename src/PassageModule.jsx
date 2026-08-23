@@ -7,14 +7,19 @@
 window.App = window.App || {};
 
 (function () {
-  const { useState } = React;
-  const { Card, Button, BackButton, RefreshButton } = window.App.UI;
-  const { GlossaryText } = window.App;
+  const { useState, useMemo } = React;
+  const { Card, Button, BackButton, RefreshButton, TierBadge } = window.App.UI;
+  const { GlossaryText, sampleArray } = window.App;
   const { QuestionBlock, useShuffledQuestion } = window.App.QuizQuestion;
 
-  function PassageModule({ items, tier, onBack, onComplete, itemLabel, color, completionEmoji, completionTitle }) {
-    const list = items[tier] || items.easy;
+  function PassageModule({ items, tier, onBack, onComplete, itemLabel, color, completionEmoji, completionTitle, sessionSize = 1 }) {
+    const bank = items[tier] || items.easy;
     const [runSeed, setRunSeed] = useState(0);
+    // Picks a fresh random subset every session (including the very first
+    // render — useMemo still runs its factory on mount), so the same item
+    // doesn't always show first. Re-picks whenever runSeed changes (Refresh).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const list = useMemo(() => sampleArray(bank, sessionSize), [bank, sessionSize, runSeed]);
     const [index, setIndex] = useState(0);
     const [qIndex, setQIndex] = useState(0);
     const [selected, setSelected] = useState(null);
@@ -22,7 +27,7 @@ window.App = window.App || {};
     const [revealed, setRevealed] = useState(false);
     const [doneAll, setDoneAll] = useState(false);
 
-    const item = list[(index + runSeed) % list.length];
+    const item = list[index];
     const rawQ = item.questions[qIndex];
     const q = useShuffledQuestion(rawQ);
     const isShortAnswer = q.type === "shortanswer";
@@ -88,6 +93,8 @@ window.App = window.App || {};
           <RefreshButton onClick={handleRefresh} />
         </div>
         <div className="text-center">
+          <TierBadge tier={tier} />
+          <br />
           <span className="text-sm font-extrabold text-stone-400">
             {itemLabel} {index + 1}/{list.length} · Q{qIndex + 1}/{item.questions.length}
           </span>

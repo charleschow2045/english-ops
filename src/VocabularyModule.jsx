@@ -1,36 +1,42 @@
-// New module: Vocabulary Builder — flashcard flow through 10 words for the
-// tier, each showing English word + part of speech, then flipping to reveal
-// the Traditional Chinese translation, definition, and an example sentence.
+// Vocabulary Builder — flashcard flow through 10 randomly-sampled words (from
+// a pool of 20) for the tier, each showing English word + part of speech,
+// then flipping to reveal the Traditional Chinese translation, definition,
+// example sentence, and tap-to-explore similar/opposite words.
 window.App = window.App || {};
 
 (function () {
   const { useState, useMemo } = React;
-  const { Card, Button, BackButton, RefreshButton } = window.App.UI;
-  const { speak } = window.App;
+  const { Card, Button, BackButton, RefreshButton, TierBadge } = window.App.UI;
+  const { speak, sampleArray } = window.App;
 
-  function shuffleArray(arr) {
-    const copy = arr.slice();
-    for (let i = copy.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [copy[i], copy[j]] = [copy[j], copy[i]];
-    }
-    return copy;
-  }
+  const SESSION_SIZE = 10;
 
   function posColor(pos) {
-    if (pos.includes("verb") && pos.includes("noun")) return "violet";
-    if (pos.includes("verb") && pos.includes("adj")) return "violet";
+    if (pos.includes("verb") && (pos.includes("noun") || pos.includes("adj"))) return "violet";
+    if (pos === "phrase") return "rose";
     if (pos.startsWith("noun")) return "sky";
     if (pos.startsWith("verb")) return "emerald";
     if (pos.startsWith("adj")) return "amber";
     return "teal";
   }
 
+  function RelatedWordChip({ item, voicePref }) {
+    return (
+      <button
+        onClick={() => speak(item.word, voicePref)}
+        className="rounded-lg border-2 border-teal-300 bg-white px-2 py-1 text-left"
+      >
+        <span className="text-sm font-extrabold text-teal-700">{item.word}</span>
+        <span className="text-xs font-bold text-teal-500"> · {item.zh}</span>
+      </button>
+    );
+  }
+
   function VocabularyModule({ tier, onBack, onComplete, voicePref }) {
-    const baseItems = window.App.Content.VOCABULARY_ITEMS[tier] || window.App.Content.VOCABULARY_ITEMS.easy;
+    const bank = window.App.Content.VOCABULARY_ITEMS[tier] || window.App.Content.VOCABULARY_ITEMS.easy;
     const [runSeed, setRunSeed] = useState(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const items = useMemo(() => shuffleArray(baseItems), [baseItems, runSeed]);
+    const items = useMemo(() => sampleArray(bank, SESSION_SIZE), [bank, runSeed]);
     const [index, setIndex] = useState(0);
     const [flipped, setFlipped] = useState(false);
     const [doneAll, setDoneAll] = useState(false);
@@ -65,7 +71,7 @@ window.App = window.App || {};
             Back to Missions
           </Button>
           <button onClick={handleRefresh} className="mt-3 text-xs font-bold text-stone-400 underline decoration-dotted">
-            🔄 Study this set again, shuffled
+            🔄 Study a new set of 10
           </button>
         </Card>
       );
@@ -75,9 +81,11 @@ window.App = window.App || {};
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between gap-2">
           <BackButton onClick={onBack} />
-          <RefreshButton onClick={handleRefresh} label="Shuffle" />
+          <RefreshButton onClick={handleRefresh} label="New set" />
         </div>
         <div className="text-center">
+          <TierBadge tier={tier} />
+          <br />
           <span className="text-sm font-extrabold text-stone-400">
             Word {index + 1} of {items.length}
           </span>
@@ -113,6 +121,32 @@ window.App = window.App || {};
                 <p className="text-xs font-extrabold text-stone-400 mb-1">Example:</p>
                 <p className="text-sm font-bold text-stone-700 italic">"{item.example}"</p>
               </div>
+
+              {(item.synonyms || item.antonyms) && (
+                <div className="flex flex-col gap-2">
+                  {item.synonyms && (
+                    <div>
+                      <p className="text-xs font-extrabold text-stone-400 mb-1">🔁 Similar words (tap to hear):</p>
+                      <div className="flex flex-wrap gap-2">
+                        {item.synonyms.map((s, i) => (
+                          <RelatedWordChip key={i} item={s} voicePref={voicePref} />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {item.antonyms && (
+                    <div>
+                      <p className="text-xs font-extrabold text-stone-400 mb-1">↔️ Opposite words (tap to hear):</p>
+                      <div className="flex flex-wrap gap-2">
+                        {item.antonyms.map((a, i) => (
+                          <RelatedWordChip key={i} item={a} voicePref={voicePref} />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
               <Button color="emerald" className="w-full" onClick={handleNext}>
                 {isLast ? "Finish 🎉" : "Next Word →"}
               </Button>

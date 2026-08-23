@@ -3,7 +3,7 @@ window.App = window.App || {};
 
 (function () {
   const { useState, useEffect, useMemo } = React;
-  const { Card, Button, BackButton, RefreshButton } = window.App.UI;
+  const { Card, Button, BackButton, RefreshButton, TierBadge } = window.App.UI;
   const { speak, VoicePicker } = window.App;
   const { useShuffledQuestion } = window.App.QuizQuestion;
 
@@ -91,6 +91,8 @@ window.App = window.App || {};
           <RefreshButton onClick={handleRefresh} />
         </div>
         <div className="text-center">
+          <TierBadge tier={tier} />
+          <br />
           <span className="text-sm font-extrabold text-stone-400">
             Passage {index + 1} of {passages.length}
           </span>

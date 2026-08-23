@@ -38,13 +38,23 @@ window.App.Content = window.App.Content || {};
     },
     expert: {
       structure: [
-        "Beginning: State your opinion clearly in one sentence.",
-        "Middle: Give at least two reasons for your opinion, with an example for each.",
-        "End: Sum up your opinion and explain why it matters.",
+        "Introduction: State your opinion clearly in one sentence.",
+        "Body: Give at least two reasons for your opinion — for each reason, add a specific example or supporting detail, not just the reason alone.",
+        "Conclusion: Restate your opinion and explain why it matters.",
       ],
       starters: ["I believe that...", "For example,...", "Another reason is...", "In conclusion,..."],
     },
   };
+
+  // General craft techniques, shown alongside the tier-specific structure
+  // hints (based on common elementary narrative/opinion-writing guidance:
+  // small-moment focus, sensory/descriptive detail, dialogue, figurative language).
+  window.App.Content.WRITING_CRAFT_TIPS = [
+    "Zoom in on one small moment instead of describing a whole day — small, specific details are more interesting than a big general summary.",
+    "Use dialogue — let someone talk! \"I can't believe it!\" she shouted.",
+    "Add sensory details — what did you see, hear, smell, or feel?",
+    "Try a simile — compare two things using \"like\" or \"as\" (e.g. \"as fast as a cheetah\").",
+  ];
 
   window.App.Content.WRITING_MODEL_ESSAYS = {
     easy:

@@ -4,7 +4,8 @@ window.App = window.App || {};
 
 (function () {
   const { useState, useMemo } = React;
-  const { Card, Button, BackButton, RefreshButton } = window.App.UI;
+  const { Card, Button, BackButton, RefreshButton, TierBadge } = window.App.UI;
+  const { sampleArray } = window.App;
   const { QuestionBlock, useShuffledQuestion } = window.App.QuizQuestion;
 
   const CATEGORIES = [
@@ -13,14 +14,7 @@ window.App = window.App || {};
     { key: "preposition", label: "Prepositions", emoji: "🧭", color: "violet", blurb: "Practice tricky words like at, in, on, and to." },
   ];
 
-  function shuffleArray(arr) {
-    const copy = arr.slice();
-    for (let i = copy.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [copy[i], copy[j]] = [copy[j], copy[i]];
-    }
-    return copy;
-  }
+  const SESSION_SIZE = 8;
 
   function GrammarModule({ tier, onBack, onComplete }) {
     const [category, setCategory] = useState(null);
@@ -44,7 +38,7 @@ window.App = window.App || {};
     const bank = window.App.Content.GRAMMAR_ITEMS[category || "mixed"];
     const baseItems = bank[tier] || bank.easy;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const items = useMemo(() => shuffleArray(baseItems), [baseItems, runSeed]);
+    const items = useMemo(() => sampleArray(baseItems, SESSION_SIZE), [baseItems, runSeed]);
     const rawQ = items[index];
     const q = useShuffledQuestion(rawQ);
     const locked = selected !== null;
@@ -53,7 +47,10 @@ window.App = window.App || {};
     if (!category) {
       return (
         <div className="flex flex-col gap-4">
-          <BackButton onClick={onBack} />
+          <div className="flex items-center justify-between gap-2">
+            <BackButton onClick={onBack} />
+            <TierBadge tier={tier} />
+          </div>
           <div className="flex flex-col gap-3">
             {CATEGORIES.map((c) => (
               <button
@@ -104,7 +101,7 @@ window.App = window.App || {};
             Back to Missions
           </Button>
           <button onClick={handleRefresh} className="mt-3 text-xs font-bold text-stone-400 underline decoration-dotted">
-            🔄 Try again with new order
+            🔄 Try again with new questions
           </button>
         </Card>
       );
@@ -117,6 +114,8 @@ window.App = window.App || {};
           <RefreshButton onClick={handleRefresh} />
         </div>
         <div className="text-center">
+          <TierBadge tier={tier} />
+          <br />
           <span className="text-sm font-extrabold text-stone-400">
             {catMeta.emoji} {catMeta.label} · {index + 1}/{items.length}
           </span>

@@ -12,7 +12,7 @@ window.App = window.App || {};
 
 (function () {
   const { useState, useEffect, useRef, useMemo } = React;
-  const { Card, Button, BackButton, RefreshButton } = window.App.UI;
+  const { Card, Button, BackButton, RefreshButton, TierBadge } = window.App.UI;
   const { GlossaryText, speak, VoicePicker } = window.App;
 
   const LISTEN_TIMEOUT_MS = 7000;
@@ -183,6 +183,8 @@ window.App = window.App || {};
           <RefreshButton onClick={handleRefresh} />
         </div>
         <div className="text-center">
+          <TierBadge tier={tier} />
+          <br />
           <span className="text-sm font-extrabold text-stone-400">
             {index + 1} of {items.length}
           </span>

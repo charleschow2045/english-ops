@@ -5,7 +5,7 @@ window.App = window.App || {};
 
 (function () {
   const { useState } = React;
-  const { Card, Button, BackButton } = window.App.UI;
+  const { Card, Button, BackButton, TierBadge } = window.App.UI;
 
   const COMMON_MISSPELLINGS = {
     teh: "the",
@@ -54,6 +54,7 @@ window.App = window.App || {};
     const prompt = window.App.Content.WRITING_PROMPTS[tier] || window.App.Content.WRITING_PROMPTS.easy;
     const hints = window.App.Content.WRITING_HINTS[tier] || window.App.Content.WRITING_HINTS.easy;
     const modelEssay = window.App.Content.WRITING_MODEL_ESSAYS[tier] || window.App.Content.WRITING_MODEL_ESSAYS.easy;
+    const craftTips = window.App.Content.WRITING_CRAFT_TIPS;
     const [text, setText] = useState("");
     const [submitted, setSubmitted] = useState(false);
     const [tips, setTips] = useState([]);
@@ -72,7 +73,10 @@ window.App = window.App || {};
 
     return (
       <div className="flex flex-col gap-4">
-        <BackButton onClick={onBack} />
+        <div className="flex items-center justify-between gap-2">
+          <BackButton onClick={onBack} />
+          <TierBadge tier={tier} />
+        </div>
 
         <Card>
           <p className="font-extrabold text-stone-800 mb-3">{prompt}</p>
@@ -107,6 +111,14 @@ window.App = window.App || {};
                     </button>
                   ))}
                 </div>
+              </div>
+              <div>
+                <p className="text-xs font-extrabold text-amber-600 mb-1">🎨 Make it more vivid:</p>
+                <ul className="list-disc list-inside text-sm font-bold text-amber-700 flex flex-col gap-1">
+                  {craftTips.map((line, i) => (
+                    <li key={i}>{line}</li>
+                  ))}
+                </ul>
               </div>
             </div>
           )}

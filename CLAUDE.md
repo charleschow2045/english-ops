@@ -7,10 +7,12 @@ English platforms like British Council LearnEnglish Kids and Funbrain's
 Grammar Gorillas — colorful, playful, activity-framed — without copying their
 names, logos, or content.)
 
-A web app to help a child (age 10-11) practice English across nine activities:
+A web app to help a child (age 10-11) practice English across ten activities:
 Listening, Speaking, Storytelling, Reading, Comprehension, Writing, Grammar
-Drills, Word Guess (Wordle-style), and Vocabulary Builder. Includes daily
-missions and progress tracking across four difficulty tiers.
+Drills, Word Hunt (Bookworm/Word Wipe-style), Vocabulary Builder, and History
+& Science (English practice through real facts/stories from subjects the
+child enjoys). Includes daily missions and progress tracking across four
+difficulty tiers.
 
 ## Tech stack
 - Single-page web app: React + Tailwind CSS
@@ -56,18 +58,23 @@ on short passages; Expert = inference/"why" questions on denser passages).
    child types a response in a text box, app gives gentle feedback on grammar/
    spelling (keep feedback encouraging, not harsh — this is for a child), then
    lets the child reveal a model essay for that prompt/tier to compare against
-7. **Word Guess** — a Wordle-style game: guess a 5-letter word in 6 tries, with
-   green/yellow/gray tile feedback and an on-screen keyboard. "Today's word" is
-   date-seeded (same word all day per tier); Refresh picks a new random word
-8. **Vocabulary Builder** — flashcards through 10 tier-appropriate words per
-   session: English word + part of speech, flip to reveal Traditional Chinese
-   translation + definition + example sentence
+7. **Word Hunt** — a Bookworm/Word Wipe-style game: tap adjacent letters (any
+   of 8 directions) on a random letter grid to spell hidden target words, tap
+   the last letter again to submit. Includes a "❓ How to Play" tutorial modal.
+8. **Vocabulary Builder** — flashcards through 10 randomly-sampled words (from
+   a pool of 20/tier) per session: English word + part of speech, flip to
+   reveal Traditional Chinese translation + definition + example sentence +
+   tap-to-hear similar/opposite words
+9. **History & Science** — real historical events and scientific phenomena as
+   reading passages (reuses the Reading/Comprehension engine), for a child
+   whose interests lean that way; hard names/terms get the same
+   tap-to-translate Traditional Chinese glossary as other modules
 
 Grammar Drills (category picker: Mixed Grammar / Tenses / Prepositions) is a
 supporting activity alongside these, not part of the original numbered list.
 
 ## Supporting features
-- **Daily missions** — a checklist/dashboard of today's tasks across all 9
+- **Daily missions** — a checklist/dashboard of today's tasks across all 10
   activities; tapping an incomplete task jumps into that module
 - **Grammar drills** — category picker (Mixed / Tenses / Prepositions), each
   with tier-scaled fill-in-the-blank exercises
@@ -75,10 +82,20 @@ supporting activity alongside these, not part of the original numbered list.
   daily tasks are completed; the streak target automatically grows as more
   modules ship (a module only counts toward the day's checklist once it's
   actually implemented — see Build status below)
+- **Tier badge** — every module screen shows a small "EASY/MEDIUM/HARD/EXPERT
+  level" badge (`UI.TierBadge` in `theme.jsx`) near the top, so it's always
+  obvious which difficulty is active — added after feedback that content felt
+  harder than expected, which turned out to be tier selection not being
+  visible inside the module itself
 - **Refresh button** — every module has a 🔄 button that resets its session
-  with newly shuffled content/order (a different story/passage where more than
-  one exists, a reshuffled item order, or a new Wordle word), so replaying a
-  module doesn't mean seeing the exact same run
+  with freshly randomized content (a new random story/passage/word set, not
+  just a reordering)
+- **True per-session randomization** — `PassageModule` (Storytelling/Reading/
+  Comprehension/History & Science) used to always start at index 0 of its
+  item list on a fresh mount, which is why the same story could show up every
+  single time; it now picks a random item via `sampleArray` (`util.jsx`) on
+  every mount, not just on Refresh. Grammar/Listening/Speaking/Vocabulary
+  already randomized via `shuffleArray`/`sampleArray` from the start.
 - **Shuffled answer order + lock-and-explain** — multiple-choice/fill-in-blank
   options are shuffled per question (`QuizQuestion.useShuffledQuestion`, plus
   the same logic inlined in Listening) so the correct answer isn't predictably
@@ -139,16 +156,28 @@ not vocab-focused).
 ## Grammar drills structure
 Opening Grammar Drills shows a category picker first: **Mixed Grammar**,
 **Tenses**, **Prepositions**. Each category has its own tier-scaled bank in
-`src/content/grammarContent.jsx` (`GRAMMAR_ITEMS[category][tier]`, 4 items
-each). Content is written to require real grammatical discrimination —
+`src/content/grammarContent.jsx` (`GRAMMAR_ITEMS[category][tier]`, 8 items for
+Mixed/Prepositions, 12 for Tenses — 8 flat + 4 flattened from 2 two-question
+"paragraph" sets, see below). A session samples 8 random items per category
+per tier (`sampleArray`, `GrammarModule.jsx`), so replays vary even without
+redoing the whole bank. Content requires real grammatical discrimination —
 subject-verb agreement edge cases, inversion, subjunctive mood, perfect/perfect
 continuous tenses, prepositional collocations — not just an obviously-wrong
 distractor, and gets harder tier over tier (Easy: basic present/past forms and
 common prepositions; Expert: inversion, future perfect passive, reported
 speech tense shifts, less common collocations like "account for"/"insist on").
-Finishing any one category marks the day's Grammar Drills mission done; the
+Every `explanation` includes a second worked example beyond the missed
+sentence itself, so the child sees the rule applied twice, not once. Finishing
+any one category marks the day's Grammar Drills mission done; the
 "← Categories" back button lets a child do more than one category in a
 session without leaving the module.
+
+**Tenses paragraph format**: 2 of the 12 tense entries per tier (easy/medium/
+hard; expert's pair is authored directly as flat items for format variety)
+come from `TENSE_PARAGRAPHS` — a two-sentence narrative repeated across two
+flattened fillblank entries, each with the OTHER blank already filled in
+correctly, testing how tense choice shifts within one continuous context
+rather than an isolated sentence.
 
 ## Comprehension question types
 Comprehension has 2 passages per tier (~300 words each), mixing standard
@@ -166,36 +195,65 @@ passage and the questions. Rendered generically in `PassageModule` off those
 two fields, so it only appears where content supplies them (currently
 Storytelling only). Stories run ~200-350 words depending on tier.
 
-## Writing model essays
+## Writing model essays, research-informed hints
 After a child submits their writing and sees the heuristic feedback (word
 count, capitalization, punctuation, repeated words, a small common-misspelling
 check, and a "vary your sentence starts" check if most sentences begin with
 "I"), they can tap "📖 See an example of strong writing for this topic" to
 reveal a full model essay for that tier/prompt (`WRITING_MODEL_ESSAYS` in
 `src/content/writingContent.jsx`) — a comparison point, not a correction of
-their own text.
+their own text. The structure hints and a separate "🎨 Make it more vivid"
+craft-tips section (`WRITING_CRAFT_TIPS` — small-moment focus, dialogue,
+sensory detail, simile) are grounded in standard elementary narrative/opinion
+writing guidance (beginning-middle-end + logical sequence + specific small
+moments for narrative; introduction/body-with-reasons-and-examples/conclusion
+for opinion writing), researched via web search rather than invented from
+scratch.
 
-## Word Guess (Wordle-style)
-`src/WordleModule.jsx` + `src/content/wordleContent.jsx`. Standard Wordle
-mechanics (5 letters, 6 guesses, green/yellow/gray feedback via a duplicate-
-letter-aware evaluator, on-screen QWERTY keyboard with best-known-status
-coloring). Word length is fixed at 5 across all tiers so the mechanic stays
-familiar; only word obscurity scales with tier. "Today's word" is picked by a
-day-of-year seed (same word all day per tier, like real Wordle); the Refresh
-button overrides this with a random word from the tier's list. Any 5-letter
-A-Z guess is accepted — there's no full dictionary validator bundled (would
-require a large embedded word list), which is a reasonable v1 tradeoff for a
-kids' app where the answer list itself is small and curated. Finishing (win
-or lose) marks the mission done — losing a Wordle isn't a failure state here.
+## Word Hunt (Bookworm / Word Wipe-style)
+`src/WordHuntModule.jsx` + `src/content/wordHuntContent.jsx`. Replaced an
+earlier Wordle-clone per feedback asking for this game type specifically. Tap
+adjacent letters (8 directions) to build a word; tap the last tile again to
+submit; "Clear" resets the current path. `buildGrid()` places a random sample
+of the tier's target words into an 8×8 grid at runtime via randomized
+backtracking (longest words first, ~400 placement attempts each, falls back
+to fewer placed words if a placement can't be found rather than failing) —
+grids are generated fresh each session/refresh, not hand-authored. Remaining
+cells fill with frequency-weighted random letters (Boggle-like distribution).
+Submitted words are checked against this puzzle's target list (full points)
+or a curated ~150-word common-word bonus list (partial points) — there's no
+full dictionary bundled, so a real word outside both lists just won't be
+recognized yet; the in-game "❓ How to Play" modal explains the mechanic and
+that limitation implicitly by framing it as "our word list." No timer, no
+losing state — finishing all target words shows a celebration, and a "I'm
+done for today ✅" link lets a child stop anytime and still mark the mission
+complete.
 
 ## Vocabulary Builder
-`src/VocabularyModule.jsx` + `src/content/vocabularyContent.jsx`. 10 words per
-tier (40 total), each with `word`, `pos` (noun/verb/adj), `zh` (Traditional
-Chinese), `definition`, and an `example` sentence. Flashcard flow: see the
-English word + POS badge + 🔊 Hear It, tap "Show Meaning" to flip and reveal
-the rest, then Next. Refresh reshuffles the session's word order. The 10-per-
-tier bank is a fixed set for now (not yet a larger rotating daily pool) —
-expanding `VOCABULARY_ITEMS` is the natural next step if more variety is wanted.
+`src/VocabularyModule.jsx` + `src/content/vocabularyContent.jsx`. 20 items per
+tier (80 total: mostly single words, a few common phrases tagged `pos:
+"phrase"`), each with `word`, `pos`, `zh` (Traditional Chinese), `definition`,
+`example`, and optionally `synonyms`/`antonyms` (arrays of `{word, zh}`,
+tap-to-hear related words shown after flipping the card). A session samples
+10 of the 20 per tier (`sampleArray`), so replays surface a different subset.
+Flashcard flow: see the English word + POS badge + 🔊 Hear It, tap "Show
+Meaning" to flip and reveal translation/definition/example/related words,
+then Next. Honest scope note: this is a meaningful expansion (2x from the
+first version) but nowhere near "thousands of words" — reaching that scale
+by hand isn't practical in a single pass; a real source word list from the
+user would make a much bigger jump possible.
+
+## History & Science
+`src/content/knowledgeContent.jsx`, rendered through the existing
+`PassageModule` (no new component needed) — one history + one science
+passage per tier (8 total, ~150-300 words), each with a "🔍 Fun Fact" bonus
+callout (reuses the same `tipTitle`/`tip` fields Storytelling uses) and 2-3
+questions. Session picks one of the two at random per the same
+`sampleArray`-based logic as other `PassageModule` content. Includes one
+Hong Kong-specific topic (the Star Ferry) alongside global history/science.
+Hard proper nouns and technical terms (e.g. "dynasties," "gravitational,"
+"Victoria Harbour" components) are added to `src/content/glossary.jsx` for
+the same tap-to-translate Traditional Chinese feature used elsewhere.
 
 ## Explicitly out of scope for v1
 - No backend, accounts, or login
@@ -228,15 +286,21 @@ expanding `VOCABULARY_ITEMS` is the natural next step if more variety is wanted.
 - [x] Module 3 — Story-telling (2 longer stories/tier + writing-technique tips)
 - [x] Module 4 — Reading (2 passages/tier)
 - [x] Module 5 — Comprehension (2 ~300-word passages/tier, mixed question types)
-- [x] Module 6 — Writing (structure hints + model essay reveal)
-- [x] Grammar drills (3 categories × 4 tiers × 4 items, with explanations)
-- [x] Word Guess (Wordle-style)
-- [x] Vocabulary Builder (10 words/tier, EN + Traditional Chinese + POS + example)
+- [x] Module 6 — Writing (structure hints + craft tips + model essay reveal, research-grounded)
+- [x] Grammar drills (3 categories × 4 tiers, 8-12 items each with worked-example
+      explanations, incl. mixed-tense paragraph questions)
+- [x] Word Hunt (Bookworm/Word Wipe-style, replaces earlier Wordle-clone)
+- [x] Vocabulary Builder (20 items/tier incl. phrases + synonyms/antonyms)
+- [x] History & Science module (8 passages, HK-relevant + global topics)
 - [x] Vocabulary glossary (tap-to-reveal Traditional Chinese on hard words)
 - [x] Answer-order shuffling (no more predictably-first-option correct answers)
 - [x] Lock-and-explain on every MC/fill-blank question
-- [x] Refresh button per module
+- [x] Refresh button per module + true per-session randomization (fixed a bug
+      where PassageModule always opened on the same first item)
+- [x] Tier badge shown inside every module
 - [x] Rebrand: "English Ops" + owl → "English Quest" + 🚀
-- [ ] Even more content per tier — current counts above are a solid step up
-      from the original single-item banks, but there's room to keep growing
-      (especially Vocabulary's fixed 10-per-tier set and Wordle's 5-word lists)
+- [ ] Vocabulary at real scale (thousands of words) — would need a source word
+      list from the user; hand-authoring beyond the current 80 isn't practical
+- [ ] Word Hunt dictionary validation — currently target list + curated bonus
+      list only, no full dictionary
+- [ ] More History & Science passages — 8 is a solid start, not exhaustive
