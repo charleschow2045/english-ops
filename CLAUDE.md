@@ -23,6 +23,30 @@ Drills, Word Hunt (Bookworm/Word Wipe-style), Vocabulary Builder, and History
 child enjoys). Includes daily missions and progress tracking across four
 difficulty tiers.
 
+## Gamification: badges & streak freeze
+Added after researching what makes Duolingo/Prodigy/Khan Academy Kids
+engaging — badges/achievements and a forgiving streak mechanic are cheap
+(pure localStorage, no backend) and proven to work; a social leaderboard was
+explicitly skipped since that needs a backend/accounts, which is out of scope.
+
+- **Lifetime stats** (`state.stats`) track `totalMissionsCompleted`,
+  `moduleCompletions` (per module key), `bestStreak`, and `freezesUsedTotal` —
+  incremented inside `Storage.markModuleComplete`, independent of the daily
+  checklist (which resets every day). Badges are computed live from this data
+  (`Storage.earnedBadgeKeys`), never stored as a separate "earned" flag that
+  could drift out of sync.
+- **12 badges** defined in `storage.jsx` (`BADGES`), each a `{ key, emoji,
+  label, description, check(state) }`. Shown on `src/BadgesScreen.jsx`,
+  reachable via a tile on the Daily Missions home screen. Locked badges show
+  🔒 and their requirement; earned ones show their real emoji.
+- **Streak freeze**: `state.streakFreezes` (starts at 1, cap 2) auto-consumes
+  when a day's missions are completed but the previous streak day was missed
+  (not consecutive) — the streak is preserved and incremented instead of
+  reset to 1. A freeze is earned back at every 7-day streak milestone.
+  `markModuleComplete` returns `{ state, freezeUsed }`; `Root.jsx` shows a
+  dismissible "🧊 Streak Freeze used!" banner on the home screen when
+  `freezeUsed` is true (transient — not persisted, just local component state).
+
 ## Tech stack
 - Single-page web app: React + Tailwind CSS
 - No backend — all data stored in browser localStorage (single-device, single-user app)
@@ -275,6 +299,14 @@ the same tap-to-translate Traditional Chinese feature used elsewhere.
 {
   tier: "easy" | "medium" | "hard" | "expert",
   streak: { count: number, lastCompletedDate: "YYYY-MM-DD" | null },
+  streakFreezes: number,          // starts at 1, cap 2, earned back every 7-day milestone
+  lastFreezeUsedOn: "YYYY-MM-DD" | null,
+  stats: {
+    totalMissionsCompleted: number,
+    moduleCompletions: { listening: number, speaking: number, ... },  // one key per MODULES entry
+    bestStreak: number,
+    freezesUsedTotal: number
+  },
   dailyProgress: { date: "YYYY-MM-DD", completedModules: string[] },  // module keys, resets on day change
   moduleProgress: {
     listening:     { completedPassageIds: string[] },
@@ -308,6 +340,8 @@ the same tap-to-translate Traditional Chinese feature used elsewhere.
       where PassageModule always opened on the same first item)
 - [x] Tier badge shown inside every module
 - [x] Rebrand: "English Ops" + owl → "English Quest" + 🚀
+- [x] British English content pass
+- [x] Badges (12) + streak freeze gamification
 - [ ] Vocabulary at real scale (thousands of words) — would need a source word
       list from the user; hand-authoring beyond the current 80 isn't practical
 - [ ] Word Hunt dictionary validation — currently target list + curated bonus

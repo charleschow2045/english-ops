@@ -6,6 +6,7 @@ window.App = window.App || {};
   const {
     Storage,
     DailyMissions,
+    BadgesScreen,
     ListeningModule,
     SpeakingModule,
     PassageModule,
@@ -18,6 +19,7 @@ window.App = window.App || {};
   function Root() {
     const [state, setState] = useState(() => Storage.loadState());
     const [view, setView] = useState("home");
+    const [freezeBanner, setFreezeBanner] = useState(false);
 
     useEffect(() => {
       Storage.saveState(state);
@@ -36,7 +38,11 @@ window.App = window.App || {};
     }
 
     function completeModule(key) {
-      setState((s) => Storage.markModuleComplete(s, key));
+      setState((s) => {
+        const { state: nextState, freezeUsed } = Storage.markModuleComplete(s, key);
+        if (freezeUsed) setFreezeBanner(true);
+        return nextState;
+      });
       setView("home");
     }
 
@@ -60,8 +66,16 @@ window.App = window.App || {};
 
         <main>
           {view === "home" && (
-            <DailyMissions state={state} onChangeTier={changeTier} onOpenModule={openModule} />
+            <DailyMissions
+              state={state}
+              onChangeTier={changeTier}
+              onOpenModule={openModule}
+              onOpenBadges={() => setView("badges")}
+              freezeBanner={freezeBanner}
+              onDismissFreezeBanner={() => setFreezeBanner(false)}
+            />
           )}
+          {view === "badges" && <BadgesScreen state={state} onBack={() => setView("home")} />}
           {view === "listening" && (
             <ListeningModule
               tier={state.tier}
