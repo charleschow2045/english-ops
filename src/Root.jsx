@@ -13,6 +13,7 @@ window.App = window.App || {};
     GrammarModule,
     WritingModule,
     WordHuntModule,
+    HangmanModule,
     VocabularyModule,
   } = window.App;
 
@@ -138,6 +139,9 @@ window.App = window.App || {};
           )}
           {view === "wordhunt" && (
             <WordHuntModule tier={state.tier} onBack={() => setView("home")} onComplete={() => completeModule("wordhunt")} />
+          )}
+          {view === "hangman" && (
+            <HangmanModule tier={state.tier} onBack={() => setView("home")} onComplete={() => completeModule("hangman")} />
           )}
           {view === "vocabulary" && (
             <VocabularyModule

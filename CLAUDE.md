@@ -16,12 +16,12 @@ British English spelling and, where natural, British vocabulary — e.g.
 writing new content, default to British spelling throughout; when in doubt,
 prefer the `-ise`/`-our`/`-re` British forms over `-ize`/`-or`/`-er`.
 
-A web app to help a child (age 10-11) practice English across ten activities:
-Listening, Speaking, Storytelling, Reading, Comprehension, Writing, Grammar
-Drills, Word Hunt (Bookworm/Word Wipe-style), Vocabulary Builder, and History
-& Science (English practice through real facts/stories from subjects the
-child enjoys). Includes daily missions and progress tracking across four
-difficulty tiers.
+A web app to help a child (age 10-11) practice English across eleven
+activities: Listening, Speaking, Storytelling, Reading, Comprehension,
+Writing, Grammar Drills, Word Hunt (Bookworm/Word Wipe-style), Vocabulary
+Builder, History & Science (English practice through real facts/stories from
+subjects the child enjoys), and Hangman. Includes daily missions and
+progress tracking across four difficulty tiers.
 
 ## Gamification: badges & streak freeze
 Added after researching what makes Duolingo/Prodigy/Khan Academy Kids
@@ -35,7 +35,7 @@ explicitly skipped since that needs a backend/accounts, which is out of scope.
   checklist (which resets every day). Badges are computed live from this data
   (`Storage.earnedBadgeKeys`), never stored as a separate "earned" flag that
   could drift out of sync.
-- **12 badges** defined in `storage.jsx` (`BADGES`), each a `{ key, emoji,
+- **13 badges** defined in `storage.jsx` (`BADGES`), each a `{ key, emoji,
   label, description, check(state) }`. Shown on `src/BadgesScreen.jsx`,
   reachable via a tile on the Daily Missions home screen. Locked badges show
   🔒 and their requirement; earned ones show their real emoji.
@@ -102,12 +102,20 @@ on short passages; Expert = inference/"why" questions on denser passages).
    reading passages (reuses the Reading/Comprehension engine), for a child
    whose interests lean that way; hard names/terms get the same
    tap-to-translate Traditional Chinese glossary as other modules
+10. **Hangman** — classic letter-guessing game (`HangmanModule.jsx`), added
+    after feedback asking for "a word game like hangman" as a separate
+    module rather than folded into Word Hunt. Reuses `WORD_HUNT_WORDS` as its
+    answer bank rather than a new content file. Deliberately no hanging-figure
+    artwork — consistent with this app's no-losing-state philosophy, wrong
+    guesses cost a ❤️ life (6 total) instead, and running out of lives reveals
+    the word gently ("So close — nice try!") rather than a "you lost" screen.
+    A "💡 Hint" button reveals one letter at the cost of a life.
 
 Grammar Drills (category picker: Mixed Grammar / Tenses / Prepositions) is a
 supporting activity alongside these, not part of the original numbered list.
 
 ## Supporting features
-- **Daily missions** — a checklist/dashboard of today's tasks across all 10
+- **Daily missions** — a checklist/dashboard of today's tasks across all 11
   activities; tapping an incomplete task jumps into that module
 - **Grammar drills** — category picker (Mixed / Tenses / Prepositions), each
   with tier-scaled fill-in-the-blank exercises
@@ -343,9 +351,12 @@ the same tap-to-translate Traditional Chinese feature used elsewhere.
 - [x] Tier badge shown inside every module
 - [x] Rebrand: "English Ops" + owl → "English Quest" + 🚀
 - [x] British English content pass
-- [x] Badges (12) + streak freeze gamification
+- [x] Badges (13) + streak freeze gamification
 - [x] Word Hunt bonus-word database enlarged (~150 → ~7,200 words, sourced
       from google-10000-english) so common real words are recognized
+- [x] Module 10 — Hangman (new standalone module, reuses WORD_HUNT_WORDS,
+      no losing state — wrong guesses cost a life, running out reveals the
+      word gently instead of a "you lost" screen)
 - [ ] Vocabulary at real scale (thousands of words) — would need a source word
       list from the user; hand-authoring beyond the current 80 isn't practical
 - [ ] Word Hunt full dictionary validation — still a ~7,200-word common-word

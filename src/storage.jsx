@@ -25,6 +25,7 @@ window.App = window.App || {};
     { key: "wordhunt", label: "Word Hunt", emoji: "🐛", color: "rose", implemented: true },
     { key: "vocabulary", label: "Vocabulary Builder", emoji: "📔", color: "teal", implemented: true },
     { key: "knowledge", label: "History & Science", emoji: "🏛️", color: "violet", implemented: true },
+    { key: "hangman", label: "Hangman", emoji: "🎯", color: "amber", implemented: true },
   ];
 
   function todayStr() {
@@ -81,6 +82,7 @@ window.App = window.App || {};
     { key: "never_give_up", emoji: "🧊", label: "Never Give Up", description: "Use a streak freeze to save a streak.", check: (s) => s.stats.freezesUsedTotal >= 1 },
     { key: "bookworm", emoji: "📔", label: "Bookworm", description: "Complete Vocabulary Builder 5 times.", check: (s) => s.stats.moduleCompletions.vocabulary >= 5 },
     { key: "word_hunter", emoji: "🐛", label: "Word Hunter", description: "Complete Word Hunt 5 times.", check: (s) => s.stats.moduleCompletions.wordhunt >= 5 },
+    { key: "hangman_hero", emoji: "🎯", label: "Hangman Hero", description: "Complete Hangman 5 times.", check: (s) => s.stats.moduleCompletions.hangman >= 5 },
     { key: "great_listener", emoji: "🎧", label: "Great Listener", description: "Complete Listening 10 times.", check: (s) => s.stats.moduleCompletions.listening >= 10 },
     { key: "confident_speaker", emoji: "🎤", label: "Confident Speaker", description: "Complete Speaking 10 times.", check: (s) => s.stats.moduleCompletions.speaking >= 10 },
     { key: "storyteller", emoji: "✏️", label: "Storyteller", description: "Complete Writing 10 times.", check: (s) => s.stats.moduleCompletions.writing >= 10 },
