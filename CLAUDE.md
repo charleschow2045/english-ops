@@ -254,10 +254,12 @@ to fewer placed words if a placement can't be found rather than failing) —
 grids are generated fresh each session/refresh, not hand-authored. Remaining
 cells fill with frequency-weighted random letters (Boggle-like distribution).
 Submitted words are checked against this puzzle's target list (full points)
-or a curated ~150-word common-word bonus list (partial points) — there's no
-full dictionary bundled, so a real word outside both lists just won't be
-recognized yet; the in-game "❓ How to Play" modal explains the mechanic and
-that limitation implicitly by framing it as "our word list." No timer, no
+or a ~7,200-word common-word bonus list (partial points) — sourced from the
+Google 10,000 English word corpus (first20hours/google-10000-english,
+swear-filtered), trimmed to alphabetic 3-8 letter entries with a small hand
+list of sensitive-topic words removed. Still not a full dictionary, but real
+everyday words (e.g. "her") are now recognized instead of only ~150
+hand-picked ones. No timer, no
 losing state — finishing all target words shows a celebration, and a "I'm
 done for today ✅" link lets a child stop anytime and still mark the mission
 complete.
@@ -342,8 +344,11 @@ the same tap-to-translate Traditional Chinese feature used elsewhere.
 - [x] Rebrand: "English Ops" + owl → "English Quest" + 🚀
 - [x] British English content pass
 - [x] Badges (12) + streak freeze gamification
+- [x] Word Hunt bonus-word database enlarged (~150 → ~7,200 words, sourced
+      from google-10000-english) so common real words are recognized
 - [ ] Vocabulary at real scale (thousands of words) — would need a source word
       list from the user; hand-authoring beyond the current 80 isn't practical
-- [ ] Word Hunt dictionary validation — currently target list + curated bonus
-      list only, no full dictionary
+- [ ] Word Hunt full dictionary validation — still a ~7,200-word common-word
+      list, not an exhaustive dictionary; very obscure/rare words still won't
+      be recognized
 - [ ] More History & Science passages — 8 is a solid start, not exhaustive
