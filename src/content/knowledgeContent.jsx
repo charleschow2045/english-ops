@@ -1,8 +1,12 @@
-// History & Science — two history passages + two science passages per tier,
-// each ~150-300 words with real-world interest, a "Fun Fact" bonus, and
-// comprehension questions. Reuses PassageModule (same engine as Reading/
-// Comprehension) — no new component needed. Hard names/terms are covered in
-// src/content/glossary.jsx for the tap-to-translate feature.
+// History & Science — four history passages + four science passages per
+// tier (24 total), each ~150-300 words with real-world interest, a "Fun
+// Fact" bonus, and comprehension questions. Reuses PassageModule (same
+// engine as Reading/Comprehension) — no new component needed. History items
+// optionally carry `era` (ancient/medieval/modern/myth) and `region`;
+// science items optionally carry `field` (biology/chemistry/physics/etc) —
+// lightweight tags for future filtering, not yet wired into any picker UI.
+// Hard names/terms are covered in src/content/glossary.jsx for the
+// tap-to-translate feature.
 window.App = window.App || {};
 window.App.Content = window.App.Content || {};
 
@@ -61,6 +65,36 @@ window.App.Content = window.App.Content || {};
           { type: "mc", prompt: "Why does the tree cut each leaf off from water and nutrients?", options: ["To save energy and survive winter", "To make the leaf grow bigger", "To attract more sunlight"], correctIndex: 0, explanation: "The passage says this process helps the tree save energy and survive the cold winter months." },
         ],
       },
+      {
+        id: "know-easy-science-3",
+        field: "biology",
+        region: "China",
+        title: "🐼 Why Do Pandas Only Eat Bamboo?",
+        passage:
+          "Giant pandas live in the mountain forests of central China, and although they belong to the bear family, almost everything they eat — about 99% of their diet — is bamboo. This is unusual, because a panda's digestive system is actually built more like a meat-eating animal's, not a plant-eating one, so pandas absorb very little energy from the tough bamboo they chew. To make up for this, a panda must eat an enormous amount of bamboo every day, often between 12 and 38 kilograms, and spend up to 12 hours a day simply eating to get enough energy to survive. Scientists believe pandas started eating mostly bamboo millions of years ago, possibly because there was less competition for it compared to meat, which other forest predators were already hunting. A special wrist bone that works almost like an extra thumb helps pandas grip bamboo stalks firmly while they eat.",
+        tipTitle: "🔍 Fun Fact",
+        tip: "A newborn panda cub is incredibly tiny compared to its mother — about the size of a stick of butter!",
+        questions: [
+          { type: "mc", prompt: "What percentage of a panda's diet is bamboo?", options: ["About 99%", "About 50%", "About 10%"], correctIndex: 0, explanation: "The passage says almost everything a panda eats — about 99% of its diet — is bamboo." },
+          { type: "mc", prompt: "Why must pandas eat such huge amounts of bamboo every day?", options: ["Their digestive system absorbs very little energy from it", "Bamboo has no nutrients at all", "Pandas are always hungry for no reason"], correctIndex: 0, explanation: "The passage says a panda's digestive system absorbs very little energy from the tough bamboo it chews." },
+          { type: "mc", prompt: "What helps a panda grip bamboo stalks while eating?", options: ["A special wrist bone that works like an extra thumb", "Extra-long teeth", "Sticky paws"], correctIndex: 0, explanation: "The passage says a special wrist bone works almost like an extra thumb to help pandas grip bamboo." },
+        ],
+      },
+      {
+        id: "know-easy-history-3",
+        era: "myth",
+        region: "China",
+        title: "🌕 The Legend of Chang'e and the Moon",
+        passage:
+          "Long ago in Chinese legend, ten suns once appeared in the sky together, scorching the earth until crops withered and rivers dried up. A skilled archer named Hou Yi shot down nine of the suns with his bow, leaving just one to warm the world safely, and people celebrated him as a hero. As a reward, a goddess gave Hou Yi a magic elixir that could grant eternal life, but there was only enough for one person to drink. Hou Yi kept the elixir safely at home, planning to share it with his wife, Chang'e, one day. According to the most popular version of the story, Chang'e drank the elixir herself, and immediately felt herself grow lighter and lighter until she floated all the way up to the moon, where she has lived ever since. Today, families across China and Hong Kong remember Chang'e every autumn during the Mid-Autumn Festival, gazing at the full moon together and sharing sweet mooncakes in her honour.",
+        tipTitle: "🔍 Fun Fact",
+        tip: "China's lunar exploration programme is named \"Chang'e\" after the moon goddess — its Chang'e 4 mission was the first spacecraft ever to land on the far side of the Moon.",
+        questions: [
+          { type: "mc", prompt: "Why did Hou Yi shoot down nine of the ten suns?", options: ["They were scorching the earth and drying up rivers", "He wanted to become a hero for fun", "The suns asked him to"], correctIndex: 0, explanation: "The passage says the ten suns were scorching the earth until crops withered and rivers dried up." },
+          { type: "mc", prompt: "What happened after Chang'e drank the magic elixir?", options: ["She floated up to the moon and has lived there ever since", "She became invisible forever", "She turned into a rabbit"], correctIndex: 0, explanation: "The passage says she floated all the way up to the moon, where she has lived ever since." },
+          { type: "mc", prompt: "How do people in China and Hong Kong remember Chang'e today?", options: ["By celebrating the Mid-Autumn Festival with mooncakes", "By shooting arrows at the sky", "By avoiding the moon completely"], correctIndex: 0, explanation: "The passage says families remember Chang'e every autumn during the Mid-Autumn Festival with mooncakes." },
+        ],
+      },
     ],
     medium: [
       {
@@ -115,6 +149,35 @@ window.App.Content = window.App.Content || {};
           { type: "mc", prompt: "Why does a hive need thousands of bees working together?", options: ["Each bee produces only a tiny amount of honey", "Only a few bees are allowed to make honey", "Bees can only work for one day"], correctIndex: 0, explanation: "The passage says a single bee produces only a tiny fraction of a teaspoon in its lifetime." },
         ],
       },
+      {
+        id: "know-medium-history-3",
+        era: "medieval",
+        region: "China",
+        title: "⛵ Zheng He's Great Treasure Fleet",
+        passage:
+          "During the early 1400s, the Ming dynasty emperor of China ordered the construction of one of the largest fleets the world had ever seen, and placed a trusted admiral named Zheng He in command. Zheng He's treasure fleet was staggering in scale: some voyages involved more than 300 ships, including massive \"treasure ships\" that may have stretched over 120 metres long, carrying a combined crew of over 27,000 sailors, officials, translators, and craftsmen. Between 1405 and 1433, Zheng He led seven major expeditions across the South China Sea and Indian Ocean, reaching as far as the Arabian Peninsula and the east coast of Africa, decades before European explorers began their own famous voyages. Rather than conquering the lands he visited, Zheng He mainly focused on trade and diplomacy, exchanging Chinese silk and porcelain for spices, precious stones, and exotic goods, and even brought exotic animals like giraffes back to the Ming court. After Zheng He's death in 1433, changing political priorities led China to gradually abandon these grand naval expeditions, a decision historians still debate today.",
+        tipTitle: "🔍 Fun Fact",
+        tip: "When one of Zheng He's ships brought a giraffe back to China, some at the royal court believed it was a mythical creature called a \"qilin\"!",
+        questions: [
+          { type: "mc", prompt: "How many major expeditions did Zheng He lead between 1405 and 1433?", options: ["Seven", "Two", "Twenty"], correctIndex: 0, explanation: "The passage says Zheng He led seven major expeditions between 1405 and 1433." },
+          { type: "mc", prompt: "What was Zheng He's fleet mainly focused on during its voyages?", options: ["Trade and diplomacy rather than conquering land", "Conquering as many countries as possible", "Fishing for food supplies"], correctIndex: 0, explanation: "The passage says Zheng He mainly focused on trade and diplomacy rather than conquering the lands he visited." },
+          { type: "mc", prompt: "What surprising thing did Zheng He's fleet once bring back to the Ming court?", options: ["A giraffe", "A dinosaur", "A submarine"], correctIndex: 0, explanation: "The passage says the fleet brought exotic animals like giraffes back to the Ming court." },
+        ],
+      },
+      {
+        id: "know-medium-science-3",
+        field: "chemistry",
+        title: "🧊 Why Does Ice Float on Water?",
+        passage:
+          "Most substances shrink and become denser as they cool down and turn solid, which is exactly what happens to water too — until it reaches freezing point. As water cools toward 0°C, its molecules begin arranging themselves into a very specific six-sided crystal pattern, and this hexagonal structure actually forces the molecules to spread slightly further apart than they were in liquid form. Because ice takes up more space than the same amount of liquid water, it ends up being less dense, and less dense materials always float on top of denser ones. This unusual property turns out to be incredibly important for life on Earth: when a lake or pond freezes in winter, the ice forms a floating layer on the surface rather than sinking to the bottom, which means the water underneath stays liquid, allowing fish and other creatures to survive the cold months below the ice instead of being trapped inside a solid block.",
+        tipTitle: "🔍 Fun Fact",
+        tip: "If ice sank instead of floated, lakes and oceans would freeze from the bottom up, and far fewer forms of life could survive winter.",
+        questions: [
+          { type: "mc", prompt: "Why does ice take up more space than liquid water?", options: ["Its molecules arrange into a spread-out crystal pattern", "It absorbs extra air bubbles", "It shrinks tightly together"], correctIndex: 0, explanation: "The passage says ice's hexagonal crystal structure forces molecules to spread slightly further apart." },
+          { type: "mc", prompt: "Why is it useful that ice floats instead of sinks?", options: ["It lets water underneath stay liquid so creatures can survive winter", "It makes lakes freeze solid all the way through", "It has no real effect on nature"], correctIndex: 0, explanation: "The passage says the floating ice layer keeps the water underneath liquid, letting creatures survive winter." },
+          { type: "mc", prompt: "What generally happens to most substances as they cool and become solid?", options: ["They shrink and become denser", "They expand and float", "They disappear completely"], correctIndex: 0, explanation: "The passage says most substances shrink and become denser as they cool down and turn solid." },
+        ],
+      },
     ],
     hard: [
       {
@@ -167,6 +230,35 @@ window.App.Content = window.App.Content || {};
           { type: "mc", prompt: "What did Fleming notice around the mould in the contaminated dish?", options: ["A clear ring where bacteria hadn't grown", "A ring of extra bacteria growth", "Nothing unusual at all"], correctIndex: 0, explanation: "The passage says he noticed a clear ring where the bacteria simply hadn't grown at all." },
           { type: "mc", prompt: "What did Fleming do instead of throwing the \"ruined\" dish away?", options: ["He investigated further and identified the mould", "He immediately published his results without further study", "He gave the dish to a museum"], correctIndex: 0, explanation: "The passage says he investigated further and identified the mould as a rare strain of Penicillium." },
           { type: "mc", prompt: "What took more than a decade after Fleming's discovery?", options: ["Working out how to mass-produce penicillin reliably", "Naming the substance penicillin", "Growing the mould in a dish"], correctIndex: 0, explanation: "The passage says it took more than a decade before scientists worked out reliable mass production." },
+        ],
+      },
+      {
+        id: "know-hard-history-3",
+        era: "medieval",
+        region: "Africa",
+        title: "👑 Mansa Musa and the Wealth of Mali",
+        passage:
+          "In the fourteenth century, the West African Mali Empire controlled some of the richest gold and salt trade routes in the world, and its ruler, Mansa Musa, is still considered by many historians to be the wealthiest individual in recorded history. In 1324, Mansa Musa set out on a pilgrimage to the holy city of Mecca, travelling thousands of kilometres with an enormous caravan of attendants and camels loaded with gold. Along the way, he stopped in Cairo, where he reportedly gave away so much gold as gifts that he single-handedly caused the price of gold to crash across the region, an economic ripple effect that historians say lasted for over a decade. News of his extraordinary generosity and wealth spread far beyond Africa, and Mali soon began appearing on European maps, sometimes drawn with an image of Mansa Musa himself holding a large gold nugget. Beyond his wealth, Mansa Musa used his pilgrimage to bring back scholars, architects, and books, transforming the city of Timbuktu into a thriving centre of Islamic learning, with libraries and a university that attracted students from across Africa and the Middle East for centuries afterward.",
+        tipTitle: "🔍 Fun Fact",
+        tip: "Some economists estimate Mansa Musa's wealth, adjusted for today's world, could have been worth more than $400 billion.",
+        questions: [
+          { type: "mc", prompt: "What is Mansa Musa still considered by many historians?", options: ["The wealthiest individual in recorded history", "A poor but wise ruler", "A famous painter"], correctIndex: 0, explanation: "The passage says Mansa Musa is still considered by many historians to be the wealthiest individual in recorded history." },
+          { type: "mc", prompt: "What happened to the price of gold in Cairo after Mansa Musa's visit?", options: ["It crashed because he gave away so much gold", "It doubled overnight", "Nothing changed at all"], correctIndex: 0, explanation: "The passage says he gave away so much gold that he caused the price of gold to crash across the region." },
+          { type: "mc", prompt: "What did Mansa Musa help transform Timbuktu into?", options: ["A thriving centre of Islamic learning with libraries and a university", "A large military base", "An empty desert town"], correctIndex: 0, explanation: "The passage says he transformed Timbuktu into a thriving centre of Islamic learning." },
+        ],
+      },
+      {
+        id: "know-hard-science-3",
+        field: "physics",
+        title: "🌈 Why Is the Sky Blue?",
+        passage:
+          "Sunlight looks white or yellow to our eyes, but it is actually made up of every colour of the rainbow mixed together, each travelling as a wave of a slightly different length. When sunlight enters Earth's atmosphere, it collides with tiny gas molecules, mostly nitrogen and oxygen, and this collision scatters the light in different directions, a phenomenon scientists call Rayleigh scattering. Shorter wavelengths of light, like blue and violet, scatter far more easily and much more strongly than longer wavelengths like red and orange, because they interact more with these small molecules. Although violet light actually scatters even more than blue, our eyes are naturally more sensitive to blue light, and some violet light gets absorbed by the upper atmosphere, so we end up perceiving the sky as blue rather than violet. This same scattering effect explains why sunsets often turn deep orange and red: when the sun is low near the horizon, its light must travel through a much thicker layer of atmosphere, scattering away almost all the blue light long before it reaches our eyes, leaving mainly the longer red and orange wavelengths behind.",
+        tipTitle: "🔍 Fun Fact",
+        tip: "On Mars, the sky appears more of a reddish-orange colour during the day because Martian dust scatters light very differently from Earth's atmosphere.",
+        questions: [
+          { type: "mc", prompt: "Why does blue light scatter more than red light in Earth's atmosphere?", options: ["Blue light has a shorter wavelength and interacts more with gas molecules", "Blue light travels slower than red light", "Red light is absorbed completely by the ground"], correctIndex: 0, explanation: "The passage says shorter wavelengths like blue scatter more because they interact more with small gas molecules." },
+          { type: "mc", prompt: "Why do sunsets often look orange and red?", options: ["Sunlight travels through more atmosphere, scattering away most of the blue light first", "The sun changes colour in the evening", "Clouds turn the sunlight red on purpose"], correctIndex: 0, explanation: "The passage says light near the horizon travels through more atmosphere, scattering away blue light first." },
+          { type: "mc", prompt: "What is the scientific name for the scattering effect described in the passage?", options: ["Rayleigh scattering", "Photosynthesis", "Refraction only"], correctIndex: 0, explanation: "The passage names this phenomenon Rayleigh scattering." },
         ],
       },
     ],
@@ -240,6 +332,45 @@ window.App.Content = window.App.Content || {};
             prompt: "The passage says Franklin's photograph was shown to Watson \"without her knowledge or permission.\" Why might this detail matter when historians evaluate who deserves credit for the discovery?",
             modelAnswer:
               "It matters because Franklin's own data played a direct role in Watson and Crick's breakthrough, yet she wasn't part of the decision to share it and wasn't properly credited at the time — raising a fairness question about whether scientific credit was distributed based on who did the work, or simply who published the final model first.",
+          },
+        ],
+      },
+      {
+        id: "know-expert-history-3",
+        era: "ancient",
+        region: "Greece / Egypt",
+        title: "📚 The Great Library of Alexandria",
+        passage:
+          "Founded around 300 BCE under the Greek Ptolemaic rulers of Egypt, the Library of Alexandria aimed at an almost unimaginable goal for its time: collecting a copy of every significant piece of written knowledge that existed anywhere in the ancient world. At its height, the library is estimated to have held several hundred thousand scrolls, drawing scholars, mathematicians, and astronomers from across the Mediterranean and Middle East to study, translate texts, and exchange ideas in one place, including the mathematician Euclid, whose work on geometry is still taught in schools today. Ships arriving in Alexandria's busy harbour were reportedly required to hand over any books on board to be copied by the library's scribes, with the copies sometimes returned to the ship's owner while the library kept the originals — an early, rather one-sided approach to building a collection. Exactly how and when the library was eventually lost remains genuinely unclear even to modern historians, since ancient accounts disagree and contradict each other; one popular story blames a fire that started accidentally when Julius Caesar's soldiers set nearby ships alight during a conflict in 48 BCE, though most historians now believe the library's decline was gradual, caused by shrinking funding and neglect over centuries rather than a single dramatic event.",
+        tipTitle: "🔍 Fun Fact",
+        tip: "A modern library called the Bibliotheca Alexandrina was built in Alexandria in 2002, partly as a tribute to the ancient library it was named after.",
+        questions: [
+          { type: "mc", prompt: "What was the Library of Alexandria's ambitious goal?", options: ["To collect a copy of every significant piece of written knowledge in the ancient world", "To train soldiers for the Egyptian army", "To store gold and treasure"], correctIndex: 0, explanation: "The passage says the library aimed to collect a copy of every significant piece of written knowledge that existed." },
+          { type: "mc", prompt: "According to the passage, what do most historians now believe about the library's loss?", options: ["It declined gradually from shrinking funding and neglect, not one dramatic event", "It was destroyed instantly and deliberately by one ruler", "It was moved safely to another country"], correctIndex: 0, explanation: "The passage says most historians now believe the library's decline was gradual, from shrinking funding and neglect." },
+          {
+            type: "shortanswer",
+            prompt: "The passage says ancient accounts of the library's loss \"disagree and contradict each other.\" Why might it be difficult for historians to know exactly what happened, even today?",
+            modelAnswer:
+              "Events from thousands of years ago often weren't recorded at the time in a reliable, first-hand way, and the accounts that do survive were often written later, by people with their own biases or incomplete information, so historians have to piece together probability from conflicting fragments rather than having one clear, trustworthy record.",
+          },
+        ],
+      },
+      {
+        id: "know-expert-science-3",
+        field: "biology",
+        title: "🧬 How Genes Make You, You",
+        passage:
+          "Inside almost every cell in your body is a complete copy of your DNA, a long molecule containing instructions written in a code made from just four chemical letters, organised into roughly 20,000 individual sections called genes. Each gene contains the instructions for building a specific protein, and proteins are the molecules that do most of the actual work in your body, from carrying oxygen in your blood to helping your muscles contract. You inherit one copy of each gene from your mother and one from your father, which is why children often resemble both parents without being identical to either one — different combinations of inherited gene versions, called alleles, produce different traits, like eye colour or height. Importantly, having a particular gene doesn't always guarantee a particular outcome on its own; many traits are influenced by multiple genes working together, and environmental factors like nutrition, exercise, and even the environment you grew up in can also affect how certain genes are expressed. This is part of why identical twins, who share essentially the same DNA at birth, can still grow up to have somewhat different height, health, or personality traits over their lifetimes.",
+        tipTitle: "🔍 Fun Fact",
+        tip: "Humans share about 60% of their genes with a banana, since many genes control very basic cell functions common to almost all living things.",
+        questions: [
+          { type: "mc", prompt: "What does each gene contain instructions for?", options: ["Building a specific protein", "Storing memories", "Controlling the weather"], correctIndex: 0, explanation: "The passage says each gene contains the instructions for building a specific protein." },
+          { type: "mc", prompt: "Why might identical twins, who share the same DNA, still grow up with some different traits?", options: ["Environmental factors can affect how certain genes are expressed", "Their DNA secretly changes to become different", "One twin always has fewer genes"], correctIndex: 0, explanation: "The passage says environmental factors like nutrition and exercise can affect how certain genes are expressed." },
+          {
+            type: "shortanswer",
+            prompt: "The passage says having a particular gene \"doesn't always guarantee a particular outcome on its own.\" Based on the passage, why is this an important idea to understand about genetics?",
+            modelAnswer:
+              "It shows that genes aren't the only thing that determines who we become — environment, lifestyle, and how genes interact with each other all play a role too, so genetics isn't simple fate; a person's outcomes come from a mix of inherited instructions and life experience working together.",
           },
         ],
       },

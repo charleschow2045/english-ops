@@ -310,19 +310,27 @@ translations) from the user would make a much bigger jump possible.
 
 ## History & Science
 `src/content/knowledgeContent.jsx`, rendered through the existing
-`PassageModule` (no new component needed) — two history + two science
-passages per tier (16 total, ~150-300 words), each with a "🔍 Fun Fact" bonus
+`PassageModule` (no new component needed) — four history + four science
+passages per tier (24 total, ~150-300 words), each with a "🔍 Fun Fact" bonus
 callout (reuses the same `tipTitle`/`tip` fields Storytelling uses) and 2-3
 questions (expert-tier passages include a `shortanswer` critical-thinking
-question). Session picks one of the four at random per the same
-`sampleArray`-based logic as other `PassageModule` content. Includes two
-Hong Kong-specific topics (the Star Ferry, the 1997 Handover) alongside
-global history/science — the second expansion pass added Cai Lun's invention
-of paper, autumn leaf colour, how bees make honey, the Silk Road, the
-accidental discovery of penicillin, the Apollo 11 "1202 alarm," and the
-Rosalind Franklin/DNA double helix story, all fact-checked via web search
-before writing. Hard proper nouns and technical terms (e.g. "dynasties,"
-"gravitational," "sovereignty," "crystallography") are added to
+question). Session picks one of the eight at random per the same
+`sampleArray`-based logic as other `PassageModule` content. History items
+optionally carry `era` (ancient/medieval/modern/myth) and `region`; science
+items optionally carry `field` (biology/chemistry/physics/etc) — added per
+feedback asking for content organised "by era, by location, by science
+discipline"; the tags exist as metadata now but aren't yet wired into a
+picker UI (would need one if the user wants to filter/browse by them later,
+rather than the current fully-random sampling). Includes Hong Kong-specific
+topics (the Star Ferry, the 1997 Handover) alongside global history/science
+spanning China (paper, Chang'e myth, Zheng He's voyages), Africa (Mansa
+Musa), ancient Greece/Egypt (the Library of Alexandria), and more, plus
+science across biology/chemistry/physics (pandas, ice floating, why the sky
+is blue, genetics) — all fact-checked via web search before writing, and
+deliberately steering clear of violent/disturbing details per explicit
+feedback to keep history content "suitable for kids." Hard proper nouns and
+technical terms (e.g. "dynasties," "gravitational," "sovereignty,"
+"crystallography," "pilgrimage," "alleles") are added to
 `src/content/glossary.jsx` for the same tap-to-translate Traditional Chinese
 feature used elsewhere.
 
@@ -370,7 +378,7 @@ feature used elsewhere.
       explanations, incl. mixed-tense paragraph questions)
 - [x] Word Hunt (Bookworm/Word Wipe-style, replaces earlier Wordle-clone)
 - [x] Vocabulary Builder (40 items/tier incl. phrases + synonyms/antonyms)
-- [x] History & Science module (16 passages, HK-relevant + global topics)
+- [x] History & Science module (24 passages, HK-relevant + global topics)
 - [x] Vocabulary glossary (tap-to-reveal Traditional Chinese on hard words)
 - [x] Answer-order shuffling (no more predictably-first-option correct answers)
 - [x] Lock-and-explain on every MC/fill-blank question
@@ -390,10 +398,23 @@ feature used elsewhere.
       arbitrarily
 - [x] History & Science doubled (8→16 passages), new topics fact-checked
       via web search before writing
+- [x] Hangman word bank redesigned with `category` hints + varied length
+      (per tier) instead of reusing WORD_HUNT_WORDS; QWERTY keyboard layout
+- [x] Word Hunt hard/expert word lists broadened (more 5-6 letter entries,
+      not mostly 7-letter); Hint now states the starting letter; added
+      "🔀 Shuffle grid" (same words, new layout, keeps found-word progress)
+- [x] History & Science expanded again (16→24 passages) with `era`/`region`
+      (history) and `field` (science) tags per feedback asking for content
+      organised by era/location/discipline — covers China, Africa, ancient
+      Greece/Egypt, myth, and biology/chemistry/physics, all fact-checked
+      and deliberately steering clear of violent/disturbing details
 - [ ] Vocabulary at real scale (thousands of words) — would need a bulk
       source word list *with translations* from the user; hand-authoring
       beyond the current 160 isn't practical
 - [ ] Word Hunt full dictionary validation — still a ~7,200-word common-word
       list, not an exhaustive dictionary; very obscure/rare words still won't
       be recognized
-- [ ] More History & Science passages — 16 is a solid base, not exhaustive
+- [ ] More History & Science passages, and a full era/region/discipline
+      *picker UI* using the new tags — 24 passages is a solid base, but the
+      user described a much larger 3-era × 7-region grid that would need a
+      dedicated follow-up, not one more content pass
