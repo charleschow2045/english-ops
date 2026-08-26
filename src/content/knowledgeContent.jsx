@@ -1,4 +1,4 @@
-// History & Science — one history passage + one science passage per tier,
+// History & Science — two history passages + two science passages per tier,
 // each ~150-300 words with real-world interest, a "Fun Fact" bonus, and
 // comprehension questions. Reuses PassageModule (same engine as Reading/
 // Comprehension) — no new component needed. Hard names/terms are covered in
@@ -23,6 +23,19 @@ window.App.Content = window.App.Content || {};
         ],
       },
       {
+        id: "know-easy-history-2",
+        title: "📜 The Invention of Paper",
+        passage:
+          "Long before paper existed, people in ancient China wrote on heavy materials like bamboo strips, silk cloth, or bone, which were expensive, hard to carry, or difficult to write on. Around the year 105 CE, a court official named Cai Lun improved a method for making paper by mashing together tree bark, old rags, hemp fibres, and fishing nets, then pressing the mixture into thin sheets and letting them dry. This new paper was light, cheap to produce, and much easier to write on than anything used before, so the idea spread quickly across China and, over the following centuries, travelled along trade routes to the Middle East, Europe, and eventually the rest of the world. Papermaking completely changed how people recorded information, shared knowledge, and communicated across long distances, and versions of Cai Lun's basic process are still used in paper factories today.",
+        tipTitle: "🔍 Fun Fact",
+        tip: "The word \"paper\" actually comes from \"papyrus,\" an older Egyptian writing material made from a plant — but papyrus and true paper are made very differently.",
+        questions: [
+          { type: "mc", prompt: "What did people in ancient China write on before paper was invented?", options: ["Bamboo strips, silk cloth, or bone", "Plastic sheets", "Modern notebooks"], correctIndex: 0, explanation: "The passage says people used heavy materials like bamboo strips, silk cloth, or bone." },
+          { type: "mc", prompt: "What materials did Cai Lun use to make paper?", options: ["Tree bark, old rags, hemp fibres, and fishing nets", "Only silk cloth", "Plastic and metal"], correctIndex: 0, explanation: "The passage says he mashed together tree bark, old rags, hemp fibres, and fishing nets." },
+          { type: "mc", prompt: "Why did papermaking spread so quickly, according to the passage?", options: ["It was light, cheap, and easy to write on", "It was very expensive but beautiful", "Only emperors were allowed to use it"], correctIndex: 0, explanation: "The passage says the paper was light, cheap to produce, and much easier to write on than anything before." },
+        ],
+      },
+      {
         id: "know-easy-science",
         title: "🌍 Why Do We Have Seasons?",
         passage:
@@ -33,6 +46,19 @@ window.App.Content = window.App.Content || {};
           { type: "mc", prompt: "What actually causes the seasons, according to the passage?", options: ["Earth's tilt as it travels around the Sun", "Earth moving closer to the Sun", "The Moon blocking sunlight"], correctIndex: 0, explanation: "The passage says seasons happen because Earth is tilted on its axis, not because it moves closer to the Sun." },
           { type: "mc", prompt: "What happens when your part of the world tilts toward the Sun?", options: ["You get more direct sunlight and warmer weather", "You get less sunlight", "Nothing changes"], correctIndex: 0, explanation: "The passage says tilting toward the Sun means more direct sunlight and warmer temperatures." },
           { type: "mc", prompt: "Why are the seasons opposite in Hong Kong and Australia at the same time?", options: ["The two halves of Earth tilt in opposite directions at once", "They are in different galaxies", "Australia is closer to the sun"], correctIndex: 0, explanation: "The Northern and Southern halves of Earth tilt in opposite directions at the same time." },
+        ],
+      },
+      {
+        id: "know-easy-science-2",
+        title: "🍂 Why Do Leaves Change Colour in Autumn?",
+        passage:
+          "During spring and summer, leaves look green because they are full of a substance called chlorophyll, which helps trees use sunlight to make food through a process called photosynthesis. As autumn arrives and days grow shorter and cooler, trees slowly stop making chlorophyll and begin preparing to rest for winter. Once the green chlorophyll fades away, other colours that were hidden inside the leaf all along, like yellow and orange, finally become visible. Some trees also produce a brand new red pigment in autumn, which is why certain leaves turn bright red or purple instead of just yellow. Eventually, the tree forms a special layer where each leaf's stem meets the branch, cutting the leaf off from water and nutrients until it falls to the ground. This whole process helps the tree save energy and survive the cold winter months ahead, ready to grow fresh green leaves again once spring returns.",
+        tipTitle: "🔍 Fun Fact",
+        tip: "The bright red colour in some autumn leaves is a pigment the tree makes freshly each year — it isn't hidden in the leaf like yellow and orange are.",
+        questions: [
+          { type: "mc", prompt: "Why do leaves look green in spring and summer?", options: ["They are full of chlorophyll", "They are cold", "They have no sunlight"], correctIndex: 0, explanation: "The passage says leaves are full of chlorophyll, which helps trees use sunlight to make food." },
+          { type: "mc", prompt: "What happens once the green chlorophyll fades away in autumn?", options: ["Other hidden colours like yellow and orange become visible", "The leaf turns completely white", "The tree stops growing forever"], correctIndex: 0, explanation: "The passage says once chlorophyll fades, colours hidden inside the leaf all along become visible." },
+          { type: "mc", prompt: "Why does the tree cut each leaf off from water and nutrients?", options: ["To save energy and survive winter", "To make the leaf grow bigger", "To attract more sunlight"], correctIndex: 0, explanation: "The passage says this process helps the tree save energy and survive the cold winter months." },
         ],
       },
     ],
@@ -51,6 +77,19 @@ window.App.Content = window.App.Content || {};
         ],
       },
       {
+        id: "know-medium-history-2",
+        title: "🇭🇰 Hong Kong's Handover in 1997",
+        passage:
+          "For 156 years, Hong Kong was governed as a British colony, a situation that began in 1842 after the First Opium War and later expanded through a 99-year lease signed in 1898 covering the New Territories. As that lease approached its end in the 1980s, the governments of the United Kingdom and China negotiated what should happen next, eventually signing the Sino-British Joint Declaration in 1984. Under this agreement, sovereignty over the whole territory, not just the leased New Territories, would transfer to China, but Hong Kong would keep its own legal system, currency, and way of life for fifty years under a policy known as \"one country, two systems.\" At midnight on 1 July 1997, in a ceremony attended by leaders and dignitaries from around the world, the British flag was formally lowered and the flags of China and the Hong Kong Special Administrative Region were raised in its place. For many residents who had lived their whole lives under British rule, the handover was an emotional moment mixing pride, uncertainty, and hope for what the new arrangement would bring.",
+        tipTitle: "🔍 Fun Fact",
+        tip: "\"One country, two systems\" was designed to last until 2047 — fifty years after the 1997 handover.",
+        questions: [
+          { type: "mc", prompt: "What agreement set out the terms of Hong Kong's handover?", options: ["The Sino-British Joint Declaration", "The Treaty of Versailles", "The United Nations Charter"], correctIndex: 0, explanation: "The passage says the UK and China signed the Sino-British Joint Declaration in 1984." },
+          { type: "mc", prompt: "Under \"one country, two systems,\" what did Hong Kong keep for fifty years?", options: ["Its own legal system, currency, and way of life", "Complete independence from China", "British citizenship for everyone"], correctIndex: 0, explanation: "The passage says Hong Kong would keep its own legal system, currency, and way of life for fifty years." },
+          { type: "mc", prompt: "When exactly did the handover ceremony take place?", options: ["At midnight on 1 July 1997", "On New Year's Day 2000", "In 1984, right after the agreement was signed"], correctIndex: 0, explanation: "The passage says the ceremony happened at midnight on 1 July 1997." },
+        ],
+      },
+      {
         id: "know-medium-science",
         title: "🌋 How Volcanoes Erupt",
         passage:
@@ -61,6 +100,19 @@ window.App.Content = window.App.Content || {};
           { type: "mc", prompt: "What is magma called once it reaches the Earth's surface?", options: ["Lava", "Ash", "Steam"], correctIndex: 0, explanation: "The passage says once magma breaks through to the surface, it's called lava." },
           { type: "mc", prompt: "Why does magma rise up toward the surface?", options: ["It is lighter than the solid rock around it", "It is pushed by ocean water", "It is attracted by the sun"], correctIndex: 0, explanation: "Magma is lighter than the surrounding solid rock, so it gradually rises." },
           { type: "mc", prompt: "How do scientists often predict when a volcano might erupt?", options: ["By watching for small earthquakes and gas level changes", "By measuring the volcano's height", "By checking the weather forecast"], correctIndex: 0, explanation: "The passage says scientists watch for small earthquakes and changes in gas levels." },
+        ],
+      },
+      {
+        id: "know-medium-science-2",
+        title: "🍯 How Do Bees Make Honey?",
+        passage:
+          "When a worker bee visits a flower, it drinks the flower's sweet liquid, called nectar, using a long tube-shaped tongue and stores it inside a special pouch called a honey stomach, completely separate from the stomach it uses for normal digestion. Back at the hive, the bee passes the nectar to another worker bee mouth-to-mouth, and this process repeats several times, with each bee adding enzymes that begin breaking the nectar's complex sugars down into simpler ones. Once the nectar is deposited into a honeycomb cell, it is still far too watery to be called honey, so worker bees fan their wings rapidly over the open cells to speed up evaporation, removing much of the water content. When the mixture becomes thick and sticky enough, the bees seal the cell with a thin cap of beeswax, protecting the finished honey so it can be stored safely for months or even years without spoiling. A single bee produces only a tiny fraction of a teaspoon of honey in its entire lifetime, which is why a hive needs thousands of bees working together.",
+        tipTitle: "🔍 Fun Fact",
+        tip: "Honey found in ancient Egyptian tombs, thousands of years old, has been discovered still perfectly edible — honey almost never spoils.",
+        questions: [
+          { type: "mc", prompt: "Where does a bee store nectar before returning to the hive?", options: ["In a special honey stomach", "In its normal digestive stomach", "On its wings"], correctIndex: 0, explanation: "The passage says the bee stores nectar in a special honey stomach, separate from its digestive stomach." },
+          { type: "mc", prompt: "Why do bees fan their wings over the honeycomb cells?", options: ["To evaporate water and thicken the nectar", "To cool down the hive only", "To attract more bees"], correctIndex: 0, explanation: "The passage says fanning speeds up evaporation, removing much of the water content." },
+          { type: "mc", prompt: "Why does a hive need thousands of bees working together?", options: ["Each bee produces only a tiny amount of honey", "Only a few bees are allowed to make honey", "Bees can only work for one day"], correctIndex: 0, explanation: "The passage says a single bee produces only a tiny fraction of a teaspoon in its lifetime." },
         ],
       },
     ],
@@ -79,6 +131,19 @@ window.App.Content = window.App.Content || {};
         ],
       },
       {
+        id: "know-hard-history-2",
+        title: "🐫 The Silk Road",
+        passage:
+          "Despite its name, the Silk Road was never a single paved road, but rather a shifting network of overland and sea trade routes that eventually connected China to the Mediterranean world, stretching across Central Asia, Persia, and beyond. Traders rarely travelled the entire route themselves; instead, goods typically passed through a long relay of merchants, each covering one section before handing goods off to the next, changing hands dozens of times before reaching their final destination thousands of kilometres away. Chinese silk was one of the most prized goods moving westward, valued so highly in Rome that some senators reportedly complained about the empire's silver draining away to pay for it, but the network carried far more than fabric — spices, precious stones, glassware, and paper travelled alongside ideas, religions, and inventions that reshaped the societies they reached. Buddhism spread into China partly along these same routes, while papermaking technology eventually travelled the opposite direction into the Islamic world and then Europe. The routes also carried less welcome cargo: historians believe the network likely helped spread the bubonic plague westward in the fourteenth century, showing that increased connection between distant civilizations could bring danger just as easily as prosperity.",
+        tipTitle: "🔍 Fun Fact",
+        tip: "The term \"Silk Road\" wasn't actually used by ancient traders — a German geographer named Ferdinand von Richthofen coined the name in 1877, long after the routes had declined.",
+        questions: [
+          { type: "mc", prompt: "Was the Silk Road a single road?", options: ["No, it was a shifting network of many trade routes", "Yes, it was one paved road built by China", "Yes, it was a single sea route"], correctIndex: 0, explanation: "The passage says despite its name, it was never a single paved road but a shifting network of routes." },
+          { type: "mc", prompt: "How did goods typically travel the full length of the Silk Road?", options: ["Through a long relay of many different merchants", "Carried by a single trader the whole way", "Shipped directly by the Chinese emperor"], correctIndex: 0, explanation: "The passage says goods passed through a long relay of merchants, changing hands dozens of times." },
+          { type: "mc", prompt: "According to the passage, what else spread along the Silk Road besides goods?", options: ["Ideas, religions, inventions — and even disease", "Only silk and nothing else", "Modern technology like computers"], correctIndex: 0, explanation: "The passage mentions ideas, religions, and inventions spreading, as well as the bubonic plague." },
+        ],
+      },
+      {
         id: "know-hard-science",
         title: "💉 How Vaccines Work",
         passage:
@@ -89,6 +154,19 @@ window.App.Content = window.App.Content || {};
           { type: "mc", prompt: "Why can a person's first infection with a new virus make them very sick?", options: ["The immune system needs time to learn how to fight it", "Vaccines make the first infection worse", "The virus is always weaker the second time"], correctIndex: 0, explanation: "The passage says the delay in recognising the threat is part of why first infections can be severe." },
           { type: "mc", prompt: "What do vaccines give the immune system?", options: ["A safe preview of the threat, using a weakened or partial version", "A full-strength dose of the real disease", "Antibodies made in a lab, injected directly"], correctIndex: 0, explanation: "The passage says vaccines give a safe preview using a weakened, inactive, or partial version of the virus." },
           { type: "mc", prompt: "Why can the body respond faster to a virus after vaccination?", options: ["Memory cells remember exactly how to fight that specific threat", "The virus becomes weaker over time on its own", "Vaccines remove the virus from the environment entirely"], correctIndex: 0, explanation: "The passage says vaccination creates memory cells that remember how to fight the specific threat." },
+        ],
+      },
+      {
+        id: "know-hard-science-2",
+        title: "🦠 The Accidental Discovery of Penicillin",
+        passage:
+          "In the summer of 1928, a Scottish scientist named Alexander Fleming left his cluttered laboratory for a two-week holiday, leaving behind several petri dishes of Staphylococcus bacteria that he had been growing for research. When he returned in September, most of the dishes had been ruined by ordinary contamination, exactly what a tidier scientist might have avoided by cleaning up before leaving. One dish, however, caught his attention: a stray spore of mould, likely drifting up from a laboratory on the floor below, had landed in the dish and grown into a small blue-green patch. Around that patch, Fleming noticed something unexpected — a clear ring where the bacteria simply hadn't grown at all, as though the mould itself were somehow killing the germs nearby. Rather than dismissing the dish as ruined and washing it out like the others, Fleming investigated further and identified the mould as a rare strain of Penicillium, eventually isolating the bacteria-killing substance it produced and naming it penicillin. It would take more than a decade, and the urgent medical demands of the Second World War, before other scientists worked out how to mass-produce it reliably, but Fleming's willingness to pay attention to one \"ruined\" experiment ultimately led to the world's first true antibiotic, transforming once-deadly infections into treatable illnesses.",
+        tipTitle: "🔍 Fun Fact",
+        tip: "Fleming's now-famous reaction when he first spotted the strange clear ring was reportedly just three words: \"That's funny.\"",
+        questions: [
+          { type: "mc", prompt: "What did Fleming notice around the mould in the contaminated dish?", options: ["A clear ring where bacteria hadn't grown", "A ring of extra bacteria growth", "Nothing unusual at all"], correctIndex: 0, explanation: "The passage says he noticed a clear ring where the bacteria simply hadn't grown at all." },
+          { type: "mc", prompt: "What did Fleming do instead of throwing the \"ruined\" dish away?", options: ["He investigated further and identified the mould", "He immediately published his results without further study", "He gave the dish to a museum"], correctIndex: 0, explanation: "The passage says he investigated further and identified the mould as a rare strain of Penicillium." },
+          { type: "mc", prompt: "What took more than a decade after Fleming's discovery?", options: ["Working out how to mass-produce penicillin reliably", "Naming the substance penicillin", "Growing the mould in a dish"], correctIndex: 0, explanation: "The passage says it took more than a decade before scientists worked out reliable mass production." },
         ],
       },
     ],
@@ -112,6 +190,24 @@ window.App.Content = window.App.Content || {};
         ],
       },
       {
+        id: "know-expert-history-2",
+        title: "🚀 The Apollo 11 Moon Landing",
+        passage:
+          "On 20 July 1969, as the lunar module Eagle began its final descent toward the Moon's surface, the onboard guidance computer suddenly began flashing an alarm code that neither astronaut Neil Armstrong nor Buzz Aldrin had been specifically trained to recognise on sight: 1202. Unknown to the crew in that tense moment, the alarm didn't mean the computer had failed — it meant the computer was being asked to do more work than it had time for, because a radar switch left in the wrong position was flooding it with unnecessary data it didn't need for landing. In Mission Control back in Houston, a twenty-six-year-old engineer named Steve Bales had only seconds to decide whether the alarm meant the mission should be aborted. Thanks to preparation most people never hear about — software engineer Margaret Hamilton had designed the guidance computer to automatically drop lower-priority tasks and keep running the critical landing programs whenever it became overloaded, and a colleague had handwritten a full list of alarm codes and their meanings just weeks before launch — Bales was able to quickly confirm the alarm was survivable, and Mission Control gave the crew a call to continue. The alarm sounded five times in the final four minutes of descent alone, a detail rarely mentioned in the simplified version of the story most people remember, where the landing is often recalled as smooth and the drama is concentrated entirely on Armstrong's famous first words upon stepping onto the surface.",
+        tipTitle: "🔍 Fun Fact",
+        tip: "The Apollo Guidance Computer that landed astronauts on the Moon had far less processing power than a modern calculator.",
+        questions: [
+          { type: "mc", prompt: "What did the 1202 alarm actually mean, according to the passage?", options: ["The computer was overloaded with more tasks than it had time for", "The computer had completely failed", "The lunar module was running out of fuel"], correctIndex: 0, explanation: "The passage says the alarm meant the computer was being asked to do more work than it had time for." },
+          { type: "mc", prompt: "Why was Mission Control able to decide quickly that the alarm was survivable?", options: ["Careful preparation, including software design and a handwritten alarm code list, had anticipated this exact problem", "NASA got lucky and guessed correctly", "The astronauts fixed the computer themselves during descent"], correctIndex: 0, explanation: "The passage describes Hamilton's software design and a handwritten alarm code list that let Bales confirm the alarm was survivable." },
+          {
+            type: "shortanswer",
+            prompt: "The passage says the alarm \"is rarely mentioned in the simplified version of the story most people remember.\" Based on the passage, why might the full story be more interesting or important than the simplified one?",
+            modelAnswer:
+              "The simplified story makes the landing sound smooth and effortless, crediting only Armstrong's famous words — but the full story shows the landing actually depended on careful engineering preparation, quick human judgement under pressure, and a real risk of failure, which gives a truer and more impressive picture of what it took to succeed.",
+          },
+        ],
+      },
+      {
         id: "know-expert-science",
         title: "🔭 Black Holes and the Limits of Light",
         passage:
@@ -126,6 +222,24 @@ window.App.Content = window.App.Content || {};
             prompt: "The passage says the 2019 image \"confirmed\" rather than \"discovered\" the black hole's shape. What is the difference, based on the passage?",
             modelAnswer:
               "Physicists had already mathematically predicted the shape using Einstein's theory of general relativity decades earlier; the 2019 image didn't reveal a new idea, it provided the first direct visual evidence proving that the earlier mathematical prediction was correct.",
+          },
+        ],
+      },
+      {
+        id: "know-expert-science-2",
+        title: "🧬 The Race to Discover DNA's Double Helix",
+        passage:
+          "In the early 1950s, several research teams across Britain and the United States were racing to figure out the physical structure of DNA, the molecule that carries genetic information inside living cells, since understanding its shape was seen as the key to understanding how life itself passes on information. At King's College London, chemist Rosalind Franklin was using a technique called X-ray crystallography to photograph DNA fibres, painstaking work that required exact control of humidity and long exposure times. In May 1952, one of her images, later known simply as \"Photo 51,\" captured a distinctive X-shaped pattern that strongly suggested DNA had a helical, spiral structure. Without Franklin's knowledge or permission, a colleague at King's College showed this photograph to James Watson, a scientist working at Cambridge with Francis Crick on their own competing model of DNA. The image gave Watson and Crick a crucial piece of evidence, and within weeks they published their now-famous double helix model in the journal Nature in 1953. Watson, Crick, and King's College researcher Maurice Wilkins later shared the 1962 Nobel Prize for the discovery, but Franklin herself was not included — partly because she had died of ovarian cancer in 1958, four years before the prize was awarded, and Nobel Prizes are never given posthumously. Even so, many historians today argue that Franklin's crucial data was used without proper credit at the time, and her contribution has only been more widely recognised decades later.",
+        tipTitle: "🔍 Fun Fact",
+        tip: "Photo 51 took about 100 hours of X-ray exposure to capture — an extraordinarily long time compared to a modern camera's photo, which takes a fraction of a second.",
+        questions: [
+          { type: "mc", prompt: "What did Photo 51 reveal about DNA's structure?", options: ["A distinctive pattern suggesting a helical, spiral shape", "That DNA was completely flat", "That DNA had no repeating structure at all"], correctIndex: 0, explanation: "The passage says Photo 51 captured a pattern that strongly suggested DNA had a helical, spiral structure." },
+          { type: "mc", prompt: "Why wasn't Rosalind Franklin awarded the Nobel Prize alongside Watson, Crick, and Wilkins?", options: ["She had died in 1958, and Nobel Prizes are never given posthumously", "Her research was proven to be incorrect", "She refused to accept the award"], correctIndex: 0, explanation: "The passage says she died in 1958, four years before the prize was awarded, and Nobel Prizes are never given posthumously." },
+          {
+            type: "shortanswer",
+            prompt: "The passage says Franklin's photograph was shown to Watson \"without her knowledge or permission.\" Why might this detail matter when historians evaluate who deserves credit for the discovery?",
+            modelAnswer:
+              "It matters because Franklin's own data played a direct role in Watson and Crick's breakthrough, yet she wasn't part of the decision to share it and wasn't properly credited at the time — raising a fairness question about whether scientific credit was distributed based on who did the work, or simply who published the final model first.",
           },
         ],
       },

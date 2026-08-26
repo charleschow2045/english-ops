@@ -95,7 +95,7 @@ on short passages; Expert = inference/"why" questions on denser passages).
    of 8 directions) on a random letter grid to spell hidden target words, tap
    the last letter again to submit. Includes a "❓ How to Play" tutorial modal.
 8. **Vocabulary Builder** — flashcards through 10 randomly-sampled words (from
-   a pool of 20/tier) per session: English word + part of speech, flip to
+   a pool of 40/tier) per session: English word + part of speech, flip to
    reveal Traditional Chinese translation + definition + example sentence +
    tap-to-hear similar/opposite words
 9. **History & Science** — real historical events and scientific phenomena as
@@ -273,30 +273,39 @@ done for today ✅" link lets a child stop anytime and still mark the mission
 complete.
 
 ## Vocabulary Builder
-`src/VocabularyModule.jsx` + `src/content/vocabularyContent.jsx`. 20 items per
-tier (80 total: mostly single words, a few common phrases tagged `pos:
+`src/VocabularyModule.jsx` + `src/content/vocabularyContent.jsx`. 40 items per
+tier (160 total: mostly single words, a few common phrases tagged `pos:
 "phrase"`), each with `word`, `pos`, `zh` (Traditional Chinese), `definition`,
 `example`, and optionally `synonyms`/`antonyms` (arrays of `{word, zh}`,
 tap-to-hear related words shown after flipping the card). A session samples
-10 of the 20 per tier (`sampleArray`), so replays surface a different subset.
+10 of the 40 per tier (`sampleArray`), so replays surface a different subset.
 Flashcard flow: see the English word + POS badge + 🔊 Hear It, tap "Show
 Meaning" to flip and reveal translation/definition/example/related words,
-then Next. Honest scope note: this is a meaningful expansion (2x from the
-first version) but nowhere near "thousands of words" — reaching that scale
-by hand isn't practical in a single pass; a real source word list from the
-user would make a much bigger jump possible.
+then Next. The second expansion pass (20→40/tier) selected new words from
+real vetted sources — the Speech Therapy Store Tier 2 vocabulary lists
+(grades 4-8) — rather than hand-picking arbitrarily, to keep difficulty
+grading honest across tiers. Honest scope note: 160 words is a meaningful
+expansion but still nowhere near "thousands of words" — reaching that scale
+by hand isn't practical in a single pass; a real bulk source word list (with
+translations) from the user would make a much bigger jump possible.
 
 ## History & Science
 `src/content/knowledgeContent.jsx`, rendered through the existing
-`PassageModule` (no new component needed) — one history + one science
-passage per tier (8 total, ~150-300 words), each with a "🔍 Fun Fact" bonus
+`PassageModule` (no new component needed) — two history + two science
+passages per tier (16 total, ~150-300 words), each with a "🔍 Fun Fact" bonus
 callout (reuses the same `tipTitle`/`tip` fields Storytelling uses) and 2-3
-questions. Session picks one of the two at random per the same
-`sampleArray`-based logic as other `PassageModule` content. Includes one
-Hong Kong-specific topic (the Star Ferry) alongside global history/science.
-Hard proper nouns and technical terms (e.g. "dynasties," "gravitational,"
-"Victoria Harbour" components) are added to `src/content/glossary.jsx` for
-the same tap-to-translate Traditional Chinese feature used elsewhere.
+questions (expert-tier passages include a `shortanswer` critical-thinking
+question). Session picks one of the four at random per the same
+`sampleArray`-based logic as other `PassageModule` content. Includes two
+Hong Kong-specific topics (the Star Ferry, the 1997 Handover) alongside
+global history/science — the second expansion pass added Cai Lun's invention
+of paper, autumn leaf colour, how bees make honey, the Silk Road, the
+accidental discovery of penicillin, the Apollo 11 "1202 alarm," and the
+Rosalind Franklin/DNA double helix story, all fact-checked via web search
+before writing. Hard proper nouns and technical terms (e.g. "dynasties,"
+"gravitational," "sovereignty," "crystallography") are added to
+`src/content/glossary.jsx` for the same tap-to-translate Traditional Chinese
+feature used elsewhere.
 
 ## Explicitly out of scope for v1
 - No backend, accounts, or login
@@ -341,8 +350,8 @@ the same tap-to-translate Traditional Chinese feature used elsewhere.
 - [x] Grammar drills (3 categories × 4 tiers, 8-12 items each with worked-example
       explanations, incl. mixed-tense paragraph questions)
 - [x] Word Hunt (Bookworm/Word Wipe-style, replaces earlier Wordle-clone)
-- [x] Vocabulary Builder (20 items/tier incl. phrases + synonyms/antonyms)
-- [x] History & Science module (8 passages, HK-relevant + global topics)
+- [x] Vocabulary Builder (40 items/tier incl. phrases + synonyms/antonyms)
+- [x] History & Science module (16 passages, HK-relevant + global topics)
 - [x] Vocabulary glossary (tap-to-reveal Traditional Chinese on hard words)
 - [x] Answer-order shuffling (no more predictably-first-option correct answers)
 - [x] Lock-and-explain on every MC/fill-blank question
@@ -357,9 +366,15 @@ the same tap-to-translate Traditional Chinese feature used elsewhere.
 - [x] Module 10 — Hangman (new standalone module, reuses WORD_HUNT_WORDS,
       no losing state — wrong guesses cost a life, running out reveals the
       word gently instead of a "you lost" screen)
-- [ ] Vocabulary at real scale (thousands of words) — would need a source word
-      list from the user; hand-authoring beyond the current 80 isn't practical
+- [x] Vocabulary Builder doubled again (20→40 items/tier, 80→160 total),
+      sourced from real vetted grade-level word lists rather than picked
+      arbitrarily
+- [x] History & Science doubled (8→16 passages), new topics fact-checked
+      via web search before writing
+- [ ] Vocabulary at real scale (thousands of words) — would need a bulk
+      source word list *with translations* from the user; hand-authoring
+      beyond the current 160 isn't practical
 - [ ] Word Hunt full dictionary validation — still a ~7,200-word common-word
       list, not an exhaustive dictionary; very obscure/rare words still won't
       be recognized
-- [ ] More History & Science passages — 8 is a solid start, not exhaustive
+- [ ] More History & Science passages — 16 is a solid base, not exhaustive
