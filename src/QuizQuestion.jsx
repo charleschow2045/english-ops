@@ -44,7 +44,7 @@ window.App = window.App || {};
     const correct = isCorrectAnswer(q, selected);
     return (
       <div>
-        <p className="font-extrabold text-stone-800">
+        <p className="text-lg sm:text-xl font-extrabold text-stone-800 leading-snug">
           {q.type === "fillblank" ? renderBlankSentence(q.sentence) : q.prompt}
         </p>
         <div className="mt-3 flex flex-col gap-2">
@@ -58,7 +58,7 @@ window.App = window.App || {};
                 key={i}
                 onClick={() => onSelect(i)}
                 disabled={locked}
-                className={`text-left rounded-xl border-4 font-bold px-4 py-3 transition-all disabled:opacity-100
+                className={`text-left rounded-xl border-4 font-bold text-base sm:text-lg px-4 py-3 transition-all disabled:opacity-100
                   ${
                     showCorrect
                       ? "bg-emerald-400 border-emerald-600 text-emerald-950"
@@ -74,10 +74,10 @@ window.App = window.App || {};
         </div>
         {locked && (
           <div className="mt-3">
-            <p className={`font-extrabold ${correct ? "text-emerald-600" : "text-amber-600"}`}>
+            <p className={`text-lg font-extrabold ${correct ? "text-emerald-600" : "text-amber-600"}`}>
               {correct ? "✅ Correct! Nice work!" : "💛 Not quite — here's the right answer:"}
             </p>
-            <p className="mt-1 text-sm font-bold text-stone-500">
+            <p className="mt-1 text-base font-bold text-stone-500">
               {q.explanation || "Re-read the passage above — the answer is right there!"}
             </p>
           </div>

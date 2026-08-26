@@ -113,14 +113,14 @@ window.App = window.App || {};
 
           {isShortAnswer ? (
             <div>
-              <p className="font-extrabold text-stone-800">{q.prompt}</p>
+              <p className="text-lg sm:text-xl font-extrabold text-stone-800 leading-snug">{q.prompt}</p>
               <textarea
                 value={answerText}
                 onChange={(e) => setAnswerText(e.target.value)}
                 disabled={revealed}
                 rows={3}
                 placeholder="Type your answer..."
-                className="w-full mt-2 rounded-xl border-4 border-stone-300 bg-white text-stone-800 font-bold px-4 py-3 outline-none focus:border-indigo-400 resize-none disabled:bg-stone-50"
+                className="w-full mt-2 rounded-xl border-4 border-stone-300 bg-white text-stone-800 font-bold text-base sm:text-lg px-4 py-3 outline-none focus:border-indigo-400 resize-none disabled:bg-stone-50"
               />
               {!revealed ? (
                 <Button
@@ -133,8 +133,8 @@ window.App = window.App || {};
                 </Button>
               ) : (
                 <div className="mt-3 rounded-xl border-4 border-emerald-200 bg-emerald-50 p-3">
-                  <p className="text-xs font-extrabold text-emerald-600 mb-1">💡 Here's an idea of a strong answer:</p>
-                  <p className="text-sm font-bold text-emerald-700">{q.modelAnswer}</p>
+                  <p className="text-sm font-extrabold text-emerald-600 mb-1">💡 Here's an idea of a strong answer:</p>
+                  <p className="text-base font-bold text-emerald-700">{q.modelAnswer}</p>
                 </div>
               )}
             </div>
