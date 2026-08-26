@@ -1,9 +1,14 @@
-// Hangman — classic letter-guessing game, reusing WORD_HUNT_WORDS as the
-// answer bank (same tiered word lists Word Hunt already uses, so there's no
-// new content file to maintain). Deliberately no hanging-figure artwork —
-// following this app's "no losing state" philosophy (see WordHuntModule,
-// SpeakingModule), wrong guesses cost a ❤️ life instead, and running out of
-// lives gently reveals the word rather than showing a "you lost" screen.
+// Hangman — classic letter-guessing game. Uses HANGMAN_WORDS (categorised,
+// variable-length word bank — a category like "Insects" is shown as a hint
+// above the blanks, and word length varies freely within a tier rather than
+// climbing steadily, matching classic mobile Hangman apps) instead of
+// WORD_HUNT_WORDS. Keyboard is laid out in QWERTY rows (not A-Z order) to
+// match those same classic apps, but with large, legible buttons — unlike
+// the tiny-font reference apps this was modelled on. Deliberately no
+// hanging-figure artwork — following this app's "no losing state"
+// philosophy (see WordHuntModule, SpeakingModule), wrong guesses cost a ❤️
+// life instead, and running out of lives gently reveals the word rather
+// than showing a "you lost" screen.
 window.App = window.App || {};
 
 (function () {
@@ -12,7 +17,12 @@ window.App = window.App || {};
   const { sampleArray } = window.App;
 
   const MAX_LIVES = 6;
-  const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+  const KEYBOARD_ROWS = [
+    "QWERTYUIOP".split(""),
+    "ASDFGHJKL".split(""),
+    "ZXCVBNM".split(""),
+  ];
+  const LETTERS = KEYBOARD_ROWS.flat();
 
   function HowToPlayModal({ onClose }) {
     return (
@@ -36,11 +46,11 @@ window.App = window.App || {};
   }
 
   function HangmanModule({ tier, onBack, onComplete }) {
-    const bank = window.App.Content.WORD_HUNT_WORDS[tier] || window.App.Content.WORD_HUNT_WORDS.easy;
+    const bank = window.App.Content.HANGMAN_WORDS[tier] || window.App.Content.HANGMAN_WORDS.easy;
     const [runSeed, setRunSeed] = useState(0);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const word = useMemo(() => sampleArray(bank, 1)[0], [bank, runSeed]);
+    const { category, word } = useMemo(() => sampleArray(bank, 1)[0], [bank, runSeed]);
     const wordLetters = useMemo(() => Array.from(new Set(word.split(""))), [word]);
 
     const [guessed, setGuessed] = useState([]);
@@ -82,7 +92,7 @@ window.App = window.App || {};
             {status === "won" ? "You guessed it!" : "So close — nice try!"}
           </h2>
           <p className="text-stone-500 font-bold mb-1">
-            The word was <span className="text-stone-800 tracking-widest">{word}</span>
+            The word was <span className="text-stone-800 tracking-widest">{word}</span> ({category})
           </p>
           {status === "won" && <p className="text-amber-500 font-extrabold mb-4">⭐ {score} points</p>}
           {status === "lost" && <p className="text-stone-400 font-bold mb-4">Every guess helps you learn 💪</p>}
@@ -129,6 +139,10 @@ window.App = window.App || {};
             <p className="text-sm font-extrabold text-amber-500">⭐ {score} pts</p>
           </div>
 
+          <p className="text-center text-xs font-extrabold text-orange-500 uppercase tracking-wide mb-2">
+            🏷️ Category: {category}
+          </p>
+
           <p className="text-center text-3xl sm:text-4xl font-extrabold tracking-[0.3em] text-stone-800 mb-6 break-all">
             {word
               .split("")
@@ -136,28 +150,32 @@ window.App = window.App || {};
               .join(" ")}
           </p>
 
-          <div className="grid grid-cols-7 gap-1.5 mb-3">
-            {LETTERS.map((letter) => {
-              const isGuessed = guessed.includes(letter);
-              const isCorrect = isGuessed && word.includes(letter);
-              return (
-                <button
-                  key={letter}
-                  onClick={() => guessLetter(letter)}
-                  disabled={isGuessed}
-                  className={`aspect-square rounded-lg border-2 font-extrabold text-sm flex items-center justify-center transition-all
-                    ${
-                      !isGuessed
-                        ? "bg-white border-stone-200 text-stone-700 active:translate-y-[1px]"
-                        : isCorrect
-                        ? "bg-emerald-400 border-emerald-600 text-emerald-950"
-                        : "bg-stone-200 border-stone-300 text-stone-400"
-                    }`}
-                >
-                  {letter}
-                </button>
-              );
-            })}
+          <div className="flex flex-col gap-1.5 mb-3">
+            {KEYBOARD_ROWS.map((row, i) => (
+              <div key={i} className="flex gap-1.5 justify-center">
+                {row.map((letter) => {
+                  const isGuessed = guessed.includes(letter);
+                  const isCorrect = isGuessed && word.includes(letter);
+                  return (
+                    <button
+                      key={letter}
+                      onClick={() => guessLetter(letter)}
+                      disabled={isGuessed}
+                      className={`flex-1 max-w-[2.75rem] aspect-square rounded-lg border-2 font-extrabold text-lg sm:text-xl flex items-center justify-center transition-all
+                        ${
+                          !isGuessed
+                            ? "bg-white border-stone-200 text-stone-700 active:translate-y-[1px]"
+                            : isCorrect
+                            ? "bg-emerald-400 border-emerald-600 text-emerald-950"
+                            : "bg-stone-200 border-stone-300 text-stone-400"
+                        }`}
+                    >
+                      {letter}
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
           </div>
 
           <button

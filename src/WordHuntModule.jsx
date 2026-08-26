@@ -119,7 +119,8 @@ window.App = window.App || {};
             <li>Keep tapping letters that touch each other (up, down, sideways, or diagonally) to spell a word.</li>
             <li>Tap the last letter again to submit your word.</li>
             <li>Tap "Clear" anytime to start over.</li>
-            <li>Stuck? Tap "💡 Hint" to see where one hidden word starts.</li>
+            <li>Stuck? Tap "💡 Hint" to see the word's length, starting letter, and where it starts.</li>
+            <li>Grid looking tricky? Tap "🔀 Shuffle grid" for a fresh layout with the same words.</li>
             <li>Find all the hidden target words — bonus points for any other real word you spot too!</li>
           </ul>
           <Button color="rose" className="w-full mt-4" onClick={onClose}>
@@ -135,12 +136,16 @@ window.App = window.App || {};
     const bonusWords = window.App.Content.WORD_HUNT_BONUS_WORDS;
     const gridSize = GRID_SIZE_BY_TIER[tier] || 6;
     const [runSeed, setRunSeed] = useState(0);
+    const [shuffleSeed, setShuffleSeed] = useState(0);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const { grid, entries } = useMemo(() => {
-      const words = sampleArray(bank, WORDS_PER_PUZZLE);
-      return buildGrid(words, gridSize);
-    }, [bank, gridSize, runSeed]);
+    const words = useMemo(() => sampleArray(bank, WORDS_PER_PUZZLE), [bank, runSeed]);
+
+    // Grid layout is regenerated separately from word selection, so
+    // "🔀 Shuffle grid" can give a fresh letter arrangement for the *same*
+    // words without losing progress — "🔄 New puzzle" picks new words too.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const { grid, entries } = useMemo(() => buildGrid(words, gridSize), [words, gridSize, shuffleSeed]);
     const placedWords = entries.map((e) => e.word);
 
     const [path, setPath] = useState([]);
@@ -206,7 +211,7 @@ window.App = window.App || {};
       const unfound = entries.find((e) => !targetsFound.some((f) => f.word === e.word));
       if (!unfound) return;
       setHintCell(unfound.path[0]);
-      setMessage(`💡 Hint: look for a ${unfound.word.length}-letter word starting near the highlighted tile!`);
+      setMessage(`💡 Hint: it's a ${unfound.word.length}-letter word starting with "${unfound.word[0]}" — begin at the highlighted tile!`);
     }
 
     function handleRefresh() {
@@ -214,6 +219,13 @@ window.App = window.App || {};
       setPath([]);
       setFound([]);
       setMessage("");
+      setHintCell(null);
+    }
+
+    function handleShuffle() {
+      setShuffleSeed((s) => s + 1);
+      setPath([]);
+      setMessage("🔀 Same words, new grid — take another look!");
       setHintCell(null);
     }
 
@@ -305,6 +317,13 @@ window.App = window.App || {};
               💡 Hint
             </Button>
           </div>
+
+          <button
+            onClick={handleShuffle}
+            className="w-full text-center text-xs font-bold text-stone-400 underline decoration-dotted mb-2"
+          >
+            🔀 Shuffle grid (same words, new layout)
+          </button>
 
           {message && <p className="text-center text-sm font-bold text-indigo-600 mb-2">{message}</p>}
 

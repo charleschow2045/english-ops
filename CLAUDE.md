@@ -102,14 +102,21 @@ on short passages; Expert = inference/"why" questions on denser passages).
    reading passages (reuses the Reading/Comprehension engine), for a child
    whose interests lean that way; hard names/terms get the same
    tap-to-translate Traditional Chinese glossary as other modules
-10. **Hangman** — classic letter-guessing game (`HangmanModule.jsx`), added
-    after feedback asking for "a word game like hangman" as a separate
-    module rather than folded into Word Hunt. Reuses `WORD_HUNT_WORDS` as its
-    answer bank rather than a new content file. Deliberately no hanging-figure
-    artwork — consistent with this app's no-losing-state philosophy, wrong
-    guesses cost a ❤️ life (6 total) instead, and running out of lives reveals
-    the word gently ("So close — nice try!") rather than a "you lost" screen.
-    A "💡 Hint" button reveals one letter at the cost of a life.
+10. **Hangman** — classic letter-guessing game (`HangmanModule.jsx` +
+    `src/content/hangmanContent.jsx`), added after feedback asking for "a
+    word game like hangman" as a separate module rather than folded into
+    Word Hunt. Its own word bank (not `WORD_HUNT_WORDS`) tags every word
+    with a `category` (e.g. "Insects") shown above the blanks as a hint, and
+    word length varies freely within a tier rather than climbing steadily —
+    added after feedback that always drawing from `WORD_HUNT_WORDS` felt
+    like a fixed-length word with no contextual clue. Keyboard is QWERTY
+    rows (not A-Z order), modelled on classic mobile Hangman apps but with
+    deliberately larger, more legible letter buttons than those references.
+    Deliberately no hanging-figure artwork — consistent with this app's
+    no-losing-state philosophy, wrong guesses cost a ❤️ life (6 total)
+    instead, and running out of lives reveals the word gently ("So close —
+    nice try!") rather than a "you lost" screen. A "💡 Hint" button reveals
+    one letter at the cost of a life.
 
 Grammar Drills (category picker: Mixed Grammar / Tenses / Prepositions) is a
 supporting activity alongside these, not part of the original numbered list.
@@ -271,6 +278,18 @@ hand-picked ones. No timer, no
 losing state — finishing all target words shows a celebration, and a "I'm
 done for today ✅" link lets a child stop anytime and still mark the mission
 complete.
+
+Two fixes after feedback that hard-tier puzzles were "frustrating" — most
+`WORD_HUNT_WORDS.hard` entries were 7 letters, and the Hint only said
+"a 7-letter word starts near here" with no other clue: (1) hard/expert word
+lists now mix in more 5-6 letter entries so a random 5-word draw is less
+likely to be dominated by long words, and (2) the Hint message now states
+the starting letter explicitly (`it's a 7-letter word starting with "C"...`),
+not just the length. Also added "🔀 Shuffle grid" (`WordHuntModule.jsx`) —
+regenerates the letter layout for the *same* target words without losing
+found-word progress, distinct from "🔄 New puzzle" which picks new words
+too; implemented by splitting word selection (`runSeed`) from grid layout
+(`shuffleSeed`) into separate `useMemo`s.
 
 ## Vocabulary Builder
 `src/VocabularyModule.jsx` + `src/content/vocabularyContent.jsx`. 40 items per

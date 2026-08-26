@@ -13,8 +13,10 @@ window.App.Content = window.App.Content || {};
   window.App.Content.WORD_HUNT_WORDS = {
     easy: ["CAT", "DOG", "SUN", "STAR", "TREE", "FISH", "BIRD", "APPLE", "HOUSE", "SMILE"],
     medium: ["CLOUD", "RIVER", "STONE", "BRAVE", "QUIET", "DANCE", "FOREST", "CASTLE", "SILVER", "GARDEN"],
-    hard: ["PUZZLE", "JOURNEY", "MYSTERY", "COMPASS", "HARVEST", "GLACIER", "WHISPER", "TRIUMPH", "SHADOW", "VOYAGE"],
-    expert: ["PARADOX", "CATALYST", "ECLIPSE", "GRANITE", "TAPESTRY", "VELOCITY", "CIPHER", "SANCTUARY", "MOMENTUM", "LABYRINTH"],
+    // Mixed lengths (5-7) on purpose, not mostly-7 — a puzzle draws 5 of these
+    // at random, so a wider spread means most puzzles feel easier to scan.
+    hard: ["PUZZLE", "JOURNEY", "MYSTERY", "COMPASS", "HARVEST", "GLACIER", "WHISPER", "TRIUMPH", "SHADOW", "VOYAGE", "TIGER", "EAGLE", "CORAL", "MEDAL", "ISLAND", "ANCHOR"],
+    expert: ["PARADOX", "CATALYST", "ECLIPSE", "GRANITE", "TAPESTRY", "VELOCITY", "CIPHER", "SANCTUARY", "MOMENTUM", "LABYRINTH", "NOMAD", "MOSAIC", "ENIGMA", "ORACLE"],
   };
 
   window.App.Content.WORD_HUNT_BONUS_WORDS = [
