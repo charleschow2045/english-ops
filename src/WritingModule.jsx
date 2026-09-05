@@ -4,8 +4,9 @@
 window.App = window.App || {};
 
 (function () {
-  const { useState } = React;
-  const { Card, Button, BackButton, TierBadge } = window.App.UI;
+  const { useState, useMemo } = React;
+  const { Card, Button, BackButton, RefreshButton, TierBadge } = window.App.UI;
+  const { sampleArray } = window.App;
 
   const COMMON_MISSPELLINGS = {
     teh: "the",
@@ -51,10 +52,18 @@ window.App = window.App || {};
   }
 
   function WritingModule({ tier, onBack, onComplete }) {
-    const prompt = window.App.Content.WRITING_PROMPTS[tier] || window.App.Content.WRITING_PROMPTS.easy;
-    const hints = window.App.Content.WRITING_HINTS[tier] || window.App.Content.WRITING_HINTS.easy;
-    const modelEssay = window.App.Content.WRITING_MODEL_ESSAYS[tier] || window.App.Content.WRITING_MODEL_ESSAYS.easy;
+    const prompts = window.App.Content.WRITING_PROMPTS[tier] || window.App.Content.WRITING_PROMPTS.easy;
+    const hintsBank = window.App.Content.WRITING_HINTS[tier] || window.App.Content.WRITING_HINTS.easy;
+    const essaysBank = window.App.Content.WRITING_MODEL_ESSAYS[tier] || window.App.Content.WRITING_MODEL_ESSAYS.easy;
     const craftTips = window.App.Content.WRITING_CRAFT_TIPS;
+    const [runSeed, setRunSeed] = useState(0);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const promptIndex = useMemo(() => sampleArray(prompts.map((_, i) => i), 1)[0], [prompts, runSeed]);
+    const prompt = prompts[promptIndex];
+    const hints = hintsBank[promptIndex];
+    const modelEssay = essaysBank[promptIndex];
+
     const [text, setText] = useState("");
     const [submitted, setSubmitted] = useState(false);
     const [tips, setTips] = useState([]);
@@ -67,6 +76,15 @@ window.App = window.App || {};
       setShowModel(false);
     }
 
+    function handleRefresh() {
+      setRunSeed((s) => s + 1);
+      setText("");
+      setSubmitted(false);
+      setTips([]);
+      setShowHints(false);
+      setShowModel(false);
+    }
+
     function useStarter(starter) {
       setText((t) => (t.trim() ? `${t} ${starter}` : starter));
     }
@@ -75,11 +93,15 @@ window.App = window.App || {};
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between gap-2">
           <BackButton onClick={onBack} />
+          <RefreshButton onClick={handleRefresh} label="New topic" />
+        </div>
+
+        <div className="text-center">
           <TierBadge tier={tier} />
         </div>
 
         <Card>
-          <p className="font-extrabold text-stone-800 mb-3">{prompt}</p>
+          <p className="text-lg sm:text-xl font-extrabold text-stone-800 mb-3 leading-snug">{prompt}</p>
 
           <button
             onClick={() => setShowHints((v) => !v)}

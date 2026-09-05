@@ -374,6 +374,10 @@ feature used elsewhere.
 - [x] Module 4 — Reading (2 passages/tier)
 - [x] Module 5 — Comprehension (2 ~300-word passages/tier, mixed question types)
 - [x] Module 6 — Writing (structure hints + craft tips + model essay reveal, research-grounded)
+- [x] Writing expanded 1→6 prompts/tier (24 total) — WRITING_PROMPTS/HINTS/
+      MODEL_ESSAYS keep their original per-item field names/shapes, just
+      wrapped in arrays aligned by index; WritingModule picks a random index
+      per session and added a "🔄 New topic" refresh button
 - [x] Grammar drills (3 categories × 4 tiers, 8-12 items each with worked-example
       explanations, incl. mixed-tense paragraph questions)
 - [x] Word Hunt (Bookworm/Word Wipe-style, replaces earlier Wordle-clone)
