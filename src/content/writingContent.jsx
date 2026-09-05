@@ -204,7 +204,7 @@ window.App.Content = window.App.Content || {};
           "Body: Give at least two reasons for your opinion — for each reason, add a specific example or supporting detail, not just the reason alone.",
           "Conclusion: Restate your opinion and explain why it matters.",
         ],
-        starters: ["I believe that...", "For example,...", "Another reason is...", "In conclusion,..."],
+        starters: ["I believe that...", "Firstly,...", "Secondly,...", "In conclusion,..."],
       },
       {
         structure: [
