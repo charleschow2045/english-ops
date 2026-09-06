@@ -23,6 +23,60 @@ Builder, History & Science (English practice through real facts/stories from
 subjects the child enjoys), and Hangman. Includes daily missions and
 progress tracking across four difficulty tiers.
 
+## UI redesign: "探險護照" (Explorer's Passport) — staged, in progress
+A visual-only redesign requested to replace the bright flat-Tailwind-palette
+look with a warmer "explorer's passport / field notebook" aesthetic — kraft
+paper, ink, a passport-stamp red accent, brass-gold badges, and two module
+color families. Explicitly visual-only: no content, data structure, or
+functional/logic changes. Follows the exact staged-rollout pattern already
+used in the sibling `chinese-ops` project (`src/theme.jsx` there has the
+same "LEGACY vs NEW system" comment header — read it first if extending
+this further, the two are meant to stay structurally parallel):
+- **`src/theme.jsx`** now carries TWO parallel systems. `COLORS`/`Button`/
+  `Card`/`BackButton`/`RefreshButton`/`TierBadge` are the untouched LEGACY
+  system — every module not yet migrated keeps using these with zero risk.
+  `INK`/`MODULE_ACCENTS`/`TYPE`/`PaperCard`/`InkButton`/`PaperBackButton`/
+  `PaperRefreshButton`/`PaperTierBadge`/`Stamp` are the NEW system.
+- **Palette**: `INK.paper` #EFE6D3 (page bg), `INK.ink` #233142 (text),
+  `INK.stamp` #A83A3A (primary accent — CTAs/highlights), `INK.gold`
+  #B8923A (badges/achievements/streak only). Every module keeps its own
+  distinct colour (not collapsed into one look) but each is now a tonal
+  variant within one of two families instead of an arbitrary Tailwind hue:
+  `mapBlue` (#2F6B7A family — listening, speaking, storytelling, reading,
+  comprehension, writing — the core "reading the map" language skills) and
+  `forestGreen` (#3F6B4A family — grammar, wordhunt, vocabulary, knowledge,
+  hangman — practice/game/exploration modules). This split for the 5
+  modules beyond the user's original 2 named groups (Listening/Reading/
+  Comprehension → mapBlue, History&Science/WordHunt/Hangman → forestGreen)
+  was my own judgement call, flagged to the user as adjustable.
+- **Fonts**: "Special Elite" (typewriter/stamp feel, loaded in index.html,
+  Tailwind key `font-stamp`) for headings/display text via `TYPE.display`/
+  `TYPE.heading`; body text stays on the existing Baloo 2 per instruction
+  to keep it "clear" — `TYPE.body`/`TYPE.caption`.
+- **Cards/buttons**: `PaperCard` — kraft-tinted bg, thin tinted border,
+  layered soft shadow (contact + diffuse ambient + inset top highlight)
+  instead of the legacy flat hard-offset shadow. `InkButton` — keeps the
+  chunky press-down feel but with a layered shadow (inset highlight + solid
+  dark "thickness" layer + diffuse drop shadow).
+- **`Stamp`**: passport-stamp badge look for achievements — oval, thick
+  gold ring, slight rotation, double-inset border to read as "stamped"
+  rather than a plain rounded icon; greyed out + a 🔒 when not yet earned.
+- **Root.jsx**: page background/header switched to the new palette
+  *globally* already (this is page chrome behind every screen, not a
+  per-module component — same choice chinese-ops made), so even
+  unmigrated modules now sit on the new kraft background even though their
+  own cards/buttons still render in the old legacy style.
+- **Rollout status — 3 sample screens only, per explicit instruction to
+  stop and get approval before going further**: Home (`DailyMissions.jsx`),
+  Badges (`BadgesScreen.jsx`), and Reading. Reading required threading an
+  optional `accent` prop through the shared `PassageModule.jsx` and
+  `QuizQuestion.jsx`'s `QuestionBlock` (both branch: `accent` present →
+  new system, absent → untouched legacy) since that engine is also shared
+  by Storytelling/Comprehension/Knowledge, which must stay on the legacy
+  look until this direction is approved. **Not yet migrated**: Speaking,
+  Storytelling, Comprehension, Writing, Grammar Drills, Word Hunt,
+  Vocabulary Builder, Knowledge, Hangman.
+
 ## Gamification: badges & streak freeze
 Added after researching what makes Duolingo/Prodigy/Khan Academy Kids
 engaging — badges/achievements and a forgiving streak mechanic are cheap

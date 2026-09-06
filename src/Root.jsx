@@ -48,21 +48,21 @@ window.App = window.App || {};
     }
 
     return (
-      <div className="min-h-screen relative overflow-hidden bg-gradient-to-b from-sky-100 via-indigo-50 to-violet-100 text-stone-800">
+      <div className="min-h-screen relative overflow-hidden" style={{ backgroundColor: "#EFE6D3", color: "#233142" }}>
         <div className="pointer-events-none absolute inset-0 overflow-hidden select-none">
-          <div className="absolute -top-16 -left-16 w-72 h-72 rounded-full bg-amber-200 opacity-40 blur-3xl" />
-          <div className="absolute top-24 -right-20 w-80 h-80 rounded-full bg-emerald-200 opacity-40 blur-3xl" />
-          <div className="absolute bottom-0 left-1/4 w-72 h-72 rounded-full bg-rose-200 opacity-30 blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full bg-sky-200 opacity-30 blur-3xl" />
-          <span className="absolute top-16 right-8 text-4xl opacity-20">⭐</span>
-          <span className="absolute top-48 left-6 text-3xl opacity-20">📚</span>
-          <span className="absolute bottom-24 right-12 text-4xl opacity-20">✏️</span>
-          <span className="absolute bottom-64 left-10 text-3xl opacity-20">🎈</span>
+          <div className="absolute -top-16 -left-16 w-72 h-72 rounded-full opacity-[0.14] blur-3xl" style={{ backgroundColor: "#B8923A" }} />
+          <div className="absolute top-24 -right-20 w-80 h-80 rounded-full opacity-[0.14] blur-3xl" style={{ backgroundColor: "#3F6B4A" }} />
+          <div className="absolute bottom-0 left-1/4 w-72 h-72 rounded-full opacity-[0.12] blur-3xl" style={{ backgroundColor: "#A83A3A" }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full opacity-[0.14] blur-3xl" style={{ backgroundColor: "#2F6B7A" }} />
+          <span className="absolute top-16 right-8 text-4xl opacity-[0.16]">🧭</span>
+          <span className="absolute top-48 left-6 text-3xl opacity-[0.16]">🗺️</span>
+          <span className="absolute bottom-24 right-12 text-4xl opacity-[0.16]">✒️</span>
+          <span className="absolute bottom-64 left-10 text-3xl opacity-[0.16]">🎒</span>
         </div>
 
         <div className="relative px-4 pb-10">
         <header className="pt-6 pb-4">
-          <h1 className="text-3xl font-extrabold tracking-tight text-indigo-600">🚀 English Quest</h1>
+          <h1 className="text-3xl font-stamp font-bold tracking-tight" style={{ color: "#A83A3A" }}>🧭 English Quest</h1>
         </header>
 
         <main>
@@ -112,7 +112,7 @@ window.App = window.App || {};
               items={window.App.Content.READING_ITEMS}
               tier={state.tier}
               itemLabel="Passage"
-              color="emerald"
+              accent={window.App.UI.MODULE_ACCENTS.reading}
               completionEmoji="📚"
               completionTitle="Awesome reading today!"
               onBack={() => setView("home")}

@@ -8,11 +8,15 @@ window.App = window.App || {};
 
 (function () {
   const { useState, useMemo } = React;
-  const { Card, Button, BackButton, RefreshButton, TierBadge } = window.App.UI;
+  const { Card, Button, BackButton, RefreshButton, TierBadge, INK, TYPE, PaperCard, InkButton, PaperBackButton, PaperRefreshButton, PaperTierBadge } = window.App.UI;
   const { GlossaryText, sampleArray } = window.App;
   const { QuestionBlock, useShuffledQuestion } = window.App.QuizQuestion;
 
-  function PassageModule({ items, tier, onBack, onComplete, itemLabel, color, completionEmoji, completionTitle, sessionSize = 1 }) {
+  // `accent` (optional): a MODULE_ACCENTS entry from theme.jsx. When given,
+  // renders with the new "探險護照" kraft-paper/ink look instead of the
+  // legacy `color`-based Tailwind one — used for Reading only so far (see
+  // Root.jsx and theme.jsx comments for the staged-rollout rationale).
+  function PassageModule({ items, tier, onBack, onComplete, itemLabel, color, accent, completionEmoji, completionTitle, sessionSize = 1 }) {
     const bank = items[tier] || items.easy;
     const [runSeed, setRunSeed] = useState(0);
     // Picks a fresh random subset every session (including the very first
@@ -70,6 +74,24 @@ window.App = window.App || {};
     }
 
     if (doneAll) {
+      if (accent) {
+        return (
+          <PaperCard className="text-center">
+            <p className="text-5xl mb-2">{completionEmoji}</p>
+            <h2 className={`text-xl mb-4 ${TYPE.heading}`} style={{ color: INK.ink }}>
+              {completionTitle}
+            </h2>
+            <div className="flex gap-3">
+              <InkButton accent={accent} className="flex-1" onClick={onComplete}>
+                Back to Missions
+              </InkButton>
+            </div>
+            <button onClick={handleRefresh} className="mt-3 text-xs font-bold underline decoration-dotted" style={{ color: INK.mutedInk }}>
+              🔄 Do it again with new questions
+            </button>
+          </PaperCard>
+        );
+      }
       return (
         <Card className="text-center">
           <p className="text-5xl mb-2">{completionEmoji}</p>
@@ -83,6 +105,88 @@ window.App = window.App || {};
             🔄 Do it again with new questions
           </button>
         </Card>
+      );
+    }
+
+    if (accent) {
+      return (
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between gap-2">
+            <PaperBackButton onClick={onBack} />
+            <PaperRefreshButton onClick={handleRefresh} />
+          </div>
+          <div className="text-center">
+            <PaperTierBadge tier={tier} />
+            <br />
+            <span className={`text-sm mt-1 inline-block ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
+              {itemLabel} {index + 1}/{list.length} · Q{qIndex + 1}/{item.questions.length}
+            </span>
+          </div>
+
+          <PaperCard accent={accent}>
+            {item.title && (
+              <h2 className={`text-lg mb-2 ${TYPE.heading}`} style={{ color: INK.ink }}>
+                {item.title}
+              </h2>
+            )}
+            {item.passage && <GlossaryText text={item.passage} className="leading-relaxed mb-4 font-medium" />}
+
+            {item.tipTitle && (
+              <div className="mb-4 rounded-2xl p-3" style={{ backgroundColor: accent.tint, border: `1.5px solid ${accent.tintBorder}` }}>
+                <p className="text-sm font-extrabold" style={{ color: accent.solid }}>
+                  {item.tipTitle}
+                </p>
+                <p className="text-sm font-bold mt-1" style={{ color: INK.ink }}>
+                  {item.tip}
+                </p>
+              </div>
+            )}
+
+            {isShortAnswer ? (
+              <div>
+                <p className={`text-lg sm:text-xl leading-snug ${TYPE.heading}`} style={{ color: INK.ink }}>
+                  {q.prompt}
+                </p>
+                <textarea
+                  value={answerText}
+                  onChange={(e) => setAnswerText(e.target.value)}
+                  disabled={revealed}
+                  rows={3}
+                  placeholder="Type your answer..."
+                  className="w-full mt-2 rounded-xl font-bold text-base sm:text-lg px-4 py-3 outline-none resize-none"
+                  style={{ backgroundColor: INK.paperCard, color: INK.ink, border: `2px solid ${accent.tintBorder}` }}
+                />
+                {!revealed ? (
+                  <InkButton
+                    accent={accent}
+                    className="w-full mt-3"
+                    onClick={() => setRevealed(true)}
+                    disabled={answerText.trim().length < 3}
+                  >
+                    Check My Answer 🔎
+                  </InkButton>
+                ) : (
+                  <div className="mt-3 rounded-xl p-3" style={{ backgroundColor: accent.tint, border: `1.5px solid ${accent.tintBorder}` }}>
+                    <p className="text-sm font-extrabold mb-1" style={{ color: accent.solid }}>
+                      💡 Here's an idea of a strong answer:
+                    </p>
+                    <p className="text-base font-bold" style={{ color: INK.ink }}>
+                      {q.modelAnswer}
+                    </p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <QuestionBlock q={q} selected={selected} onSelect={selectOption} accent={accent} />
+            )}
+
+            {locked && (
+              <InkButton accent={accent} className="w-full mt-4" onClick={handleNext}>
+                {isLastQ && isLastItem ? "Finish 🎉" : "Next →"}
+              </InkButton>
+            )}
+          </PaperCard>
+        </div>
       );
     }
 

@@ -1,28 +1,31 @@
 // Badge collection screen — pure display of Storage.BADGES against current
 // stats, no separate "earned" state stored (see storage.jsx earnedBadgeKeys).
+// Second of the 3 "探險護照" (Explorer's Passport) redesign sample screens —
+// badges are rendered as passport-stamp Stamp tiles (see theme.jsx).
 window.App = window.App || {};
 
 (function () {
-  const { Card, BackButton } = window.App.UI;
+  const { INK, TYPE, PaperCard, PaperBackButton, Stamp } = window.App.UI;
   const { Storage } = window.App;
 
   function BadgeTile({ badge, earned }) {
     return (
       <div
-        className={`flex items-center gap-3 rounded-2xl border-4 p-3 transition-all ${
-          earned ? "bg-white border-amber-300" : "bg-stone-100 border-stone-200 opacity-60"
-        }`}
+        className="flex items-center gap-3 rounded-2xl p-3 transition-all"
+        style={{
+          backgroundColor: earned ? INK.paperCard : "#EDE6D5",
+          border: `1.5px solid ${earned ? INK.goldTintBorder : "#DED2AF"}`,
+          boxShadow: earned ? "0 1px 2px rgba(35,49,66,0.05), 0 6px 14px -8px rgba(35,49,66,0.18)" : "none",
+        }}
       >
-        <div
-          className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0 ${
-            earned ? "bg-amber-100" : "bg-stone-200 grayscale"
-          }`}
-        >
-          {earned ? badge.emoji : "🔒"}
-        </div>
+        <Stamp emoji={badge.emoji} earned={earned} rotate={earned ? (badge.key.length % 2 === 0 ? -6 : 5) : 0} />
         <div className="min-w-0 flex-1">
-          <p className="font-extrabold text-stone-800">{badge.label}</p>
-          <p className="text-xs font-bold text-stone-400">{badge.description}</p>
+          <p className={`text-base ${TYPE.heading}`} style={{ color: earned ? INK.ink : INK.mutedInk }}>
+            {badge.label}
+          </p>
+          <p className={`text-xs ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
+            {badge.description}
+          </p>
         </div>
       </div>
     );
@@ -35,14 +38,16 @@ window.App = window.App || {};
 
     return (
       <div className="flex flex-col gap-4">
-        <BackButton onClick={onBack} />
+        <PaperBackButton onClick={onBack} />
 
-        <Card>
-          <p className="text-sm font-bold text-stone-400">Badges earned</p>
-          <p className="text-2xl font-extrabold text-amber-500">
+        <PaperCard>
+          <p className={`text-sm ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
+            Badges earned
+          </p>
+          <p className={`text-2xl ${TYPE.display}`} style={{ color: INK.gold }}>
             🏅 {earnedCount}/{totalCount}
           </p>
-        </Card>
+        </PaperCard>
 
         <div className="flex flex-col gap-3">
           {Storage.BADGES.map((badge) => (
