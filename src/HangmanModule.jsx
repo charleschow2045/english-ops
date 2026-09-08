@@ -8,14 +8,16 @@
 // hanging-figure artwork — following this app's "no losing state"
 // philosophy (see WordHuntModule, SpeakingModule), wrong guesses cost a ❤️
 // life instead, and running out of lives gently reveals the word rather
-// than showing a "you lost" screen.
+// than showing a "you lost" screen. Migrated to the "探險護照" system — see
+// theme.jsx header comment.
 window.App = window.App || {};
 
 (function () {
   const { useState, useMemo } = React;
-  const { Card, Button, BackButton, RefreshButton, TierBadge } = window.App.UI;
+  const { INK, TYPE, PaperCard, InkButton, PaperBackButton, PaperRefreshButton, PaperTierBadge, MODULE_ACCENTS } = window.App.UI;
   const { sampleArray } = window.App;
 
+  const ACCENT = MODULE_ACCENTS.hangman;
   const MAX_LIVES = 6;
   const KEYBOARD_ROWS = [
     "QWERTYUIOP".split(""),
@@ -27,9 +29,15 @@ window.App = window.App || {};
   function HowToPlayModal({ onClose }) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
-        <div className="bg-white border-4 border-orange-200 rounded-3xl shadow-[0_8px_0_rgba(234,88,12,0.2)] p-6 w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
-          <h2 className="text-2xl font-extrabold text-stone-800 mb-3">🎯 How to Play</h2>
-          <ul className="text-sm font-bold text-stone-600 flex flex-col gap-2 list-disc list-inside">
+        <div
+          className="rounded-3xl p-6 w-full max-w-sm"
+          style={{ backgroundColor: INK.paperCard, border: `1.5px solid ${ACCENT.tintBorder}`, boxShadow: "0 12px 30px -8px rgba(35,49,66,0.35)" }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h2 className={`text-2xl mb-3 ${TYPE.heading}`} style={{ color: INK.ink }}>
+            🎯 How to Play
+          </h2>
+          <ul className="text-sm font-bold flex flex-col gap-2 list-disc list-inside" style={{ color: INK.mutedInk }}>
             <li>A secret word is hidden as blanks, like <span className="tracking-widest">_ _ _ _</span>.</li>
             <li>Tap a letter you think is in the word.</li>
             <li>Guess right, and it fills in every matching blank.</li>
@@ -37,9 +45,9 @@ window.App = window.App || {};
             <li>Fill in the whole word before your lives run out to win!</li>
             <li>Stuck? Tap "💡 Hint" to reveal a letter (costs a life).</li>
           </ul>
-          <Button color="orange" className="w-full mt-4" onClick={onClose}>
+          <InkButton accent={ACCENT} className="w-full mt-4" onClick={onClose}>
             Got it!
-          </Button>
+          </InkButton>
         </div>
       </div>
     );
@@ -86,23 +94,31 @@ window.App = window.App || {};
 
     if (status !== "playing") {
       return (
-        <Card className="text-center">
+        <PaperCard className="text-center">
           <p className="text-5xl mb-2">{status === "won" ? "🎉" : "🙂"}</p>
-          <h2 className="text-xl font-extrabold text-stone-800 mb-1">
+          <h2 className={`text-xl mb-1 ${TYPE.heading}`} style={{ color: INK.ink }}>
             {status === "won" ? "You guessed it!" : "So close — nice try!"}
           </h2>
-          <p className="text-stone-500 font-bold mb-1">
-            The word was <span className="text-stone-800 tracking-widest">{word}</span> ({category})
+          <p className="font-bold mb-1" style={{ color: INK.mutedInk }}>
+            The word was <span style={{ color: INK.ink }} className="tracking-widest">{word}</span> ({category})
           </p>
-          {status === "won" && <p className="text-amber-500 font-extrabold mb-4">⭐ {score} points</p>}
-          {status === "lost" && <p className="text-stone-400 font-bold mb-4">Every guess helps you learn 💪</p>}
-          <Button color="orange" className="w-full" onClick={onComplete}>
+          {status === "won" && (
+            <p className="font-extrabold mb-4" style={{ color: INK.gold }}>
+              ⭐ {score} points
+            </p>
+          )}
+          {status === "lost" && (
+            <p className="font-bold mb-4" style={{ color: INK.mutedInk }}>
+              Every guess helps you learn 💪
+            </p>
+          )}
+          <InkButton accent={ACCENT} className="w-full" onClick={onComplete}>
             Back to Missions
-          </Button>
-          <button onClick={handleNewWord} className="mt-3 text-xs font-bold text-stone-400 underline decoration-dotted">
+          </InkButton>
+          <button onClick={handleNewWord} className="mt-3 text-xs font-bold underline decoration-dotted" style={{ color: INK.mutedInk }}>
             🔄 Try another word
           </button>
-        </Card>
+        </PaperCard>
       );
     }
 
@@ -111,23 +127,24 @@ window.App = window.App || {};
         {showHelp && <HowToPlayModal onClose={() => setShowHelp(false)} />}
 
         <div className="flex items-center justify-between gap-2">
-          <BackButton onClick={onBack} />
+          <PaperBackButton onClick={onBack} />
           <div className="flex gap-2">
             <button
               onClick={() => setShowHelp(true)}
-              className="rounded-2xl border-4 border-orange-300 bg-white text-orange-600 font-extrabold px-3 py-2 text-xs sm:text-sm shadow-[0_3px_0_#fdba74] active:translate-y-[3px] active:shadow-none transition-all"
+              className={`rounded-2xl px-3 py-2 text-xs sm:text-sm transition-all active:translate-y-[2px] ${TYPE.caption}`}
+              style={{ backgroundColor: INK.paperCard, color: ACCENT.solid, border: `1.5px solid ${ACCENT.tintBorder}`, boxShadow: `0 3px 0 ${ACCENT.tintBorder}` }}
             >
               ❓ How to Play
             </button>
-            <RefreshButton onClick={handleNewWord} label="New word" />
+            <PaperRefreshButton onClick={handleNewWord} label="New word" />
           </div>
         </div>
 
         <div className="text-center">
-          <TierBadge tier={tier} />
+          <PaperTierBadge tier={tier} />
         </div>
 
-        <Card>
+        <PaperCard accent={ACCENT}>
           <div className="flex items-center justify-between mb-4">
             <div className="flex gap-1">
               {Array.from({ length: MAX_LIVES }).map((_, i) => (
@@ -136,14 +153,16 @@ window.App = window.App || {};
                 </span>
               ))}
             </div>
-            <p className="text-sm font-extrabold text-amber-500">⭐ {score} pts</p>
+            <p className="text-sm font-extrabold" style={{ color: INK.gold }}>
+              ⭐ {score} pts
+            </p>
           </div>
 
-          <p className="text-center text-xs font-extrabold text-orange-500 uppercase tracking-wide mb-2">
+          <p className={`text-center text-xs mb-2 ${TYPE.caption}`} style={{ color: ACCENT.solid }}>
             🏷️ Category: {category}
           </p>
 
-          <p className="text-center text-3xl sm:text-4xl font-extrabold tracking-[0.3em] text-stone-800 mb-6 break-all">
+          <p className="text-center text-3xl sm:text-4xl font-extrabold tracking-[0.3em] mb-6 break-all" style={{ color: INK.ink }}>
             {word
               .split("")
               .map((l) => (guessed.includes(l) ? l : "_"))
@@ -161,14 +180,14 @@ window.App = window.App || {};
                       key={letter}
                       onClick={() => guessLetter(letter)}
                       disabled={isGuessed}
-                      className={`flex-1 max-w-[2.75rem] aspect-square rounded-lg border-2 font-extrabold text-lg sm:text-xl flex items-center justify-center transition-all
-                        ${
-                          !isGuessed
-                            ? "bg-white border-stone-200 text-stone-700 active:translate-y-[1px]"
-                            : isCorrect
-                            ? "bg-emerald-400 border-emerald-600 text-emerald-950"
-                            : "bg-stone-200 border-stone-300 text-stone-400"
-                        }`}
+                      className="flex-1 max-w-[2.75rem] aspect-square rounded-lg font-extrabold text-lg sm:text-xl flex items-center justify-center transition-all"
+                      style={
+                        !isGuessed
+                          ? { backgroundColor: INK.paperCard, color: INK.ink, border: `2px solid ${ACCENT.tintBorder}` }
+                          : isCorrect
+                          ? { backgroundColor: ACCENT.solid, color: ACCENT.on, border: `2px solid ${ACCENT.dark}` }
+                          : { backgroundColor: "#E9E2D0", color: "#A79C82", border: "2px solid #DED2AF" }
+                      }
                     >
                       {letter}
                     </button>
@@ -181,13 +200,14 @@ window.App = window.App || {};
           <button
             onClick={showHint}
             disabled={livesLeft <= 1}
-            className="w-full rounded-2xl border-4 border-amber-300 bg-white text-amber-600 font-extrabold px-3 py-2 text-sm shadow-[0_3px_0_#fcd34d] active:translate-y-[3px] active:shadow-none transition-all disabled:opacity-40 disabled:pointer-events-none"
+            className={`w-full rounded-2xl px-3 py-2 text-sm transition-all active:translate-y-[2px] disabled:opacity-40 disabled:pointer-events-none ${TYPE.caption}`}
+            style={{ backgroundColor: INK.goldTint, color: INK.goldDark, border: `1.5px solid ${INK.goldTintBorder}` }}
           >
             💡 Hint (costs a ❤️)
           </button>
-        </Card>
+        </PaperCard>
 
-        <button onClick={onComplete} className="text-xs font-bold text-stone-400 underline decoration-dotted text-center">
+        <button onClick={onComplete} className="text-xs font-bold underline decoration-dotted text-center" style={{ color: INK.mutedInk }}>
           I'm done for today ✅
         </button>
       </div>

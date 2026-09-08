@@ -1,17 +1,20 @@
 // Grammar drills — pick a category (Mixed / Tenses / Prepositions), then step
 // through that category's tier-appropriate fill-in-the-blank exercises.
+// Migrated to the "探險護照" system — see theme.jsx header comment.
 window.App = window.App || {};
 
 (function () {
   const { useState, useMemo } = React;
-  const { Card, Button, BackButton, RefreshButton, TierBadge } = window.App.UI;
+  const { INK, TYPE, PaperCard, InkButton, PaperBackButton, PaperRefreshButton, PaperTierBadge, MODULE_ACCENTS } = window.App.UI;
   const { sampleArray } = window.App;
   const { QuestionBlock, useShuffledQuestion } = window.App.QuizQuestion;
 
+  const ACCENT = MODULE_ACCENTS.grammar;
+
   const CATEGORIES = [
-    { key: "mixed", label: "Mixed Grammar", emoji: "🔀", color: "teal", blurb: "A mix of grammar rules for your level." },
-    { key: "tense", label: "Tenses", emoji: "⏰", color: "sky", blurb: "Practice past, present, and future tense forms." },
-    { key: "preposition", label: "Prepositions", emoji: "🧭", color: "violet", blurb: "Practice tricky words like at, in, on, and to." },
+    { key: "mixed", label: "Mixed Grammar", emoji: "🔀", blurb: "A mix of grammar rules for your level." },
+    { key: "tense", label: "Tenses", emoji: "⏰", blurb: "Practice past, present, and future tense forms." },
+    { key: "preposition", label: "Prepositions", emoji: "🧭", blurb: "Practice tricky words like at, in, on, and to." },
   ];
 
   const SESSION_SIZE = 8;
@@ -48,20 +51,29 @@ window.App = window.App || {};
       return (
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between gap-2">
-            <BackButton onClick={onBack} />
-            <TierBadge tier={tier} />
+            <PaperBackButton onClick={onBack} />
+            <PaperTierBadge tier={tier} />
           </div>
           <div className="flex flex-col gap-3">
             {CATEGORIES.map((c) => (
               <button
                 key={c.key}
                 onClick={() => pickCategory(c.key)}
-                className="w-full flex items-center gap-3 bg-white border-4 border-teal-200 rounded-2xl p-4 text-left active:translate-y-[2px] transition-all"
+                className="w-full flex items-center gap-3 rounded-2xl p-4 text-left active:translate-y-[2px] transition-all"
+                style={{
+                  backgroundColor: INK.paperCard,
+                  border: `1.5px solid ${ACCENT.tintBorder}`,
+                  boxShadow: "0 1px 2px rgba(35,49,66,0.05), 0 6px 14px -8px rgba(35,49,66,0.18)",
+                }}
               >
                 <span className="text-3xl">{c.emoji}</span>
                 <div>
-                  <p className="font-extrabold text-stone-800">{c.label}</p>
-                  <p className="text-xs font-bold text-stone-400">{c.blurb}</p>
+                  <p className={`text-base ${TYPE.heading}`} style={{ color: INK.ink }}>
+                    {c.label}
+                  </p>
+                  <p className={`text-xs ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
+                    {c.blurb}
+                  </p>
                 </div>
               </button>
             ))}
@@ -93,42 +105,46 @@ window.App = window.App || {};
 
     if (doneAll) {
       return (
-        <Card className="text-center">
+        <PaperCard className="text-center">
           <p className="text-5xl mb-2">{catMeta.emoji}</p>
-          <h2 className="text-xl font-extrabold text-stone-800 mb-1">{catMeta.label} complete!</h2>
-          <p className="text-stone-500 font-bold mb-4">Nice work spotting the right words.</p>
-          <Button color={catMeta.color} className="w-full" onClick={onComplete}>
+          <h2 className={`text-xl mb-1 ${TYPE.heading}`} style={{ color: INK.ink }}>
+            {catMeta.label} complete!
+          </h2>
+          <p className="font-bold mb-4" style={{ color: INK.mutedInk }}>
+            Nice work spotting the right words.
+          </p>
+          <InkButton accent={ACCENT} className="w-full" onClick={onComplete}>
             Back to Missions
-          </Button>
-          <button onClick={handleRefresh} className="mt-3 text-xs font-bold text-stone-400 underline decoration-dotted">
+          </InkButton>
+          <button onClick={handleRefresh} className="mt-3 text-xs font-bold underline decoration-dotted" style={{ color: INK.mutedInk }}>
             🔄 Try again with new questions
           </button>
-        </Card>
+        </PaperCard>
       );
     }
 
     return (
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between gap-2">
-          <BackButton onClick={() => setCategory(null)}>← Categories</BackButton>
-          <RefreshButton onClick={handleRefresh} />
+          <PaperBackButton onClick={() => setCategory(null)}>← Categories</PaperBackButton>
+          <PaperRefreshButton onClick={handleRefresh} />
         </div>
         <div className="text-center">
-          <TierBadge tier={tier} />
+          <PaperTierBadge tier={tier} />
           <br />
-          <span className="text-sm font-extrabold text-stone-400">
+          <span className={`text-sm mt-1 inline-block ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
             {catMeta.emoji} {catMeta.label} · {index + 1}/{items.length}
           </span>
         </div>
 
-        <Card>
-          <QuestionBlock q={q} selected={selected} onSelect={selectOption} />
+        <PaperCard accent={ACCENT}>
+          <QuestionBlock q={q} selected={selected} onSelect={selectOption} accent={ACCENT} />
           {locked && (
-            <Button color={catMeta.color} className="w-full mt-4" onClick={handleNext}>
+            <InkButton accent={ACCENT} className="w-full mt-4" onClick={handleNext}>
               {isLast ? "Finish 🎉" : "Next →"}
-            </Button>
+            </InkButton>
           )}
-        </Card>
+        </PaperCard>
       </div>
     );
   }

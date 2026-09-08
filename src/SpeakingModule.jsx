@@ -8,13 +8,16 @@
 //   - wraps rec.start() in try/catch (some browsers throw synchronously)
 //   - runs a hard timeout in case recognition never fires an event at all
 //   - always shows a manual "I said it!" fallback so the child is never stuck
+//
+// Migrated to the "探險護照" system — see theme.jsx header comment.
 window.App = window.App || {};
 
 (function () {
   const { useState, useEffect, useRef, useMemo } = React;
-  const { Card, Button, BackButton, RefreshButton, TierBadge } = window.App.UI;
+  const { INK, TYPE, PaperCard, InkButton, PaperBackButton, PaperRefreshButton, PaperTierBadge, MODULE_ACCENTS } = window.App.UI;
   const { GlossaryText, speak, VoicePicker } = window.App;
 
+  const ACCENT = MODULE_ACCENTS.speaking;
   const LISTEN_TIMEOUT_MS = 7000;
 
   function shuffleArray(arr) {
@@ -162,101 +165,126 @@ window.App = window.App || {};
 
     if (doneAll) {
       return (
-        <Card className="text-center">
+        <PaperCard className="text-center">
           <p className="text-5xl mb-2">🎤</p>
-          <h2 className="text-xl font-extrabold text-stone-800 mb-1">Great speaking today!</h2>
-          <p className="text-stone-500 font-bold mb-4">You practised {items.length} words and sentences.</p>
-          <Button color="rose" className="w-full" onClick={onComplete}>
+          <h2 className={`text-xl mb-1 ${TYPE.heading}`} style={{ color: INK.ink }}>
+            Great speaking today!
+          </h2>
+          <p className="font-bold mb-4" style={{ color: INK.mutedInk }}>
+            You practised {items.length} words and sentences.
+          </p>
+          <InkButton accent={ACCENT} className="w-full" onClick={onComplete}>
             Back to Missions
-          </Button>
-          <button onClick={handleRefresh} className="mt-3 text-xs font-bold text-stone-400 underline decoration-dotted">
+          </InkButton>
+          <button onClick={handleRefresh} className="mt-3 text-xs font-bold underline decoration-dotted" style={{ color: INK.mutedInk }}>
             🔄 Do it again with new sentences
           </button>
-        </Card>
+        </PaperCard>
       );
     }
 
     return (
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between gap-2">
-          <BackButton onClick={onBack} />
-          <RefreshButton onClick={handleRefresh} />
+          <PaperBackButton onClick={onBack} />
+          <PaperRefreshButton onClick={handleRefresh} />
         </div>
         <div className="text-center">
-          <TierBadge tier={tier} />
+          <PaperTierBadge tier={tier} />
           <br />
-          <span className="text-sm font-extrabold text-stone-400">
+          <span className={`text-sm mt-1 inline-block ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
             {index + 1} of {items.length}
           </span>
         </div>
 
-        <Card>
-          <VoicePicker voicePref={voicePref} onChange={onVoiceChange} />
+        <PaperCard accent={ACCENT}>
+          <VoicePicker voicePref={voicePref} onChange={onVoiceChange} accent={ACCENT} />
 
-          <GlossaryText text={item.text} className="text-2xl font-extrabold text-stone-800 text-center mb-4" />
+          <GlossaryText text={item.text} className="text-2xl font-extrabold text-center mb-4" />
 
           <div className="flex gap-2">
-            <Button color="sky" className="flex-1" onClick={() => speak(item.text, voicePref)}>
+            <InkButton accent={ACCENT} className="flex-1" onClick={() => speak(item.text, voicePref)}>
               🔊 Hear It
-            </Button>
-            <Button color="rose" className="flex-1" onClick={startListening} disabled={status === "listening"}>
+            </InkButton>
+            <InkButton
+              accent={{ solid: INK.stamp, dark: INK.stampDark, on: INK.paper }}
+              className="flex-1"
+              onClick={startListening}
+              disabled={status === "listening"}
+            >
               {status === "listening" ? "🎤 Listening…" : "🎤 Say It"}
-            </Button>
+            </InkButton>
           </div>
 
           {status === "unsupported" && (
             <div className="mt-4 text-center">
-              <p className="text-amber-600 font-bold text-sm mb-3">
+              <p className="font-bold text-sm mb-3" style={{ color: INK.goldDark }}>
                 Speech recognition isn't available in this browser — that's okay! Say it out loud, then tap below.
               </p>
-              <Button color="emerald" className="w-full" onClick={() => setStatus("correct")}>
+              <InkButton accent={ACCENT} className="w-full" onClick={() => setStatus("correct")}>
                 ✅ I said it!
-              </Button>
+              </InkButton>
             </div>
           )}
 
           {status === "micBlocked" && (
             <div className="mt-4 text-center">
-              <p className="text-amber-600 font-bold text-sm mb-3">
+              <p className="font-bold text-sm mb-3" style={{ color: INK.goldDark }}>
                 Microphone access is blocked — check your browser or device settings. You can still say it out loud and tap below.
               </p>
-              <Button color="emerald" className="w-full" onClick={() => setStatus("correct")}>
+              <InkButton accent={ACCENT} className="w-full" onClick={() => setStatus("correct")}>
                 ✅ I said it!
-              </Button>
+              </InkButton>
             </div>
           )}
 
           {status === "tryAgain" && (
             <div className="mt-4 text-center">
-              <p className="text-amber-600 font-bold text-sm mb-1">💛 Not quite — want to try again?</p>
-              {heard && <p className="text-stone-400 text-xs font-bold mb-3">I heard: "{heard}"</p>}
+              <p className="font-bold text-sm mb-1" style={{ color: INK.goldDark }}>
+                💛 Not quite — want to try again?
+              </p>
+              {heard && (
+                <p className="text-xs font-bold mb-3" style={{ color: INK.mutedInk }}>
+                  I heard: "{heard}"
+                </p>
+              )}
               {attempts >= 2 ? (
-                <Button color="emerald" className="w-full" onClick={handleNext}>
+                <InkButton accent={ACCENT} className="w-full" onClick={handleNext}>
                   That's okay, keep practising → Next
-                </Button>
+                </InkButton>
               ) : (
-                <Button color="rose" className="w-full" onClick={startListening}>
+                <InkButton
+                  accent={{ solid: INK.stamp, dark: INK.stampDark, on: INK.paper }}
+                  className="w-full"
+                  onClick={startListening}
+                >
                   🎤 Try Again
-                </Button>
+                </InkButton>
               )}
             </div>
           )}
 
           {status === "correct" && (
             <div className="mt-4 text-center">
-              <p className="text-emerald-600 font-extrabold mb-3">✅ Great pronunciation!</p>
-              <Button color="emerald" className="w-full" onClick={handleNext}>
+              <p className="font-extrabold mb-3" style={{ color: ACCENT.solid }}>
+                ✅ Great pronunciation!
+              </p>
+              <InkButton accent={ACCENT} className="w-full" onClick={handleNext}>
                 {isLast ? "Finish 🎉" : "Next →"}
-              </Button>
+              </InkButton>
             </div>
           )}
 
           {status === "idle" && (
-            <button onClick={() => setStatus("correct")} className="mt-3 text-xs font-bold text-stone-400 underline decoration-dotted w-full text-center">
+            <button
+              onClick={() => setStatus("correct")}
+              className="mt-3 text-xs font-bold underline decoration-dotted w-full text-center"
+              style={{ color: INK.mutedInk }}
+            >
               Mic trouble? Tap here if you said it out loud
             </button>
           )}
-        </Card>
+        </PaperCard>
       </div>
     );
   }

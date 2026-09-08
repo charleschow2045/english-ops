@@ -10,14 +10,16 @@
 // 💡 Hint button exists, after feedback that an 8x8, all-directions grid
 // with no way to get unstuck was too hard to actually play, even though the
 // placement algorithm itself was verified correct (every "placed" word is
-// independently re-checked as truly traceable — see buildGrid).
+// independently re-checked as truly traceable — see buildGrid). Migrated to
+// the "探險護照" system — see theme.jsx header comment.
 window.App = window.App || {};
 
 (function () {
   const { useState, useMemo } = React;
-  const { Card, Button, BackButton, RefreshButton, TierBadge } = window.App.UI;
+  const { INK, TYPE, PaperCard, InkButton, PaperBackButton, PaperRefreshButton, PaperTierBadge, MODULE_ACCENTS } = window.App.UI;
   const { sampleArray } = window.App;
 
+  const ACCENT = MODULE_ACCENTS.wordhunt;
   const GRID_SIZE_BY_TIER = { easy: 6, medium: 6, hard: 7, expert: 7 };
   const WORDS_PER_PUZZLE = 5;
   const LETTER_POOL = "AAAAAAAAABBCCDDDDEEEEEEEEEEEEFFGGGHHIIIIIIIIIJKLLLLMMNNNNNNNOOOOOOOPPQRRRRRRSSSSTTTTTTTUUUVVWWXYYZ";
@@ -112,9 +114,15 @@ window.App = window.App || {};
   function HowToPlayModal({ onClose }) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
-        <div className="bg-white border-4 border-rose-200 rounded-3xl shadow-[0_8px_0_rgba(244,63,94,0.2)] p-6 w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
-          <h2 className="text-2xl font-extrabold text-stone-800 mb-3">🐛 How to Play</h2>
-          <ul className="text-sm font-bold text-stone-600 flex flex-col gap-2 list-disc list-inside">
+        <div
+          className="rounded-3xl p-6 w-full max-w-sm"
+          style={{ backgroundColor: INK.paperCard, border: `1.5px solid ${ACCENT.tintBorder}`, boxShadow: "0 12px 30px -8px rgba(35,49,66,0.35)" }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h2 className={`text-2xl mb-3 ${TYPE.heading}`} style={{ color: INK.ink }}>
+            🐛 How to Play
+          </h2>
+          <ul className="text-sm font-bold flex flex-col gap-2 list-disc list-inside" style={{ color: INK.mutedInk }}>
             <li>Tap a letter to start a word.</li>
             <li>Keep tapping letters that touch each other (up, down, sideways, or diagonally) to spell a word.</li>
             <li>Tap the last letter again to submit your word.</li>
@@ -123,9 +131,9 @@ window.App = window.App || {};
             <li>Grid looking tricky? Tap "🔀 Shuffle grid" for a fresh layout with the same words.</li>
             <li>Find all the hidden target words — bonus points for any other real word you spot too!</li>
           </ul>
-          <Button color="rose" className="w-full mt-4" onClick={onClose}>
+          <InkButton accent={ACCENT} className="w-full mt-4" onClick={onClose}>
             Got it!
-          </Button>
+          </InkButton>
         </div>
       </div>
     );
@@ -231,17 +239,21 @@ window.App = window.App || {};
 
     if (allTargetsFound) {
       return (
-        <Card className="text-center">
+        <PaperCard className="text-center">
           <p className="text-5xl mb-2">🐛</p>
-          <h2 className="text-xl font-extrabold text-stone-800 mb-1">You found every word!</h2>
-          <p className="text-stone-500 font-bold mb-4">Score: {score} points</p>
-          <Button color="rose" className="w-full" onClick={onComplete}>
+          <h2 className={`text-xl mb-1 ${TYPE.heading}`} style={{ color: INK.ink }}>
+            You found every word!
+          </h2>
+          <p className="font-bold mb-4" style={{ color: INK.mutedInk }}>
+            Score: {score} points
+          </p>
+          <InkButton accent={ACCENT} className="w-full" onClick={onComplete}>
             Back to Missions
-          </Button>
-          <button onClick={handleRefresh} className="mt-3 text-xs font-bold text-stone-400 underline decoration-dotted">
+          </InkButton>
+          <button onClick={handleRefresh} className="mt-3 text-xs font-bold underline decoration-dotted" style={{ color: INK.mutedInk }}>
             🔄 Play a new puzzle
           </button>
-        </Card>
+        </PaperCard>
       );
     }
 
@@ -250,28 +262,31 @@ window.App = window.App || {};
         {showHelp && <HowToPlayModal onClose={() => setShowHelp(false)} />}
 
         <div className="flex items-center justify-between gap-2">
-          <BackButton onClick={onBack} />
+          <PaperBackButton onClick={onBack} />
           <div className="flex gap-2">
             <button
               onClick={() => setShowHelp(true)}
-              className="rounded-2xl border-4 border-rose-300 bg-white text-rose-600 font-extrabold px-3 py-2 text-xs sm:text-sm shadow-[0_3px_0_#fda4af] active:translate-y-[3px] active:shadow-none transition-all"
+              className={`rounded-2xl px-3 py-2 text-xs sm:text-sm transition-all active:translate-y-[2px] ${TYPE.caption}`}
+              style={{ backgroundColor: INK.paperCard, color: ACCENT.solid, border: `1.5px solid ${ACCENT.tintBorder}`, boxShadow: `0 3px 0 ${ACCENT.tintBorder}` }}
             >
               ❓ How to Play
             </button>
-            <RefreshButton onClick={handleRefresh} label="New puzzle" />
+            <PaperRefreshButton onClick={handleRefresh} label="New puzzle" />
           </div>
         </div>
 
         <div className="text-center">
-          <TierBadge tier={tier} />
+          <PaperTierBadge tier={tier} />
         </div>
 
-        <Card>
+        <PaperCard accent={ACCENT}>
           <div className="flex items-center justify-between mb-3">
-            <p className="text-sm font-extrabold text-stone-500">
+            <p className="text-sm font-extrabold" style={{ color: INK.mutedInk }}>
               Found {targetsFound.length}/{placedWords.length} words
             </p>
-            <p className="text-sm font-extrabold text-amber-500">⭐ {score} pts</p>
+            <p className="text-sm font-extrabold" style={{ color: INK.gold }}>
+              ⭐ {score} pts
+            </p>
           </div>
 
           <div
@@ -286,14 +301,14 @@ window.App = window.App || {};
                   <button
                     key={`${r}-${c}`}
                     onClick={() => tapCell(r, c)}
-                    className={`aspect-square rounded-lg border-2 font-extrabold text-lg sm:text-xl flex items-center justify-center transition-all
-                      ${
-                        inPath
-                          ? "bg-rose-400 border-rose-600 text-rose-950"
-                          : isHint
-                          ? "bg-amber-300 border-amber-500 text-amber-950 animate-pulse"
-                          : "bg-white border-stone-200 text-stone-700"
-                      }`}
+                    className={`aspect-square rounded-lg font-extrabold text-lg sm:text-xl flex items-center justify-center transition-all ${isHint ? "animate-pulse" : ""}`}
+                    style={
+                      inPath
+                        ? { backgroundColor: ACCENT.solid, color: ACCENT.on, border: `2px solid ${ACCENT.dark}` }
+                        : isHint
+                        ? { backgroundColor: INK.goldTint, color: INK.goldDark, border: `2px solid ${INK.gold}` }
+                        : { backgroundColor: INK.paperCard, color: INK.ink, border: `2px solid ${ACCENT.tintBorder}` }
+                    }
                   >
                     {letter}
                   </button>
@@ -303,47 +318,66 @@ window.App = window.App || {};
           </div>
 
           <div className="text-center mb-2">
-            <p className="text-lg font-extrabold text-stone-800 min-h-[1.75rem]">{currentWord}</p>
+            <p className="text-lg font-extrabold min-h-[1.75rem]" style={{ color: INK.ink }}>
+              {currentWord}
+            </p>
           </div>
 
           <div className="flex gap-2 mb-3">
-            <Button color="rose" className="flex-1 py-2 text-sm" onClick={submitWord} disabled={path.length === 0}>
+            <InkButton accent={ACCENT} className="flex-1 py-2 text-sm" onClick={submitWord} disabled={path.length === 0}>
               Submit
-            </Button>
-            <Button color="teal" className="flex-1 py-2 text-sm" onClick={clearPath} disabled={path.length === 0}>
+            </InkButton>
+            <InkButton
+              accent={{ solid: "#8C6B28", dark: "#5F491A", on: INK.paper }}
+              className="flex-1 py-2 text-sm"
+              onClick={clearPath}
+              disabled={path.length === 0}
+            >
               Clear
-            </Button>
-            <Button color="amber" className="flex-1 py-2 text-sm" onClick={showHint}>
+            </InkButton>
+            <InkButton
+              accent={{ solid: INK.gold, dark: INK.goldDark, on: INK.ink }}
+              className="flex-1 py-2 text-sm"
+              onClick={showHint}
+            >
               💡 Hint
-            </Button>
+            </InkButton>
           </div>
 
           <button
             onClick={handleShuffle}
-            className="w-full text-center text-xs font-bold text-stone-400 underline decoration-dotted mb-2"
+            className="w-full text-center text-xs font-bold underline decoration-dotted mb-2"
+            style={{ color: INK.mutedInk }}
           >
             🔀 Shuffle grid (same words, new layout)
           </button>
 
-          {message && <p className="text-center text-sm font-bold text-indigo-600 mb-2">{message}</p>}
+          {message && (
+            <p className="text-center text-sm font-bold mb-2" style={{ color: ACCENT.solid }}>
+              {message}
+            </p>
+          )}
 
           {found.length > 0 && (
             <div className="flex flex-wrap gap-2 justify-center">
               {found.map((f, i) => (
                 <span
                   key={i}
-                  className={`text-xs font-extrabold px-2 py-1 rounded-full ${
-                    placedWords.includes(f.word) ? "bg-emerald-100 text-emerald-600" : "bg-amber-100 text-amber-600"
-                  }`}
+                  className="text-xs font-extrabold px-2 py-1 rounded-full"
+                  style={
+                    placedWords.includes(f.word)
+                      ? { backgroundColor: ACCENT.tint, color: ACCENT.solid }
+                      : { backgroundColor: INK.goldTint, color: INK.goldDark }
+                  }
                 >
                   {f.word}
                 </span>
               ))}
             </div>
           )}
-        </Card>
+        </PaperCard>
 
-        <button onClick={onComplete} className="text-xs font-bold text-stone-400 underline decoration-dotted text-center">
+        <button onClick={onComplete} className="text-xs font-bold underline decoration-dotted text-center" style={{ color: INK.mutedInk }}>
           I'm done for today ✅
         </button>
       </div>

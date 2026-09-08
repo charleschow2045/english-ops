@@ -66,16 +66,29 @@ this further, the two are meant to stay structurally parallel):
   per-module component — same choice chinese-ops made), so even
   unmigrated modules now sit on the new kraft background even though their
   own cards/buttons still render in the old legacy style.
-- **Rollout status — 3 sample screens only, per explicit instruction to
-  stop and get approval before going further**: Home (`DailyMissions.jsx`),
-  Badges (`BadgesScreen.jsx`), and Reading. Reading required threading an
-  optional `accent` prop through the shared `PassageModule.jsx` and
-  `QuizQuestion.jsx`'s `QuestionBlock` (both branch: `accent` present →
-  new system, absent → untouched legacy) since that engine is also shared
-  by Storytelling/Comprehension/Knowledge, which must stay on the legacy
-  look until this direction is approved. **Not yet migrated**: Speaking,
-  Storytelling, Comprehension, Writing, Grammar Drills, Word Hunt,
-  Vocabulary Builder, Knowledge, Hangman.
+- **Rollout status — complete.** After the 3 sample screens (Home, Badges,
+  Reading) were approved, the system was extended to every remaining
+  module: `GrammarModule.jsx`, `HangmanModule.jsx`, `ListeningModule.jsx`,
+  `SpeakingModule.jsx`, `VocabularyModule.jsx`, `WordHuntModule.jsx`, and
+  `WritingModule.jsx` were each rewritten onto `PaperCard`/`InkButton`/
+  `INK`/`TYPE` with their own `MODULE_ACCENTS` entry, and Storytelling/
+  Comprehension/Knowledge now pass `accent={MODULE_ACCENTS.<key>}` into
+  the same shared `PassageModule.jsx`/`QuestionBlock` that Reading already
+  used (no further changes needed to those two shared files themselves —
+  their existing `accent`-present/absent branch just now always takes the
+  `accent` path since every caller supplies one). `VoicePicker.jsx`
+  (shared by Listening/Speaking) also gained an optional `accent` prop.
+  `renderBlankSentence` (the fill-in-the-blank placeholder inside
+  `QuestionBlock`) now tints to the passed `accent` too, fixing a missed
+  spot where it stayed hardcoded indigo through the first rollout pass.
+  The legacy `COLORS`/`Button`/`Card`/`BackButton`/`RefreshButton`/
+  `TierBadge` exports in `theme.jsx` are no longer referenced by any
+  module — left in place rather than deleted, since removing them wasn't
+  requested and they're harmless dead code, not a maintenance risk.
+  VocabularyModule's old per-part-of-speech rainbow badge colour was
+  dropped in favour of a single consistent module accent colour, matching
+  every other migrated module — a deliberate simplification, not an
+  oversight.
 
 ## Gamification: badges & streak freeze
 Added after researching what makes Duolingo/Prodigy/Khan Academy Kids

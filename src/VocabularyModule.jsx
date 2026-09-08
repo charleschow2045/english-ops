@@ -1,33 +1,34 @@
 // Vocabulary Builder — flashcard flow through 10 randomly-sampled words (from
-// a pool of 20) for the tier, each showing English word + part of speech,
+// a pool of 40) for the tier, each showing English word + part of speech,
 // then flipping to reveal the Traditional Chinese translation, definition,
-// example sentence, and tap-to-explore similar/opposite words.
+// example sentence, and tap-to-explore similar/opposite words. Migrated to
+// the "探險護照" system — see theme.jsx header comment. The per-part-of-
+// speech rainbow badge colour was dropped in favour of the module's own
+// single accent colour, matching every other migrated module.
 window.App = window.App || {};
 
 (function () {
   const { useState, useMemo } = React;
-  const { Card, Button, BackButton, RefreshButton, TierBadge } = window.App.UI;
+  const { INK, TYPE, PaperCard, InkButton, PaperBackButton, PaperRefreshButton, PaperTierBadge, MODULE_ACCENTS } = window.App.UI;
   const { speak, sampleArray } = window.App;
 
+  const ACCENT = MODULE_ACCENTS.vocabulary;
   const SESSION_SIZE = 10;
-
-  function posColor(pos) {
-    if (pos.includes("verb") && (pos.includes("noun") || pos.includes("adj"))) return "violet";
-    if (pos === "phrase") return "rose";
-    if (pos.startsWith("noun")) return "sky";
-    if (pos.startsWith("verb")) return "emerald";
-    if (pos.startsWith("adj")) return "amber";
-    return "teal";
-  }
 
   function RelatedWordChip({ item, voicePref }) {
     return (
       <button
         onClick={() => speak(item.word, voicePref)}
-        className="rounded-lg border-2 border-teal-300 bg-white px-2 py-1 text-left"
+        className="rounded-lg px-2 py-1 text-left"
+        style={{ backgroundColor: INK.paperCard, border: `2px solid ${ACCENT.tintBorder}` }}
       >
-        <span className="text-sm font-extrabold text-teal-700">{item.word}</span>
-        <span className="text-xs font-bold text-teal-500"> · {item.zh}</span>
+        <span className="text-sm font-extrabold" style={{ color: ACCENT.solid }}>
+          {item.word}
+        </span>
+        <span className="text-xs font-bold" style={{ color: INK.mutedInk }}>
+          {" "}
+          · {item.zh}
+        </span>
       </button>
     );
   }
@@ -43,7 +44,6 @@ window.App = window.App || {};
 
     const item = items[index];
     const isLast = index === items.length - 1;
-    const color = posColor(item.pos);
 
     function handleRefresh() {
       setRunSeed((s) => s + 1);
@@ -63,70 +63,91 @@ window.App = window.App || {};
 
     if (doneAll) {
       return (
-        <Card className="text-center">
+        <PaperCard className="text-center">
           <p className="text-5xl mb-2">📔</p>
-          <h2 className="text-xl font-extrabold text-stone-800 mb-1">You learned {items.length} new words today!</h2>
-          <p className="text-stone-500 font-bold mb-4">Great vocabulary building.</p>
-          <Button color="teal" className="w-full" onClick={onComplete}>
+          <h2 className={`text-xl mb-1 ${TYPE.heading}`} style={{ color: INK.ink }}>
+            You learned {items.length} new words today!
+          </h2>
+          <p className="font-bold mb-4" style={{ color: INK.mutedInk }}>
+            Great vocabulary building.
+          </p>
+          <InkButton accent={ACCENT} className="w-full" onClick={onComplete}>
             Back to Missions
-          </Button>
-          <button onClick={handleRefresh} className="mt-3 text-xs font-bold text-stone-400 underline decoration-dotted">
+          </InkButton>
+          <button onClick={handleRefresh} className="mt-3 text-xs font-bold underline decoration-dotted" style={{ color: INK.mutedInk }}>
             🔄 Study a new set of 10
           </button>
-        </Card>
+        </PaperCard>
       );
     }
 
     return (
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between gap-2">
-          <BackButton onClick={onBack} />
-          <RefreshButton onClick={handleRefresh} label="New set" />
+          <PaperBackButton onClick={onBack} />
+          <PaperRefreshButton onClick={handleRefresh} label="New set" />
         </div>
         <div className="text-center">
-          <TierBadge tier={tier} />
+          <PaperTierBadge tier={tier} />
           <br />
-          <span className="text-sm font-extrabold text-stone-400">
+          <span className={`text-sm mt-1 inline-block ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
             Word {index + 1} of {items.length}
           </span>
         </div>
 
-        <Card>
+        <PaperCard accent={ACCENT}>
           <div className="flex items-center justify-center gap-2 mb-2">
-            <span className={`text-xs font-extrabold px-2 py-1 rounded-full bg-${color}-100 text-${color}-600 uppercase`}>
+            <span
+              className="text-xs font-extrabold px-2 py-1 rounded-full uppercase"
+              style={{ backgroundColor: ACCENT.tint, color: ACCENT.solid }}
+            >
               {item.pos}
             </span>
           </div>
 
-          <p className="text-3xl font-extrabold text-stone-800 text-center mb-3">{item.word}</p>
+          <p className="text-3xl font-extrabold text-center mb-3" style={{ color: INK.ink }}>
+            {item.word}
+          </p>
 
           <div className="flex justify-center mb-4">
-            <Button color="sky" className="px-4 py-2 text-sm" onClick={() => speak(item.word, voicePref)}>
+            <InkButton accent={ACCENT} className="px-4 py-2 text-sm" onClick={() => speak(item.word, voicePref)}>
               🔊 Hear It
-            </Button>
+            </InkButton>
           </div>
 
           {!flipped ? (
-            <Button color="teal" className="w-full" onClick={() => setFlipped(true)}>
+            <InkButton accent={ACCENT} className="w-full" onClick={() => setFlipped(true)}>
               Show Meaning 🔎
-            </Button>
+            </InkButton>
           ) : (
             <div className="flex flex-col gap-3">
-              <div className="rounded-2xl border-4 border-teal-200 bg-teal-50 p-3 text-center">
-                <p className="text-2xl font-extrabold text-teal-700">{item.zh}</p>
+              <div className="rounded-2xl p-3 text-center" style={{ backgroundColor: ACCENT.tint, border: `1.5px solid ${ACCENT.tintBorder}` }}>
+                <p className="text-2xl font-extrabold" style={{ color: ACCENT.solid }}>
+                  {item.zh}
+                </p>
               </div>
-              <div className="rounded-xl border-4 border-stone-200 bg-stone-50 p-3">
-                <p className="text-xs font-extrabold text-stone-400 mb-1">Meaning:</p>
-                <p className="text-sm font-bold text-stone-700 mb-2">{item.definition}</p>
-                <p className="text-xs font-extrabold text-stone-400 mb-1">Example:</p>
-                <p className="text-sm font-bold text-stone-700 italic">"{item.example}"</p>
+              <div className="rounded-xl p-3" style={{ backgroundColor: INK.paperCard, border: "1.5px solid #E4D9BE" }}>
+                <p className="text-xs font-extrabold mb-1" style={{ color: INK.mutedInk }}>
+                  Meaning:
+                </p>
+                <p className="text-sm font-bold mb-2" style={{ color: INK.ink }}>
+                  {item.definition}
+                </p>
+                <p className="text-xs font-extrabold mb-1" style={{ color: INK.mutedInk }}>
+                  Example:
+                </p>
+                <p className="text-sm font-bold italic" style={{ color: INK.ink }}>
+                  "{item.example}"
+                </p>
               </div>
 
               {(item.synonyms || item.antonyms) && (
                 <div className="flex flex-col gap-2">
                   {item.synonyms && (
                     <div>
-                      <p className="text-xs font-extrabold text-stone-400 mb-1">🔁 Similar words (tap to hear):</p>
+                      <p className="text-xs font-extrabold mb-1" style={{ color: INK.mutedInk }}>
+                        🔁 Similar words (tap to hear):
+                      </p>
                       <div className="flex flex-wrap gap-2">
                         {item.synonyms.map((s, i) => (
                           <RelatedWordChip key={i} item={s} voicePref={voicePref} />
@@ -136,7 +157,9 @@ window.App = window.App || {};
                   )}
                   {item.antonyms && (
                     <div>
-                      <p className="text-xs font-extrabold text-stone-400 mb-1">↔️ Opposite words (tap to hear):</p>
+                      <p className="text-xs font-extrabold mb-1" style={{ color: INK.mutedInk }}>
+                        ↔️ Opposite words (tap to hear):
+                      </p>
                       <div className="flex flex-wrap gap-2">
                         {item.antonyms.map((a, i) => (
                           <RelatedWordChip key={i} item={a} voicePref={voicePref} />
@@ -147,12 +170,12 @@ window.App = window.App || {};
                 </div>
               )}
 
-              <Button color="emerald" className="w-full" onClick={handleNext}>
+              <InkButton accent={ACCENT} className="w-full" onClick={handleNext}>
                 {isLast ? "Finish 🎉" : "Next Word →"}
-              </Button>
+              </InkButton>
             </div>
           )}
-        </Card>
+        </PaperCard>
       </div>
     );
   }

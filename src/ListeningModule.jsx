@@ -1,11 +1,14 @@
-// Module 1: Listening — TTS plays a passage, child answers a multiple-choice question
+// Module 1: Listening — TTS plays a passage, child answers a multiple-choice
+// question. Migrated to the "探險護照" system — see theme.jsx header comment.
 window.App = window.App || {};
 
 (function () {
   const { useState, useEffect, useMemo } = React;
-  const { Card, Button, BackButton, RefreshButton, TierBadge } = window.App.UI;
+  const { INK, TYPE, PaperCard, InkButton, PaperBackButton, PaperRefreshButton, PaperTierBadge, MODULE_ACCENTS } = window.App.UI;
   const { speak, VoicePicker } = window.App;
   const { useShuffledQuestion } = window.App.QuizQuestion;
+
+  const ACCENT = MODULE_ACCENTS.listening;
 
   function shuffleArray(arr) {
     const copy = arr.slice();
@@ -69,17 +72,21 @@ window.App = window.App || {};
     if (doneAll) {
       return (
         <div className="flex flex-col gap-4">
-          <Card className="text-center">
+          <PaperCard className="text-center">
             <p className="text-5xl mb-2">🎉</p>
-            <h2 className="text-xl font-extrabold text-stone-800 mb-1">Great listening today!</h2>
-            <p className="text-stone-500 font-bold mb-4">You finished all {passages.length} passages.</p>
-            <Button color="sky" className="w-full" onClick={onComplete}>
+            <h2 className={`text-xl mb-1 ${TYPE.heading}`} style={{ color: INK.ink }}>
+              Great listening today!
+            </h2>
+            <p className="font-bold mb-4" style={{ color: INK.mutedInk }}>
+              You finished all {passages.length} passages.
+            </p>
+            <InkButton accent={ACCENT} className="w-full" onClick={onComplete}>
               Back to Missions
-            </Button>
-            <button onClick={handleRefresh} className="mt-3 text-xs font-bold text-stone-400 underline decoration-dotted">
+            </InkButton>
+            <button onClick={handleRefresh} className="mt-3 text-xs font-bold underline decoration-dotted" style={{ color: INK.mutedInk }}>
               🔄 Do it again with new passages
             </button>
-          </Card>
+          </PaperCard>
         </div>
       );
     }
@@ -87,25 +94,27 @@ window.App = window.App || {};
     return (
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between gap-2">
-          <BackButton onClick={onBack} />
-          <RefreshButton onClick={handleRefresh} />
+          <PaperBackButton onClick={onBack} />
+          <PaperRefreshButton onClick={handleRefresh} />
         </div>
         <div className="text-center">
-          <TierBadge tier={tier} />
+          <PaperTierBadge tier={tier} />
           <br />
-          <span className="text-sm font-extrabold text-stone-400">
+          <span className={`text-sm mt-1 inline-block ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
             Passage {index + 1} of {passages.length}
           </span>
         </div>
 
-        <Card>
-          <VoicePicker voicePref={voicePref} onChange={onVoiceChange} />
+        <PaperCard accent={ACCENT}>
+          <VoicePicker voicePref={voicePref} onChange={onVoiceChange} accent={ACCENT} />
 
-          <Button color="sky" className="w-full" onClick={handlePlay}>
+          <InkButton accent={ACCENT} className="w-full" onClick={handlePlay}>
             {played ? "🔁 Listen Again" : "🔊 Listen"}
-          </Button>
+          </InkButton>
 
-          <p className="mt-4 font-extrabold text-stone-800">{passage.question}</p>
+          <p className={`mt-4 ${TYPE.heading}`} style={{ color: INK.ink }}>
+            {passage.question}
+          </p>
 
           <div className="mt-3 flex flex-col gap-2">
             {passage.options.map((opt, i) => {
@@ -118,14 +127,14 @@ window.App = window.App || {};
                   key={i}
                   onClick={() => selectOption(i)}
                   disabled={locked}
-                  className={`text-left rounded-xl border-4 font-bold px-4 py-3 transition-all disabled:opacity-100
-                    ${
-                      showCorrect
-                        ? "bg-emerald-400 border-emerald-600 text-emerald-950"
-                        : showWrong
-                        ? "bg-amber-300 border-amber-500 text-amber-950"
-                        : "bg-white border-stone-200 text-stone-700"
-                    }`}
+                  className="text-left rounded-xl font-bold px-4 py-3 transition-all disabled:opacity-100"
+                  style={
+                    showCorrect
+                      ? { backgroundColor: ACCENT.solid, color: ACCENT.on, border: `2px solid ${ACCENT.dark}` }
+                      : showWrong
+                      ? { backgroundColor: INK.goldTint, color: "#7A2929", border: "2px solid #E7C9C4" }
+                      : { backgroundColor: INK.paperCard, color: INK.ink, border: `2px solid ${ACCENT.tintBorder}` }
+                  }
                 >
                   {opt}
                 </button>
@@ -135,21 +144,21 @@ window.App = window.App || {};
 
           {locked && (
             <div className="mt-3">
-              <p className={`font-extrabold ${isCorrect ? "text-emerald-600" : "text-amber-600"}`}>
+              <p className="font-extrabold" style={{ color: isCorrect ? ACCENT.solid : "#A83A3A" }}>
                 {isCorrect ? "✅ Correct! Great listening!" : "💛 Not quite — here's the right answer:"}
               </p>
-              <p className="mt-1 text-sm font-bold text-stone-500">
+              <p className="mt-1 text-sm font-bold" style={{ color: INK.mutedInk }}>
                 {rawPassage.explanation || "Listen again to catch the detail that answers this question!"}
               </p>
             </div>
           )}
 
           {locked && (
-            <Button color="emerald" className="w-full mt-4" onClick={handleNext}>
+            <InkButton accent={ACCENT} className="w-full mt-4" onClick={handleNext}>
               {isLast ? "Finish 🎉" : "Next →"}
-            </Button>
+            </InkButton>
           )}
-        </Card>
+        </PaperCard>
       </div>
     );
   }

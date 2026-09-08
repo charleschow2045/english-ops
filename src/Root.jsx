@@ -100,7 +100,7 @@ window.App = window.App || {};
               items={window.App.Content.STORYTELLING_ITEMS}
               tier={state.tier}
               itemLabel="Story"
-              color="violet"
+              accent={window.App.UI.MODULE_ACCENTS.storytelling}
               completionEmoji="📖"
               completionTitle="Great storytelling today!"
               onBack={() => setView("home")}
@@ -124,7 +124,7 @@ window.App = window.App || {};
               items={window.App.Content.COMPREHENSION_ITEMS}
               tier={state.tier}
               itemLabel="Passage"
-              color="orange"
+              accent={window.App.UI.MODULE_ACCENTS.comprehension}
               completionEmoji="🧠"
               completionTitle="Great thinking today!"
               onBack={() => setView("home")}
@@ -156,7 +156,7 @@ window.App = window.App || {};
               items={window.App.Content.KNOWLEDGE_ITEMS}
               tier={state.tier}
               itemLabel="Story"
-              color="violet"
+              accent={window.App.UI.MODULE_ACCENTS.knowledge}
               completionEmoji="🏛️"
               completionTitle="Great learning today!"
               onBack={() => setView("home")}

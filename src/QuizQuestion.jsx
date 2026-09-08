@@ -26,14 +26,23 @@ window.App = window.App || {};
     }, [q]);
   }
 
-  function renderBlankSentence(sentence) {
+  function renderBlankSentence(sentence, accent) {
     const parts = sentence.split("___");
     return (
       <>
         {parts[0]}
-        <span className="inline-block mx-1 px-3 py-0.5 rounded-lg bg-indigo-100 text-indigo-400 font-black align-middle">
-          ▁▁▁▁
-        </span>
+        {accent ? (
+          <span
+            className="inline-block mx-1 px-3 py-0.5 rounded-lg font-black align-middle"
+            style={{ backgroundColor: accent.tint, color: accent.solid }}
+          >
+            ▁▁▁▁
+          </span>
+        ) : (
+          <span className="inline-block mx-1 px-3 py-0.5 rounded-lg bg-indigo-100 text-indigo-400 font-black align-middle">
+            ▁▁▁▁
+          </span>
+        )}
         {parts[1]}
       </>
     );
@@ -41,12 +50,12 @@ window.App = window.App || {};
 
   // `accent` (optional): a MODULE_ACCENTS entry from theme.jsx's new
   // "探險護照" system. When given, renders with the kraft-paper/ink look
-  // instead of the legacy Tailwind-palette one — used by PassageModule for
-  // Reading only so far (see PassageModule.jsx and theme.jsx comments).
+  // instead of the legacy Tailwind-palette one — used by every module now
+  // migrated (see theme.jsx header comment for the full rollout state).
   function QuestionBlock({ q, selected, onSelect, accent }) {
     const locked = selected !== null;
     const correct = isCorrectAnswer(q, selected);
-    const prompt = q.type === "fillblank" ? renderBlankSentence(q.sentence) : q.prompt;
+    const prompt = q.type === "fillblank" ? renderBlankSentence(q.sentence, accent) : q.prompt;
 
     if (accent) {
       const { INK, TYPE } = window.App.UI;
