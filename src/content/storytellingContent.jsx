@@ -1,5 +1,14 @@
-// Module 3: Story-telling — two tier-appropriate short stories, each with a
-// writing-technique tip and 3 comprehension questions with explanations.
+// Module 3: Story-telling — two tier-appropriate short stories per tier, each
+// with a writing-technique tip and 4 questions, one per core storytelling
+// skill (`tag` shows as a small label above the question):
+//   🧱 Structure        — beginning / middle / end, and the turning point
+//   🧩 Problem-Solving  — the character's challenge and how it gets solved
+//   🎭 Expression       — voice, face, and body when performing a line
+//   👀 Engagement       — eye contact, pauses, sound effects, audience
+// Easy/medium use multiple-choice for all four (with distractors that sound
+// plausible or echo the passage); hard/expert use short-answer "how would
+// you perform this?" prompts for Expression and Engagement, since there's
+// no single right answer to those.
 window.App = window.App || {};
 window.App.Content = window.App.Content || {};
 
@@ -16,24 +25,51 @@ window.App.Content = window.App.Content || {};
         questions: [
           {
             type: "mc",
-            prompt: "What was the weather like when Ben found the kitten?",
-            options: ["Cold and windy", "Sunny and warm", "Snowing heavily"],
+            tag: "🧱 Structure",
+            prompt: "Every story has a beginning, a middle, and an end. Which sentence belongs to the END of this story?",
+            options: [
+              "The elderly woman hugs Ben and thanks him for taking care of Whiskers",
+              "Ben gives the kitten a soft blanket and a bowl of warm milk",
+              "Ben hears a soft, shaky meow on his way home from school",
+            ],
             correctIndex: 0,
-            explanation: "The story says it was a cold October afternoon and the kitten was shivering in the wind.",
+            explanation: "The end is where the problem is finished: the owner is found. The blanket and milk are part of the middle, and the meow is the beginning.",
           },
           {
             type: "mc",
-            prompt: "What did Ben and his mum do to find the kitten's owner?",
-            options: ["Made posters and put them up around the neighbourhood", "Took the kitten to a shelter", "Kept the kitten a secret"],
+            tag: "🧩 Problem-Solving",
+            prompt: "Ben had a problem: he had found a kitten but didn't know who it belonged to. What clever thing did he do?",
+            options: [
+              "He made posters with a photo of the kitten and put them up around the neighbourhood",
+              "He asked his teacher to make an announcement at school",
+              "He waited outside the bush in case the owner came back",
+            ],
             correctIndex: 0,
-            explanation: "The passage says they made colourful posters and put them up around the neighbourhood.",
+            explanation: "Ben and his mum made colourful posters with the kitten's photo and put them up around the neighbourhood. That is how the owner found them.",
           },
           {
             type: "mc",
-            prompt: "How long had Whiskers been missing before Ben found her?",
-            options: ["Almost a week", "One day", "A whole month"],
+            tag: "🎭 Expression",
+            prompt: "The elderly woman knocks on the door \"tears in her eyes\". If you were telling this part out loud, how should you sound?",
+            options: [
+              "Soft and a little shaky, with a happy-but-teary face",
+              "Loud and cheerful, like you are at a party",
+              "Flat and bored, with no expression at all",
+            ],
             correctIndex: 0,
-            explanation: "The owner says Whiskers wandered off during a thunderstorm nearly a week earlier.",
+            explanation: "She is relieved and emotional, so a soft, slightly shaky voice with a teary smile shows her feelings. A party voice would not match tears.",
+          },
+          {
+            type: "mc",
+            tag: "👀 Engagement",
+            prompt: "You are telling this story to your class. Which sound effect would make the opening scene more exciting for your listeners?",
+            options: [
+              "A tiny, shaky \"meeeow\" from far away that slowly gets closer",
+              "A loud crash of thunder",
+              "A car horn honking again and again",
+            ],
+            correctIndex: 0,
+            explanation: "The story begins with a soft, shaky meow. Thunder only appears later, when Whiskers wandered off, so it would not fit the opening.",
           },
         ],
       },
@@ -47,24 +83,51 @@ window.App.Content = window.App.Content || {};
         questions: [
           {
             type: "mc",
-            prompt: "What were the two final pet designs?",
-            options: ["A fox and a gecko", "A dog and a cat", "A bird and a fish"],
+            tag: "🧱 Structure",
+            prompt: "The turning point is the moment a story changes direction. Which moment is the turning point here?",
+            options: [
+              "Maddie takes a deep breath and tells Carlos his gecko looks cool",
+              "The votes are counted and Carlos's gecko wins",
+              "The two of them finish painting the banner",
+            ],
             correctIndex: 0,
-            explanation: "The story names Maddie's fox and Carlos's gecko as the two final designs.",
+            explanation: "Losing the vote is the problem, but the story turns when Maddie chooses kindness instead of leaving. Painting the banner is the ending that follows.",
           },
           {
             type: "mc",
-            prompt: "How did Maddie feel when she lost the vote?",
-            options: ["Disappointed at first, but she handled it well", "Extremely angry", "She didn't care at all"],
+            tag: "🧩 Problem-Solving",
+            prompt: "Maddie felt disappointed and wanted to leave the room. What smart choice did she make instead?",
+            options: [
+              "She walked over and told Carlos his gecko looked cool",
+              "She asked the teacher to count the votes again",
+              "She promised herself she would win next September",
+            ],
             correctIndex: 0,
-            explanation: "The story says she felt her stomach drop with disappointment, then chose to be kind anyway.",
+            explanation: "She dealt with her feelings by being a good sport. That choice is what led to the new friendship.",
           },
           {
             type: "mc",
-            prompt: "What did Maddie and Carlos do together at the end?",
-            options: ["Painted the banner together", "Had another vote", "Stopped being friends"],
+            tag: "🎭 Expression",
+            prompt: "Maddie tells Carlos his gecko \"really did look cool with its sunglasses\". How should you say her line to show she means it, even though she is still a little sad?",
+            options: [
+              "In a warm, steady voice with a small smile",
+              "In a teasing voice, rolling your eyes",
+              "In a loud shout so the whole class can hear",
+            ],
             correctIndex: 0,
-            explanation: "Carlos asked Maddie to help paint the banner, and they finished it together by the end of the week.",
+            explanation: "She is being sincere. A warm, steady voice and a small smile show real kindness, while teasing or shouting would change her meaning.",
+          },
+          {
+            type: "mc",
+            tag: "👀 Engagement",
+            prompt: "You want listeners to feel Maddie's \"stomach drop\". Which storytelling move works best?",
+            options: [
+              "Slow down, drop your voice, and pause for a moment before the next sentence",
+              "Read faster so you can get to the happy ending",
+              "Look down at your notes and mumble the sentence",
+            ],
+            correctIndex: 0,
+            explanation: "A slow, quiet pause gives listeners time to feel the disappointment. Speeding up or mumbling would lose that feeling.",
           },
         ],
       },
@@ -80,24 +143,51 @@ window.App.Content = window.App.Content || {};
         questions: [
           {
             type: "mc",
-            prompt: "What went wrong the night before the fair?",
-            options: ["His eruption mixture spilled and ruined his poster", "He forgot to bring his project", "His volcano broke completely"],
+            tag: "🧱 Structure",
+            prompt: "Which moment is the turning point, where the story stops going badly and starts going well?",
+            options: [
+              "Aiden decides to redesign the poster instead of giving up",
+              "The baking soda mixture foams over and spills onto the poster",
+              "The judges hand out the second-place ribbon",
+            ],
             correctIndex: 0,
-            explanation: "The passage says his mixture foamed up violently and spilled across his poster.",
+            explanation: "The spill is the crisis, but the story turns when Aiden chooses to keep going. The ribbon is the ending.",
           },
           {
             type: "mc",
-            prompt: "Who helped Aiden fix the problem?",
-            options: ["His older sister", "His teacher", "A classmate"],
+            tag: "🧩 Problem-Solving",
+            prompt: "Aiden fixed his poster so the same accident couldn't ruin it again. What change did he make?",
+            options: [
+              "He used laminated labels that foam couldn't smear",
+              "He moved the poster far away from the volcano",
+              "He made the volcano's eruption smaller",
+            ],
             correctIndex: 0,
-            explanation: "Aiden called his older sister in, and they redesigned the poster together.",
+            explanation: "The passage says he used laminated labels that \"wouldn't be ruined by a little foam\". The other choices sound sensible, but they are not what he did.",
           },
           {
             type: "mc",
-            prompt: "What did the judges specifically praise Aiden for?",
-            options: ["Staying calm and creative under pressure", "Having the biggest volcano", "Working alone"],
+            tag: "🎭 Expression",
+            prompt: "The story says Aiden \"just stared at the mess\". Which way of acting this out shows his feeling best?",
+            options: [
+              "Freeze, let your shoulders drop, and speak in a quiet, flat voice",
+              "Jump up, grin, and cheer with a big voice",
+              "Stamp your feet and shout in anger",
+            ],
             correctIndex: 0,
-            explanation: "The passage says the judges praised him for staying calm and creative under pressure.",
+            explanation: "Aiden feels like his work has been wasted, so he is stunned and quiet, not cheerful or furious. Staring means he goes still.",
+          },
+          {
+            type: "mc",
+            tag: "👀 Engagement",
+            prompt: "Before you reveal that the volcano \"erupted perfectly\" in front of the judges, how could you build suspense for your listeners?",
+            options: [
+              "Pause, lean in, look at the audience, then say the line with a rising \"whoosh\" sound",
+              "Say the result at the very start so no one is surprised",
+              "Read the line quickly without looking up",
+            ],
+            correctIndex: 0,
+            explanation: "A pause, eye contact, and a sound effect make listeners wait for the reveal. Giving it away early or rushing it removes the suspense.",
           },
         ],
       },
@@ -111,24 +201,51 @@ window.App.Content = window.App.Content || {};
         questions: [
           {
             type: "mc",
-            prompt: "Why were the players worried about Coach Reyes at first?",
-            options: ["She was young, quiet, and unfamiliar to them", "She had never played football", "She refused to coach the team"],
+            tag: "🧱 Structure",
+            prompt: "The beginning shows a worry, the middle shows a change, and the end shows the result. Which sentence belongs to the MIDDLE?",
+            options: [
+              "Coach Reyes asks each player what they need to improve and builds drills around the answers",
+              "Coach Diaz breaks his ankle two weeks before the championship",
+              "The team wins 3-1 and Jonah admits he misjudged her",
+            ],
             correctIndex: 0,
-            explanation: "The passage says several players worried because she was young, quiet, and new to them.",
+            explanation: "The middle is where things change: Coach Reyes proves herself through her drills. The ankle is the beginning, and the win is the end.",
           },
           {
             type: "mc",
-            prompt: "What made Coach Reyes's coaching style different?",
-            options: ["She built drills around each player's individual needs", "She only cared about winning", "She let the team choose their own drills"],
+            tag: "🧩 Problem-Solving",
+            prompt: "Coach Reyes had to win the team's trust in only two weeks. How did she do it?",
+            options: [
+              "She listened to each player and built drills around what they needed",
+              "She copied Coach Diaz's loud instructions exactly",
+              "She ran the same tough routine harder for everyone",
+            ],
             correctIndex: 0,
-            explanation: "She asked each player what they needed to improve and built drills around those answers.",
+            explanation: "She did the opposite of a one-size-fits-all routine. Asking each player what to improve showed she cared, and the drills proved she was skilled.",
           },
           {
             type: "mc",
-            prompt: "What did Jonah realise by the end of the story?",
-            options: ["He had misjudged Coach Reyes based on first impressions", "Coach Diaz was a better coach", "The team should have found a different coach"],
+            tag: "🎭 Expression",
+            prompt: "Jonah admits he \"completely misjudged\" Coach Reyes. How would you say his line to show he is a little embarrassed but honest?",
+            options: [
+              "In a lower, slower voice, looking down briefly, with a half-smile and a shrug",
+              "In a loud, proud voice with your arms crossed",
+              "In a joking sing-song voice, as if it doesn't matter",
+            ],
             correctIndex: 0,
-            explanation: "Jonah admitted he'd completely misjudged Coach Reyes on that first, quiet day of practice.",
+            explanation: "Jonah is owning up to a mistake. A quiet voice, a glance down, and a half-smile show embarrassment and honesty together.",
+          },
+          {
+            type: "mc",
+            tag: "👀 Engagement",
+            prompt: "You want your listeners to think about first impressions while you tell this story. What could you do?",
+            options: [
+              "Pause and ask them what they would have thought of a quiet new coach, looking around the room",
+              "Tell them not to say anything until you have finished",
+              "Skip the first practice so they don't have to think about it",
+            ],
+            correctIndex: 0,
+            explanation: "A question plus eye contact pulls listeners into the story. That makes Jonah's change of mind feel personal to them.",
           },
         ],
       },
@@ -144,24 +261,41 @@ window.App.Content = window.App.Content || {};
         questions: [
           {
             type: "mc",
-            prompt: "Why were Priya and her grandfather stranded?",
-            options: ["A sudden storm cancelled the last ferry", "They chose to stay there on purpose", "The lighthouse was their planned destination"],
+            tag: "🧱 Structure",
+            prompt: "Which moment is the turning point that changes the night from frightening to meaningful?",
+            options: [
+              "Her grandfather sits on the bench and begins telling her stories",
+              "The single lightbulb flickers ominously every few minutes",
+              "Sunlight streams through the windows the next morning",
+            ],
             correctIndex: 0,
-            explanation: "The passage says a sudden storm caused the last ferry to be cancelled without warning.",
+            explanation: "The flickering light raises the tension, and the sunlight is the calm ending. The story turns when Priya's grandfather starts talking.",
           },
           {
             type: "mc",
-            prompt: "What did Priya's grandfather do to help her feel less afraid?",
-            options: ["He told her stories about his own past at the lighthouse", "He called for a rescue boat", "He turned off the flickering light"],
+            tag: "🧩 Problem-Solving",
+            prompt: "Priya's real problem was her fear, not the storm itself. How did her grandfather help solve it?",
+            options: [
+              "He gave her something more interesting than the storm to think about",
+              "He showed her how thick and strong the lighthouse walls were",
+              "He promised her the ferry would be back within the hour",
+            ],
             correctIndex: 0,
-            explanation: "He told her stories about the lighthouse's history and his own time as a keeper's assistant.",
+            explanation: "He never argued with her fear. He shifted her attention with stories until she was \"more absorbed\" than afraid. The walls and the ferry are never used to comfort her.",
           },
           {
-            type: "mc",
-            prompt: "What surprised Priya by the end of the night?",
-            options: ["How much she learned about her grandfather in just one night", "That the lighthouse was actually abandoned", "That her grandfather was afraid of storms too"],
-            correctIndex: 0,
-            explanation: "She realised she'd learned more about him that night than in years of ordinary visits.",
+            type: "shortanswer",
+            tag: "🎭 Expression",
+            prompt: "Imagine you are telling this story aloud and reach the line \"the wind howled against the thick stone walls\". Describe how you would use your voice, face, and body to bring that line to life.",
+            modelAnswer:
+              "I would start in a low, rumbling voice and let the word \"howled\" stretch out and rise, as if the wind is growing. My shoulders would hunch and my eyes go wide, and I might cup a hand to my ear as if I can hear it outside. Then I would drop to a hushed voice for \"thick stone walls\" to show how solid the walls are, and how small Priya feels inside them.",
+          },
+          {
+            type: "shortanswer",
+            tag: "👀 Engagement",
+            prompt: "Design ONE sound effect and ONE moment of eye contact that would make your listeners feel like they are inside the lighthouse with Priya. Say where you would use each and why.",
+            modelAnswer:
+              "I could make a soft, low whistling wind sound at the start, and let it fade when the grandfather begins his stories, so listeners feel the fear ease. For eye contact, I would look straight at one listener when the grandfather says his first story, as if I am the grandfather talking directly to Priya. Both choices pull the audience into the room and match the story's change from fear to comfort.",
           },
         ],
       },
@@ -175,24 +309,41 @@ window.App.Content = window.App.Content || {};
         questions: [
           {
             type: "mc",
-            prompt: "What caused the disagreement in the group?",
-            options: ["Different opinions about the project's format", "A disagreement about who would present", "Ms. Okafor grading them unfairly"],
+            tag: "🧱 Structure",
+            prompt: "Which moment is the turning point of the story?",
+            options: [
+              "Ms. Okafor asks what each idea actually teaches the class about trade routes",
+              "Devon accuses the others of not valuing creativity",
+              "The four students start sketching their plans together",
+            ],
             correctIndex: 0,
-            explanation: "Devon wanted a model ship, Ren wanted a skit, and the others disagreed with both — a format disagreement.",
+            explanation: "Devon's accusation is the peak of the argument, and the sketching is the ending. The story only changes direction once Ms. Okafor's question makes the group think.",
           },
           {
             type: "mc",
-            prompt: "What question did Ms. Okafor ask to help the group?",
-            options: ["What does each idea actually teach about trade routes?", "Who is in charge of the group?", "Why can't you just agree?"],
+            tag: "🧩 Problem-Solving",
+            prompt: "What made the group's final plan clever, rather than just a compromise where everyone gave something up?",
+            options: [
+              "The skit used the model ship as a prop, so both ideas worked together and still met the research goals",
+              "Each student did their favourite idea separately and they presented them one after another",
+              "They dropped both ideas and wrote a plain report instead",
+            ],
             correctIndex: 0,
-            explanation: "The passage quotes her question directly: \"What does each of your ideas actually teach the class about trade routes?\"",
+            explanation: "A compromise splits the difference. This solution combined the ideas so the ship and the skit both helped explain the trade routes. The other options avoid the real problem.",
           },
           {
-            type: "mc",
-            prompt: "How did the group ultimately resolve their disagreement?",
-            options: ["They combined both ideas into one project", "One student took over the whole project", "They asked to be split into separate groups"],
-            correctIndex: 0,
-            explanation: "They decided to perform the skit using the model ship as a prop, combining both ideas.",
+            type: "shortanswer",
+            tag: "🎭 Expression",
+            prompt: "Devon accuses the others of not valuing creativity, and Aisha accuses Devon of not caring about grades. How would you perform this argument out loud so listeners can always tell which character is speaking?",
+            modelAnswer:
+              "I would give each character a different voice and posture. Devon could be loud and quick, with a wide gesture, as if defending his ship. Aisha could be sharper and firmer, with folded arms and a lifted chin. I would turn my body slightly toward each one as they speak, and let my voice get tighter as the argument rises, so it is clear who is talking and how heated it is getting.",
+          },
+          {
+            type: "shortanswer",
+            tag: "👀 Engagement",
+            prompt: "Ms. Okafor's question is the turning point. How could you use a pause, eye contact, or a change in volume to make your listeners feel that moment?",
+            modelAnswer:
+              "I would let the argument get louder and faster, then suddenly go quiet before her question. After a full one-second pause I would look straight at the audience and ask it slowly and calmly, as if I am asking them. Then I would hold the silence for a moment, because the group sat in \"uncomfortable silence\" too. The contrast between noisy and quiet shows that everything has changed.",
           },
         ],
       },
@@ -208,24 +359,41 @@ window.App.Content = window.App.Content || {};
         questions: [
           {
             type: "mc",
-            prompt: "What did the renovation crew find hidden beneath a floorboard?",
-            options: ["A dusty, leather-bound manuscript", "A working invention", "A collection of old photographs"],
+            tag: "🧱 Structure",
+            prompt: "Unlike most stories, this one does not fully resolve. Which description of its structure is the most accurate?",
+            options: [
+              "It has a clear beginning (the discovery) and middle (the sketches), but deliberately leaves the ending open",
+              "It has no beginning, because the manuscript is already old when the story starts",
+              "It ends by confirming that Elias's invention was real and that it worked",
+            ],
             correctIndex: 0,
-            explanation: "The crew pried open a floorboard and found a dusty, leather-bound manuscript underneath.",
+            explanation: "The discovery and the sketches build the story, but the passage ends on \"no one has been able to determine with certainty\". Nothing confirms the invention worked.",
           },
           {
             type: "mc",
-            prompt: "What convinced historians that Elias was working on an unusual invention?",
-            options: ["Detailed sketches of gears, wires, and an unidentified device", "A newspaper article about him", "A patent filed in his name"],
+            tag: "🧩 Problem-Solving",
+            prompt: "Historians wanted to know whether the manuscript was fact or fiction. According to the passage, how did they try to work it out?",
+            options: [
+              "They studied the sketches and surrounding notes to infer what he was building, while admitting there was no physical proof",
+              "They built the device from the sketches and tested that it worked",
+              "They matched Elias's handwriting to a patent he had filed",
+            ],
             correctIndex: 0,
-            explanation: "The manuscript contained sketches of gears, wires, and a mysterious cylindrical device.",
+            explanation: "The historians inferred from the notes and drawings. No prototype and no patent were ever found, so building it or matching a patent is not what happened.",
           },
           {
-            type: "mc",
-            prompt: "What can you infer from the fact that the manuscript ends mid-sentence?",
-            options: ["Elias was likely interrupted and never returned to finish writing", "Elias finished the manuscript on purpose", "The last pages were deliberately removed"],
-            correctIndex: 0,
-            explanation: "Ending mid-sentence suggests something interrupted him before he could return to finish it.",
+            type: "shortanswer",
+            tag: "🎭 Expression",
+            prompt: "The manuscript's final page \"ended mid-sentence\". How would you perform that moment out loud so listeners feel the sudden interruption?",
+            modelAnswer:
+              "I would slow down as I approach the last sentence, then stop in the middle of a word with no ending sound, as if the voice itself has been cut off. I would freeze my face and hands and hold the silence for two or three seconds. Then I would speak the next line very softly, so the pause itself becomes the effect.",
+          },
+          {
+            type: "shortanswer",
+            tag: "👀 Engagement",
+            prompt: "You are reading this story to a small group in a dim room. Describe ONE sound effect and ONE way of involving the audience that would build the mystery, and explain why each would work.",
+            modelAnswer:
+              "For sound, I could make a slow creak of the attic stairs at the start, to pull listeners up into the attic. To involve the audience, I could ask, \"What would you have done if you found this?\" and look around the room while I wait. The creak builds atmosphere, and the question gets listeners to form their own theory about the manuscript, which is exactly the mystery the story leaves open.",
           },
         ],
       },
@@ -239,24 +407,41 @@ window.App.Content = window.App.Content || {};
         questions: [
           {
             type: "mc",
-            prompt: "What problem did Maya notice in the inspection data?",
-            options: ["Inconsistent seals in a batch of medication bottles", "A pricing error in the shipment", "A staffing shortage in her department"],
+            tag: "🧱 Structure",
+            prompt: "Which part of the story is its climax, the moment the main character makes the key decision?",
+            options: [
+              "Maya weighs the two costs over the weekend and decides to email the safety officer",
+              "Her supervisor dismisses the defect as within acceptable tolerance",
+              "The batch is pulled for testing and turns out to pass",
+            ],
             correctIndex: 0,
-            explanation: "She noticed a batch of bottles had slightly inconsistent seals, a defect that would normally trigger a recall.",
+            explanation: "The supervisor's reply raises the tension and the testing is the aftermath. The climax is Maya's decision to act, made after she weighs the costs.",
           },
           {
             type: "mc",
-            prompt: "How did Maya's supervisor initially respond to her concern?",
-            options: ["He dismissed it as within acceptable tolerance", "He immediately escalated it himself", "He fired her for raising it"],
+            tag: "🧩 Problem-Solving",
+            prompt: "Maya's problem was a real dilemma with no perfect answer. What made her way of handling it sound rather than reckless?",
+            options: [
+              "She compared the cost of being wrong with the cost of staying silent, then raised it through the plant's safety officer",
+              "She went straight to the client and warned them about the defect",
+              "She refused to work on the batch until it was recalled",
+            ],
             correctIndex: 0,
-            explanation: "The supervisor dismissively said the defect rate was \"within acceptable tolerance.\"",
+            explanation: "She reasoned about the costs and used the proper channel. Going to the client or refusing to work are dramatic moves that the story never describes.",
           },
           {
-            type: "mc",
-            prompt: "What reasoning ultimately convinced Maya to escalate the issue?",
-            options: ["The potential cost of being wrong was much smaller than the potential cost of staying silent", "Her supervisor asked her to escalate it", "She wanted a promotion"],
-            correctIndex: 0,
-            explanation: "She weighed the small cost of being wrong against the much larger cost of staying silent if she was right.",
+            type: "shortanswer",
+            tag: "🎭 Expression",
+            prompt: "Her supervisor says the defect is \"within acceptable tolerance\". How would you use your voice and body to make him sound dismissive, and how would you make Maya's worry sound different?",
+            modelAnswer:
+              "For the supervisor I would use a flat, relaxed voice with a little wave of the hand and barely any eye contact, as if the matter is already closed. For Maya I would speak a little quicker and higher with a small pause before each word, my brow slightly furrowed and my hands tense. The contrast between his ease and her tension shows who takes the problem seriously.",
+          },
+          {
+            type: "shortanswer",
+            tag: "👀 Engagement",
+            prompt: "The most important part of the story is Maya weighing the two costs. How could you use pacing, a pause, and eye contact so that listeners weigh the decision with her?",
+            modelAnswer:
+              "I would slow right down and say the two costs separately, holding up one hand for each, like scales. Between them I would pause and look at the audience, letting them feel how heavy each side is. Then I would say the final sentence quietly and steadily, so listeners arrive at Maya's decision at the same time she does.",
           },
         ],
       },

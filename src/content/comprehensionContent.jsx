@@ -15,10 +15,10 @@ window.App.Content = window.App.Content || {};
         questions: [
           {
             type: "mc",
-            prompt: "Why did Theo know exactly what to plant?",
-            options: ["His grandmother used to grow the same things in her garden", "He read about it online", "His teacher told him what to plant"],
+            prompt: "What does the passage suggest about why Theo was so quiet at the start?",
+            options: ["He was shy about talking to new people, not uninterested in the garden", "He did not want to be paired with Mia", "He did not know anything about gardening"],
             correctIndex: 0,
-            explanation: "The passage says his grandmother used to grow carrots, tomatoes, and sunflowers before she moved away.",
+            explanation: "Mia \"realised Theo wasn't shy about the garden at all — he was just shy about talking to new people\". He had even planned what to plant for weeks, so he knew gardening well.",
           },
           {
             type: "shortanswer",
@@ -28,14 +28,14 @@ window.App.Content = window.App.Content || {};
           },
           {
             type: "mc",
-            prompt: "What best describes how Mia and Theo's friendship changed by the end of the passage?",
+            prompt: "Which sentence best describes how Mia's view of Theo changed?",
             options: [
-              "They became comfortable being quiet together, without needing to talk all the time",
-              "They stopped being friends",
-              "They started arguing about the garden",
+              "She first worried they would not work well together, then realised his quietness was shyness, not lack of interest",
+              "She first thought he knew nothing about plants, then discovered he had been on a farm",
+              "She first liked working alone, then decided working in pairs was always better",
             ],
             correctIndex: 0,
-            explanation: "The passage says they were comfortable just kneeling in the dirt together, without needing to fill every silence.",
+            explanation: "Mia \"wasn't sure they would work well together\", but working in the soil showed her Theo's quietness was shyness. The other options describe changes that never happen.",
           },
         ],
       },
@@ -46,10 +46,10 @@ window.App.Content = window.App.Content || {};
         questions: [
           {
             type: "mc",
-            prompt: "What was the hardest part of Sofia's first day, according to the passage?",
-            options: ["Figuring out the unwritten lunchroom seating rules", "Finding her classroom", "Understanding her homework"],
+            prompt: "The passage says nobody had explained the \"unwritten rules\" to Sofia. What does \"unwritten rules\" mean here?",
+            options: ["Things everyone is expected to know even though nobody wrote them down", "Rules the school forgot to print in the student handbook", "Rules that only the teachers are allowed to know"],
             correctIndex: 0,
-            explanation: "The passage focuses on how confusing the unwritten lunchroom seating rules were for Sofia.",
+            explanation: "Kids just seemed to know which table belonged to which group, but no rule said so. \"Unwritten\" means understood without ever being written down.",
           },
           {
             type: "shortanswer",
@@ -59,10 +59,10 @@ window.App.Content = window.App.Content || {};
           },
           {
             type: "mc",
-            prompt: "What did Sofia start doing after her own experience?",
-            options: ["Watching for new students and inviting them to sit with her", "Avoiding new students", "Telling teachers to assign seats"],
+            prompt: "Which statement best sums up the message of the passage?",
+            options: ["Kindness you receive can inspire you to pass it on to others", "Starting at a new school is always difficult", "Making friends is easy if you are confident"],
             correctIndex: 0,
-            explanation: "The passage says Sofia made a habit of waving new students over, the same way Priya had for her.",
+            explanation: "Priya helped Sofia because of her own bad first day, and Sofia then did the same for others. \"New schools are hard\" is true, but it is not the message the story builds toward.",
           },
         ],
       },
@@ -75,10 +75,10 @@ window.App.Content = window.App.Content || {};
         questions: [
           {
             type: "mc",
-            prompt: "What was actually causing the robot's arm to drop the blocks?",
-            options: ["The gripping speed in the code, not the mechanical design", "A broken motor", "The wrong type of blocks"],
+            prompt: "Why did slowing down the gripping speed fix the problem?",
+            options: ["The arm had been closing so quickly that it knocked the blocks off balance before lifting them", "The blocks were too heavy to be gripped at a fast speed", "The gripper had been rebuilt so many times that it had worn out"],
             correctIndex: 0,
-            explanation: "Slowing down the gripping speed in the code fixed the problem — it wasn't the mechanical gripper.",
+            explanation: "Aaliyah's idea was that closing too quickly might knock the blocks slightly off balance. The gripper was rebuilt four times, but the hardware was never the real problem.",
           },
           {
             type: "shortanswer",
@@ -88,14 +88,14 @@ window.App.Content = window.App.Content || {};
           },
           {
             type: "mc",
-            prompt: "What lesson did Diego learn from this experience?",
+            prompt: "Which detail best supports the idea that Diego is a good team captain?",
             options: [
-              "Sometimes solving a problem means stepping back and asking a different question",
-              "The strongest gripper always wins competitions",
-              "Aaliyah is smarter than him",
+              "He told the judges that the real breakthrough came from Aaliyah's idea",
+              "He rebuilt the gripper four times before the competition",
+              "He stayed late in the workshop on Wednesday night",
             ],
             correctIndex: 0,
-            explanation: "The passage says they succeeded by looking at the whole system, not just one part — a new question, not more effort on the old one.",
+            explanation: "Rebuilding the gripper and working late show effort. A good captain also shares credit, and Diego gave Aaliyah the credit in front of the judges.",
           },
           {
             type: "shortanswer",
@@ -112,10 +112,14 @@ window.App.Content = window.App.Content || {};
         questions: [
           {
             type: "mc",
-            prompt: "What was the real difference between Marcus's and Devon's practice time?",
-            options: ["How focused and deliberate the practice was", "Devon practised for many more hours", "Marcus never practised at all"],
+            prompt: "Which statement is supported by the practice logs described in the passage?",
+            options: [
+              "Devon and Marcus practised a similar amount, but Devon spent his time on specific weaknesses",
+              "Devon practised about twice as long as Marcus each week",
+              "Marcus's log showed more focused drills than Devon's",
+            ],
             correctIndex: 0,
-            explanation: "The passage says the logs showed similar total time — the real difference was how focused the practice was.",
+            explanation: "Devon had logged \"barely more practice time\" than Marcus. The difference was that Devon's sessions were short and focused, while Marcus's were casual pickup games.",
           },
           {
             type: "shortanswer",
@@ -125,10 +129,14 @@ window.App.Content = window.App.Content || {};
           },
           {
             type: "mc",
-            prompt: "What was the result of Marcus changing his practice habits?",
-            options: ["His shooting percentage improved more than anyone else's", "He immediately made the all-star team", "He quit basketball"],
+            prompt: "What does the passage suggest about Marcus's first belief that all-stars were \"simply more naturally talented\"?",
+            options: [
+              "It was an assumption, and the logs showed that how you practise matters more than it seemed",
+              "It was correct, because Devon practised far longer than Marcus",
+              "It was correct, but hard work can sometimes make up for it",
+            ],
             correctIndex: 0,
-            explanation: "The passage says his coach told him his shooting percentage improved more than anyone else's on the roster.",
+            explanation: "Marcus was \"stunned\" to find similar practice time, so his belief was an assumption. The passage never says talent is the main factor.",
           },
         ],
       },
@@ -141,14 +149,14 @@ window.App.Content = window.App.Content || {};
         questions: [
           {
             type: "mc",
-            prompt: "According to the passage, what was Kai's main concern about a full phone ban?",
+            prompt: "How does Kai's view differ from that of the students who supported the ban?",
             options: [
-              "It would punish responsible students who relied on phones for legitimate reasons",
-              "He personally didn't want to give up his phone",
-              "He thought teachers didn't need help managing the classroom",
+              "Kai focused on students who genuinely need phones, while supporters focused on distraction and anxiety",
+              "Kai believed phones help students concentrate, while supporters disagreed",
+              "Kai wanted phones allowed in every class, while supporters wanted them banned only at lunch",
             ],
             correctIndex: 0,
-            explanation: "Kai argued a full ban would punish responsible students to solve a problem caused by a smaller group.",
+            explanation: "Supporters pointed to lost concentration and anxiety. Kai pointed to legitimate uses such as rides, emergencies, and translation apps. He never said phones improve concentration.",
           },
           {
             type: "shortanswer",
@@ -161,8 +169,8 @@ window.App.Content = window.App.Content || {};
             prompt: "What is the deeper question the passage suggests the phone policy could not fully answer?",
             options: [
               "How to teach teenagers to manage their own attention in a world full of distractions",
-              "Whether teachers like using phones in class",
-              "How much phones cost",
+              "Whether schools should let students use phones at lunchtime",
+              "Whether teachers should be allowed to collect phones during lessons",
             ],
             correctIndex: 0,
             explanation: "The passage ends by framing the real question as teaching attention management in a world built to interrupt it.",
@@ -183,9 +191,9 @@ window.App.Content = window.App.Content || {};
           {
             type: "mc",
             prompt: "What disagreement emerged among the group chat members?",
-            options: ["How much responsibility different types of participation deserved", "Who leaked the screenshot", "Whether the classmate deserved an apology"],
+            options: ["How much responsibility different types of participation deserved", "Whether the screenshot should have been shared around school", "Whether the jokes had really been unkind"],
             correctIndex: 0,
-            explanation: "The passage says the disagreement was about how much responsibility each type of participation deserved.",
+            explanation: "The screenshot and the jokes are part of the background, but the group's disagreement was about how much responsibility writing, reacting, and staying silent each deserved.",
           },
           {
             type: "shortanswer",
@@ -196,9 +204,9 @@ window.App.Content = window.App.Content || {};
           {
             type: "mc",
             prompt: "What did the counsellor ask the group to consider?",
-            options: ["What it would have taken for one person to change the conversation's direction", "Who should be punished the most", "Whether the classmate overreacted"],
+            options: ["What it would have taken for one person to change the conversation's direction", "Who had written the very first unkind message", "Whether the classmate should forgive the group"],
             correctIndex: 0,
-            explanation: "The passage says the counsellor asked what it would have taken for even one person to have changed the direction of the conversation.",
+            explanation: "The counsellor did not look for who started it or ask for forgiveness. She asked what it would have taken for even one person to change the direction of the conversation.",
           },
         ],
       },
@@ -211,14 +219,14 @@ window.App.Content = window.App.Content || {};
         questions: [
           {
             type: "mc",
-            prompt: "According to the passage, why might an investor keep buying even if they suspect prices are too high?",
+            prompt: "Which statement best supports the passage's claim that bubbles are not simply caused by naive investors?",
             options: [
-              "Prices might keep rising for a while, and selling early carries its own risks and costs",
-              "They genuinely believe the asset is fairly priced",
-              "They are required to by law",
+              "Experienced professionals have joined bubbles they later admitted they knew were irrational",
+              "Beginners are never involved in financial bubbles",
+              "Experienced investors always sell before a crash begins",
             ],
             correctIndex: 0,
-            explanation: "The passage says selling early risks looking foolish and losing profit if the bubble takes longer to burst.",
+            explanation: "The passage says some of the most experienced professionals were swept up in bubbles they later admitted were irrational at the time. The other two options are never claimed.",
           },
           {
             type: "shortanswer",
@@ -231,8 +239,8 @@ window.App.Content = window.App.Content || {};
             prompt: "Why do warnings from economists often fail to prevent bubbles, according to the passage?",
             options: [
               "Being right too early carries nearly the same cost as being wrong, so there's little incentive to act on warnings early",
-              "Economists are usually wrong about bubbles",
-              "Nobody reads economic warnings",
+              "Economists' warnings are usually accurate but too complicated for investors to understand",
+              "Investors are legally prevented from acting on public warnings",
             ],
             correctIndex: 0,
             explanation: "The passage says being right too early carries almost the same cost as being wrong entirely.",
@@ -253,9 +261,9 @@ window.App.Content = window.App.Content || {};
           {
             type: "mc",
             prompt: "What is the \"replication crisis,\" according to the passage?",
-            options: ["Many well-known studies failed to produce the same results when independently repeated", "A shortage of funding for psychology research", "A crisis caused by fake data being published"],
+            options: ["Many well-known studies failed to produce the same results when independently repeated", "Many well-known studies were found to contain data that researchers had invented", "Psychologists could not agree on which studies were important enough to repeat"],
             correctIndex: 0,
-            explanation: "The passage defines it as well-known studies failing to produce the same results when independently repeated.",
+            explanation: "The passage says the original results could not be reproduced. It does not say the data was invented; the problem was publishing incentives and subtle flaws.",
           },
           {
             type: "shortanswer",
@@ -266,9 +274,9 @@ window.App.Content = window.App.Content || {};
           {
             type: "mc",
             prompt: "What is one criticism of pre-registering hypotheses and methods before research?",
-            options: ["It might discourage bold, exploratory research that leads to breakthroughs", "It is illegal in most countries", "It makes research faster and cheaper"],
+            options: ["It might discourage bold, exploratory research that leads to breakthroughs", "It lets researchers change their analysis after seeing the results", "It makes journals publish more null results, which readers find dull"],
             correctIndex: 0,
-            explanation: "Skeptics counter that overcorrecting toward caution risks discouraging bold, exploratory research.",
+            explanation: "Registering plans in advance is meant to PREVENT changing the analysis afterwards. The criticism is that too much caution may discourage bold, exploratory research.",
           },
         ],
       },

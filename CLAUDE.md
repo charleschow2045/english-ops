@@ -445,6 +445,21 @@ feature used elsewhere.
       MODEL_ESSAYS keep their original per-item field names/shapes, just
       wrapped in arrays aligned by index; WritingModule picks a random index
       per session and added a "🔄 New topic" refresh button
+- [x] Writing expanded again 6→10 prompts/tier (40 total; new topics don't
+      repeat the earlier ones)
+- [x] Storytelling questions rebuilt around a 4-skill framework (Structure /
+      Problem-Solving / Expression / Engagement): each story now has exactly
+      4 questions, one per skill, with a `tag` field shown as a chip by
+      PassageModule. Easy/medium are all multiple-choice; hard/expert use
+      shortanswer "how would you perform this?" for Expression/Engagement.
+- [x] Reading + Comprehension questions redesigned (passages unchanged):
+      inference, "which is NOT true", sequencing, and best-supported-
+      statement questions, with distractors that echo the passage or are
+      plausible mix-ups rather than one obvious answer and two silly ones.
+- [x] Bug fixes: Root.jsx now passes `sessionSize` to the four PassageModule
+      modules (they defaulted to 1); Word Hunt words are placed in one fixed
+      straight line (8 directions) and the grid grows to fit the longest
+      word; Hangman lives scale with word length (4 to 8).
 - [x] Grammar drills (3 categories × 4 tiers, 8-12 items each with worked-example
       explanations, incl. mixed-tense paragraph questions)
 - [x] Word Hunt (Bookworm/Word Wipe-style, replaces earlier Wordle-clone)

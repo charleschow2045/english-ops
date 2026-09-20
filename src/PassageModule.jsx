@@ -142,6 +142,15 @@ window.App = window.App || {};
               </div>
             )}
 
+            {q.tag && (
+              <span
+                className={`inline-block text-xs px-2.5 py-1 rounded-full mb-2 ${TYPE.caption}`}
+                style={{ backgroundColor: accent.tint, color: accent.solid, border: `1px solid ${accent.tintBorder}` }}
+              >
+                {q.tag}
+              </span>
+            )}
+
             {isShortAnswer ? (
               <div>
                 <p className={`text-lg sm:text-xl leading-snug ${TYPE.heading}`} style={{ color: INK.ink }}>
