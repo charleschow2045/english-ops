@@ -295,7 +295,8 @@ correctly, testing how tense choice shifts within one continuous context
 rather than an isolated sentence.
 
 ## Comprehension question types
-Comprehension has 2 passages per tier (~300 words each), mixing standard
+Comprehension has 8 passages per tier (32 total; ~140-300 words each,
+longer at higher tiers), mixing standard
 multiple-choice with a `shortanswer` type: the child types a free-text
 response, taps "Check My Answer," and a model answer is revealed for
 self-comparison rather than being auto-graded (no external grading API — see
@@ -439,7 +440,7 @@ feature used elsewhere.
 - [x] Module 2 — Speaking (4 sentences/tier, raised past toddler-level words)
 - [x] Module 3 — Story-telling (2 longer stories/tier + writing-technique tips)
 - [x] Module 4 — Reading (6 passages/tier, 24 total; expanded from 2. New passages cover sport, science, history, daily life and society; answer options were length-balanced so the correct option is never noticeably longer than the distractors)
-- [x] Module 5 — Comprehension (2 ~300-word passages/tier, mixed question types)
+- [x] Module 5 — Comprehension (8 passages/tier, 32 total; expanded from 2. Mixed mc + shortanswer, inference / NOT / "what does X mean" questions, topics span daily life, sport, nature, science, history and society; answer options length-balanced, checked by script)
 - [x] Module 6 — Writing (structure hints + craft tips + model essay reveal, research-grounded)
 - [x] Writing expanded 1→6 prompts/tier (24 total) — WRITING_PROMPTS/HINTS/
       MODEL_ESSAYS keep their original per-item field names/shapes, just
