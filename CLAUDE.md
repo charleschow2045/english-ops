@@ -460,6 +460,25 @@ feature used elsewhere.
       modules (they defaulted to 1); Word Hunt words are placed in one fixed
       straight line (8 directions) and the grid grows to fit the longest
       word; Hangman lives scale with word length (4 to 8).
+- [x] Grammar "Past Simple Steps" (first phase of the grade-level grammar
+      framework): a 4th Grammar category with 11 sub-levels (regular +ed /
+      +d / doubling / y→ied, five irregular-verb groups, did/didn't, and a
+      fix-the-mistake editing level), 10 items each in
+      `src/content/grammarPastSimpleContent.jsx`. Every level opens with a
+      Learn card (rule, verb table, tips, common mistake) before practice;
+      these levels are the same for every tier. Level-complete state lives
+      only in component state (no localStorage yet).
+      **Coverage audit of the older Grammar content against the framework**
+      (Mixed/Tenses/Prepositions in `grammarContent.jsx`): covered — subject-
+      verb agreement, tense forms, prepositions as collocations, inversion/
+      subjunctive/conditionals (all pitched far above P5-S2, even at "easy").
+      Missing — compound sentences, adverbs, conjunctions, pronouns, articles
+      and quantifiers (a/an/the/some/any), noun/verb/adjective identification,
+      capital letters/basic sentence rules, punctuation (commas in lists,
+      speech marks), complex/compound-complex sentences, active vs passive,
+      modifier placement, editing exercises for other tenses, and any
+      explanation of what a preposition is (incl. "object of a preposition").
+      Not yet done: everything in that missing list, plus other tenses.
 - [x] Grammar drills (3 categories × 4 tiers, 8-12 items each with worked-example
       explanations, incl. mixed-tense paragraph questions)
 - [x] Word Hunt (Bookworm/Word Wipe-style, replaces earlier Wordle-clone)
