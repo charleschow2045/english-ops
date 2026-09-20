@@ -438,7 +438,7 @@ feature used elsewhere.
 - [x] Module 1 — Listening (3 passages/tier)
 - [x] Module 2 — Speaking (4 sentences/tier, raised past toddler-level words)
 - [x] Module 3 — Story-telling (2 longer stories/tier + writing-technique tips)
-- [x] Module 4 — Reading (2 passages/tier)
+- [x] Module 4 — Reading (6 passages/tier, 24 total; expanded from 2. New passages cover sport, science, history, daily life and society; answer options were length-balanced so the correct option is never noticeably longer than the distractors)
 - [x] Module 5 — Comprehension (2 ~300-word passages/tier, mixed question types)
 - [x] Module 6 — Writing (structure hints + craft tips + model essay reveal, research-grounded)
 - [x] Writing expanded 1→6 prompts/tier (24 total) — WRITING_PROMPTS/HINTS/
