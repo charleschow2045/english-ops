@@ -304,7 +304,7 @@ out-of-scope below). `PassageModule` handles both types; `shortanswer` items
 just need `prompt` + `modelAnswer` instead of `options`/`correctIndex`.
 
 ## Storytelling technique tips
-Each Storytelling item (2 per tier) can carry `tipTitle` + `tip` fields — a
+Each Storytelling item (6 per tier) can carry `tipTitle` + `tip` fields — a
 short "writing trick" callout (e.g. hooks, show-don't-tell, planting a
 problem, leaving a bit of mystery, character growth) shown between the
 passage and the questions. Rendered generically in `PassageModule` off those
@@ -438,7 +438,7 @@ feature used elsewhere.
 - [x] Project scaffold — theme, storage, Daily Missions home screen, hub-and-spoke nav
 - [x] Module 1 — Listening (3 passages/tier)
 - [x] Module 2 — Speaking (4 sentences/tier, raised past toddler-level words)
-- [x] Module 3 — Story-telling (2 longer stories/tier + writing-technique tips)
+- [x] Module 3 — Story-telling (6 stories/tier, 24 total, each with a writing-technique tip and the 4 tagged skill questions; expanded from 2 — new stories are ~160-260 words; option lengths balanced by script)
 - [x] Module 4 — Reading (6 passages/tier, 24 total; expanded from 2. New passages cover sport, science, history, daily life and society; answer options were length-balanced so the correct option is never noticeably longer than the distractors)
 - [x] Module 5 — Comprehension (8 passages/tier, 32 total; expanded from 2. Mixed mc + shortanswer, inference / NOT / "what does X mean" questions, topics span daily life, sport, nature, science, history and society; answer options length-balanced, checked by script)
 - [x] Module 6 — Writing (structure hints + craft tips + model essay reveal, research-grounded)

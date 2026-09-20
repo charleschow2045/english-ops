@@ -192,5 +192,18 @@ window.App.Content = window.App.Content || {};
     survivorship: { zh: "倖存者（偏差）" },
     choking: { zh: "失常（因壓力而表現失準）" },
     defy: { zh: "違反；不符合" },
+
+    // Storytelling module (expanded stories)
+    interpreter: { zh: "傳譯員" },
+    quarrel: { zh: "爭吵" },
+    emigrated: { zh: "移民（到外國）" },
+    archivist: { zh: "檔案管理員" },
+    apprentice: { zh: "學徒" },
+    pendulum: { zh: "鐘擺" },
+    elders: { zh: "長老；長輩" },
+    dilemma: { zh: "兩難" },
+    tolerance: { zh: "容許範圍；公差" },
+    sportsmanship: { zh: "運動家精神" },
+    ominously: { zh: "不祥地" },
   };
 })();
