@@ -3,8 +3,12 @@
 // directions) to spell a word, tap the last letter again to submit. Target
 // words for this puzzle are placed into the grid via a randomized
 // backtracking algorithm at runtime (buildGrid), so there's no need to
-// hand-author each grid. A curated bonus word list (no full dictionary
-// bundled) rewards finding common words beyond the target list too.
+// hand-author each grid. Each target word is placed in one fixed straight
+// line (any of 8 directions), like a standard word search — never turning
+// mid-word — so it can be followed by eye. (An earlier version placed words
+// as random snaking paths, which was the real reason players couldn't find
+// them.) A curated bonus word list (no full dictionary bundled) rewards
+// finding common words beyond the target list too.
 //
 // Grid size scales down by tier (6x6 easy/medium, 7x7 hard/expert) and a
 // 💡 Hint button exists, after feedback that an 8x8, all-directions grid
@@ -24,19 +28,6 @@ window.App = window.App || {};
   const WORDS_PER_PUZZLE = 5;
   const LETTER_POOL = "AAAAAAAAABBCCDDDDEEEEEEEEEEEEFFGGGHHIIIIIIIIIJKLLLLMMNNNNNNNOOOOOOOPPQRRRRRRSSSSTTTTTTTUUUVVWWXYYZ";
 
-  function neighbors(r, c, size) {
-    const result = [];
-    for (let dr = -1; dr <= 1; dr++) {
-      for (let dc = -1; dc <= 1; dc++) {
-        if (dr === 0 && dc === 0) continue;
-        const nr = r + dr;
-        const nc = c + dc;
-        if (nr >= 0 && nr < size && nc >= 0 && nc < size) result.push([nr, nc]);
-      }
-    }
-    return result;
-  }
-
   function shuffle(arr) {
     const copy = arr.slice();
     for (let i = copy.length - 1; i > 0; i--) {
@@ -46,47 +37,53 @@ window.App = window.App || {};
     return copy;
   }
 
+  // Standard word-search placement: each word is laid out in one fixed
+  // straight line (horizontal, vertical, or diagonal, forwards or
+  // backwards) — never turning mid-word — so a player's eye can actually
+  // follow it. Every (start, direction) that fits (in bounds, and every
+  // cell empty or already holding the same letter) is enumerated, shuffled,
+  // and the first one used; if none fit, the word is skipped.
+  const DIRECTIONS = [
+    [0, 1], [1, 0], [1, 1], [-1, 1],
+    [0, -1], [-1, 0], [-1, -1], [1, -1],
+  ];
+
   function tryPlaceWord(grid, word, size) {
     const letters = word.split("");
-    for (let attempt = 0; attempt < 500; attempt++) {
-      const startR = Math.floor(Math.random() * size);
-      const startC = Math.floor(Math.random() * size);
-      if (!(grid[startR][startC] === null || grid[startR][startC] === letters[0])) continue;
+    const last = letters.length - 1;
+    const placements = [];
 
-      const path = [[startR, startC]];
-      const visited = new Set([`${startR},${startC}`]);
-      let failed = false;
-
-      for (let i = 1; i < letters.length; i++) {
-        const [r, c] = path[path.length - 1];
-        const candidates = shuffle(neighbors(r, c, size)).filter(([nr, nc]) => {
-          if (visited.has(`${nr},${nc}`)) return false;
-          const cell = grid[nr][nc];
-          return cell === null || cell === letters[i];
-        });
-        if (candidates.length === 0) {
-          failed = true;
-          break;
+    DIRECTIONS.forEach(([dr, dc]) => {
+      for (let r = 0; r < size; r++) {
+        for (let c = 0; c < size; c++) {
+          const endR = r + dr * last;
+          const endC = c + dc * last;
+          if (endR < 0 || endR >= size || endC < 0 || endC >= size) continue;
+          const fits = letters.every((ch, i) => {
+            const cell = grid[r + dr * i][c + dc * i];
+            return cell === null || cell === ch;
+          });
+          if (fits) placements.push([r, c, dr, dc]);
         }
-        const next = candidates[0];
-        path.push(next);
-        visited.add(`${next[0]},${next[1]}`);
       }
+    });
 
-      if (!failed) {
-        path.forEach(([r, c], i) => {
-          grid[r][c] = letters[i];
-        });
-        return path;
-      }
-    }
-    return null;
+    if (placements.length === 0) return null;
+    const [r, c, dr, dc] = shuffle(placements)[0];
+    const path = letters.map((ch, i) => [r + dr * i, c + dc * i]);
+    path.forEach(([pr, pc], i) => {
+      grid[pr][pc] = letters[i];
+    });
+    return path;
   }
 
   // Returns { grid, entries } where entries is [{ word, path }] for every
   // word that was successfully placed (fewer than requested is possible on a
-  // crowded grid — gracefully degrades rather than failing the puzzle).
-  function buildGrid(words, size) {
+  // crowded grid — gracefully degrades rather than failing the puzzle). The
+  // grid is at least `baseSize`, but grows to fit the longest word, since a
+  // straight-line word can't be placed if it's longer than the grid.
+  function buildGrid(words, baseSize) {
+    const size = Math.max(baseSize, ...words.map((w) => w.length));
     const grid = Array.from({ length: size }, () => Array(size).fill(null));
     const entries = [];
     const sorted = [...words].sort((a, b) => b.length - a.length);
@@ -291,7 +288,7 @@ window.App = window.App || {};
 
           <div
             className="grid gap-1.5 mb-3 mx-auto"
-            style={{ gridTemplateColumns: `repeat(${gridSize}, minmax(0, 1fr))`, maxWidth: "360px" }}
+            style={{ gridTemplateColumns: `repeat(${grid.length}, minmax(0, 1fr))`, maxWidth: "360px" }}
           >
             {grid.map((row, r) =>
               row.map((letter, c) => {

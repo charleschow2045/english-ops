@@ -18,7 +18,12 @@ window.App = window.App || {};
   const { sampleArray } = window.App;
 
   const ACCENT = MODULE_ACCENTS.hangman;
-  const MAX_LIVES = 6;
+  // Lives scale with word length: short words get fewer (min 4), long words
+  // more (max 8) — a flat 6 was too generous for 3-letter words and too
+  // stingy for 9-letter ones.
+  function livesForWord(word) {
+    return Math.max(4, Math.min(word.length, 8));
+  }
   const KEYBOARD_ROWS = [
     "QWERTYUIOP".split(""),
     "ASDFGHJKL".split(""),
@@ -41,7 +46,7 @@ window.App = window.App || {};
             <li>A secret word is hidden as blanks, like <span className="tracking-widest">_ _ _ _</span>.</li>
             <li>Tap a letter you think is in the word.</li>
             <li>Guess right, and it fills in every matching blank.</li>
-            <li>Guess wrong, and you lose a ❤️ life — you have {MAX_LIVES}.</li>
+            <li>Guess wrong, and you lose a ❤️ life — longer words give you more lives.</li>
             <li>Fill in the whole word before your lives run out to win!</li>
             <li>Stuck? Tap "💡 Hint" to reveal a letter (costs a life).</li>
           </ul>
@@ -65,7 +70,8 @@ window.App = window.App || {};
     const [showHelp, setShowHelp] = useState(false);
 
     const wrongGuesses = guessed.filter((l) => !word.includes(l));
-    const livesLeft = MAX_LIVES - wrongGuesses.length;
+    const maxLives = livesForWord(word);
+    const livesLeft = maxLives - wrongGuesses.length;
     const solved = wordLetters.every((l) => guessed.includes(l));
     const status = solved ? "won" : livesLeft <= 0 ? "lost" : "playing";
     const score = word.length * 10 + Math.max(livesLeft, 0) * 5;
@@ -147,7 +153,7 @@ window.App = window.App || {};
         <PaperCard accent={ACCENT}>
           <div className="flex items-center justify-between mb-4">
             <div className="flex gap-1">
-              {Array.from({ length: MAX_LIVES }).map((_, i) => (
+              {Array.from({ length: maxLives }).map((_, i) => (
                 <span key={i} className="text-xl">
                   {i < livesLeft ? "❤️" : "🤍"}
                 </span>
