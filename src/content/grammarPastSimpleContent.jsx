@@ -1,3 +1,4 @@
+// (Registered into GRAMMAR_PATHS at the bottom of this file.)
 // Grammar → "Past Simple Steps": the Past Simple tense broken into 11 short
 // sub-levels, each with a Learn card shown before practice starts.
 //   1-4  regular verbs (+ed, +d, doubling, y→ied)
@@ -14,7 +15,7 @@ window.App = window.App || {};
 window.App.Content = window.App.Content || {};
 
 (function () {
-  window.App.Content.GRAMMAR_PAST_SIMPLE = [
+  const PAST_SIMPLE_LEVELS = [
     {
       id: "ps-1",
       emoji: "➕",
@@ -419,4 +420,17 @@ window.App.Content = window.App.Content || {};
       ],
     },
   ];
+
+  // Registered as one "path" in GRAMMAR_PATHS; GrammarModule turns every path
+  // into a category with a level list. `sections` labels start at the level
+  // index given.
+  window.App.Content.GRAMMAR_PATHS = window.App.Content.GRAMMAR_PATHS || [];
+  window.App.Content.GRAMMAR_PATHS.push({
+    key: "pastsimple",
+    emoji: "⏪",
+    label: "Past Simple Steps",
+    blurb: "Step by step: -ed, -d, doubling, -ied and irregular verbs.",
+    sections: { 0: "Regular verbs", 4: "Irregular verbs", 9: "Questions and editing" },
+    levels: PAST_SIMPLE_LEVELS,
+  });
 })();

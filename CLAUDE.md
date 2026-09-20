@@ -478,7 +478,24 @@ feature used elsewhere.
       speech marks), complex/compound-complex sentences, active vs passive,
       modifier placement, editing exercises for other tenses, and any
       explanation of what a preposition is (incl. "object of a preposition").
-      Not yet done: everything in that missing list, plus other tenses.
+      Not yet done: everything in that missing list except the two items
+      covered by the second phase below.
+- [x] Grammar paths, second phase: the level/Learn-card system was made
+      generic — every entry in `window.App.Content.GRAMMAR_PATHS` (`key`,
+      `emoji`, `label`, `blurb`, `sections` = label shown before a given
+      level index, `levels`) becomes a Grammar category, so adding a path is
+      just a new content file plus a script tag. Now 6 paths / 35 levels /
+      ~300 items: Past Simple Steps (11), Present Tenses (5), Past Continuous
+      (4, incl. an editing level), Present Perfect (5), Future Forms (4), and
+      Prepositions Explained (6: what a preposition is with a mouse-and-box,
+      the "object of a preposition" rule, at/in/on for place and time,
+      movement, what follows a preposition, adjective+preposition pairs).
+      The older advanced Prepositions set was relabelled "Prepositions:
+      Advanced". Content files: grammarPastSimpleContent.jsx,
+      grammarTensePathsContent.jsx, grammarPrepositionPathContent.jsx.
+      Still to do: parts of speech, sentence structure, punctuation, articles
+      and quantifiers, active/passive and other advanced points, and editing
+      levels for the tenses other than Past Simple / Past Continuous.
 - [x] Grammar drills (3 categories × 4 tiers, 8-12 items each with worked-example
       explanations, incl. mixed-tense paragraph questions)
 - [x] Word Hunt (Bookworm/Word Wipe-style, replaces earlier Wordle-clone)

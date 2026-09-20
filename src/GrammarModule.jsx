@@ -1,9 +1,10 @@
 // Grammar drills — pick a category, then step through that category's
-// exercises. Mixed / Tenses / Prepositions are tier-scaled fill-in-the-blank
-// sets. "Past Simple Steps" is a different shape: 11 sub-levels (regular
-// -ed / -d / doubling / -ied rules, five irregular-verb groups, did/didn't,
-// and editing), each opening with a Learn card before the practice starts.
-// Those levels are the same for every difficulty tier, so no tier filtering.
+// exercises. Mixed / Tenses / Prepositions: Advanced are tier-scaled
+// fill-in-the-blank sets. Every "path" in GRAMMAR_PATHS (Past Simple Steps,
+// Present Tenses, Past Continuous, Present Perfect, Future Forms,
+// Prepositions Explained) is a different shape: a list of short levels, each
+// opening with a Learn card before the practice starts. Path levels are the
+// same for every difficulty tier, so there is no tier filtering.
 // Migrated to the "探險護照" system — see theme.jsx header comment.
 window.App = window.App || {};
 
@@ -15,16 +16,18 @@ window.App = window.App || {};
 
   const ACCENT = MODULE_ACCENTS.grammar;
 
+  // Every entry in GRAMMAR_PATHS (Past Simple, Present Tenses, Past
+  // Continuous, Present Perfect, Future Forms, Prepositions Explained, ...)
+  // becomes its own category with a level list; the older tier-scaled sets
+  // (Mixed, Tenses, and the advanced Prepositions collocations) stay as they
+  // were.
+  const PATHS = window.App.Content.GRAMMAR_PATHS || [];
   const CATEGORIES = [
     { key: "mixed", label: "Mixed Grammar", emoji: "🔀", blurb: "A mix of grammar rules for your level." },
     { key: "tense", label: "Tenses", emoji: "⏰", blurb: "Practice past, present, and future tense forms." },
-    { key: "pastsimple", label: "Past Simple Steps", emoji: "⏪", blurb: "Step by step: -ed, -d, doubling, -ied and irregular verbs." },
-    { key: "preposition", label: "Prepositions", emoji: "🧭", blurb: "Practice tricky words like at, in, on, and to." },
+    ...PATHS.map((p) => ({ key: p.key, label: p.label, emoji: p.emoji, blurb: p.blurb })),
+    { key: "preposition", label: "Prepositions: Advanced", emoji: "🧭", blurb: "Tricky fixed pairs like contingent on and account for." },
   ];
-
-  // Section labels shown in the Past Simple level list, keyed by the index of
-  // the first level in each section.
-  const PS_SECTIONS = { 0: "Regular verbs", 4: "Irregular verbs", 9: "Questions and editing" };
 
   const SESSION_SIZE = 8;
 
@@ -115,12 +118,14 @@ window.App = window.App || {};
     // Hooks must run unconditionally on every render (Rules of Hooks), so
     // these are computed before the early-returns below, with safe fallbacks
     // while no category or level has been picked yet.
-    const psLevels = window.App.Content.GRAMMAR_PAST_SIMPLE || [];
-    const isPS = category === "pastsimple";
+    const path = PATHS.find((p) => p.key === category) || null;
+    const isPS = !!path;
+    const psLevels = path ? path.levels : [];
     const level = isPS && levelIdx !== null ? psLevels[levelIdx] : null;
     const catMeta = CATEGORIES.find((c) => c.key === category) || CATEGORIES[0];
     const bank = window.App.Content.GRAMMAR_ITEMS[isPS ? "mixed" : category || "mixed"];
     const baseItems = isPS ? (level ? level.items : psLevels[0].items) : bank[tier] || bank.easy;
+    const doneKey = (i) => `${category}:${i}`;
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const items = useMemo(() => sampleArray(baseItems, SESSION_SIZE), [baseItems, runSeed]);
     const rawQ = items[index];
@@ -171,7 +176,7 @@ window.App = window.App || {};
           </div>
           <PaperCard accent={ACCENT}>
             <h2 className={`text-xl mb-1 ${TYPE.heading}`} style={{ color: INK.ink }}>
-              ⏪ Past Simple Steps
+              {path.emoji} {path.label}
             </h2>
             <p className="font-bold text-sm" style={{ color: INK.mutedInk }}>
               Work through the levels in order. Each one starts with a short lesson, then a practice round.
@@ -180,9 +185,9 @@ window.App = window.App || {};
           <div className="flex flex-col gap-3">
             {psLevels.map((lv, i) => (
               <div key={lv.id}>
-                {PS_SECTIONS[i] && (
+                {path.sections && path.sections[i] && (
                   <p className={`text-xs mb-2 mt-1 ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
-                    {PS_SECTIONS[i]}
+                    {path.sections[i]}
                   </p>
                 )}
                 <button
@@ -197,11 +202,11 @@ window.App = window.App || {};
                   <span
                     className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-extrabold"
                     style={{
-                      backgroundColor: doneLevels.includes(i) ? ACCENT.solid : ACCENT.tint,
-                      color: doneLevels.includes(i) ? ACCENT.on : ACCENT.solid,
+                      backgroundColor: doneLevels.includes(doneKey(i)) ? ACCENT.solid : ACCENT.tint,
+                      color: doneLevels.includes(doneKey(i)) ? ACCENT.on : ACCENT.solid,
                     }}
                   >
-                    {doneLevels.includes(i) ? "✓" : i + 1}
+                    {doneLevels.includes(doneKey(i)) ? "✓" : i + 1}
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className={`text-base leading-tight ${TYPE.heading}`} style={{ color: INK.ink }}>
@@ -244,7 +249,7 @@ window.App = window.App || {};
 
     function handleNext() {
       if (isLast) {
-        if (isPS) setDoneLevels((d) => (d.includes(levelIdx) ? d : [...d, levelIdx]));
+        if (isPS) setDoneLevels((d) => (d.includes(doneKey(levelIdx)) ? d : [...d, doneKey(levelIdx)]));
         setDoneAll(true);
       } else {
         setIndex((x) => x + 1);
