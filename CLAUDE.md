@@ -485,18 +485,22 @@ feature used elsewhere.
       generic — every entry in `window.App.Content.GRAMMAR_PATHS` (`key`,
       `emoji`, `label`, `blurb`, `sections` = label shown before a given
       level index, `levels`) becomes a Grammar category, so adding a path is
-      just a new content file plus a script tag. Now 6 paths / 35 levels /
-      ~300 items: Past Simple Steps (11), Present Tenses (5), Past Continuous
-      (4, incl. an editing level), Present Perfect (5), Future Forms (4), and
+      just a new content file plus a script tag. Now 6 paths / 38 levels /
+      ~360 items: Past Simple Steps (11), Present Tenses (6), Past Continuous
+      (4), Present Perfect (6), Future Forms (5), and
       Prepositions Explained (6: what a preposition is with a mouse-and-box,
       the "object of a preposition" rule, at/in/on for place and time,
       movement, what follows a preposition, adjective+preposition pairs).
       The older advanced Prepositions set was relabelled "Prepositions:
       Advanced". Content files: grammarPastSimpleContent.jsx,
       grammarTensePathsContent.jsx, grammarPrepositionPathContent.jsx.
+      Every tense path now ends with an "Editing: fix the mistake" level in
+      the Past Simple level-11 shape (10 "Find the mistake and choose the
+      correct sentence" mc items, a Learn card with a Mistake -> Fix table
+      and Step 1 / Step 2 tips, and a `mistake` note): ps-11, pr-6, pc-4
+      (topped up to 10 items), pp-6, fu-5.
       Still to do: parts of speech, sentence structure, punctuation, articles
-      and quantifiers, active/passive and other advanced points, and editing
-      levels for the tenses other than Past Simple / Past Continuous.
+      and quantifiers, and active/passive and other advanced points.
 - [x] Grammar drills (3 categories × 4 tiers, 8-12 items each with worked-example
       explanations, incl. mixed-tense paragraph questions)
 - [x] Word Hunt (Bookworm/Word Wipe-style, replaces earlier Wordle-clone)

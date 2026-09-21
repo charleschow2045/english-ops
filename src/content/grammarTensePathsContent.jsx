@@ -3,13 +3,17 @@
 // short levels, and every level opens with a Learn card (rule, table, tips,
 // common mistake) before a practice round. Registered into GRAMMAR_PATHS.
 //   Present Tenses    — Present Simple (habits, he/she/it, do/does), Present
-//                       Continuous, and choosing between them
+//                       Continuous, choosing between them, and an editing level
 //   Past Continuous   — was/were + -ing, while/when, simple vs continuous,
 //                       and an editing level
 //   Present Perfect   — form, irregular participles, for/since, already/yet/
-//                       just/ever/never, and Present Perfect vs Past Simple
+//                       just/ever/never, Present Perfect vs Past Simple, and
+//                       an editing level
 //   Future Forms      — will, going to, Present Continuous for arrangements,
-//                       and will vs going to
+//                       will vs going to, and an editing level
+// Every path ends with an "Editing: fix the mistake" level in the same shape as
+// Past Simple level 11: 10 "Find the mistake and choose the correct sentence"
+// items with a Learn card (Mistake -> Fix table, Step 1 / Step 2 tips).
 // Items use correctIndex 0 (options are shuffled at runtime). Clues in every
 // sentence are chosen so only one option is natural, and each explanation
 // gives the rule plus a second example that is not in the item.
@@ -186,6 +190,41 @@ window.App.Content = window.App.Content || {};
         fb("pr5-8", "Where is Dad? He ___ in the garden at the moment.", ["is working", "works", "work", "working"], "\"At the moment\" needs the Present Continuous: is working. For example: \"She is cooking at the moment.\""),
       ],
     },
+    {
+      id: "pr-6",
+      emoji: "✏️",
+      title: "Editing: fix the mistake",
+      blurb: "Find the error in present tense sentences",
+      learn: {
+        intro:
+          "Editing means finding a mistake in a sentence and correcting it. For the Present tenses, first decide: is it a routine or a fact, or is it happening now? Then check the verb form and the helper word.",
+        headers: ["Mistake", "Fix"],
+        rows: [
+          ["She go to school by bus.", "She goes to school by bus."],
+          ["He doesn't likes fish.", "He doesn't like fish."],
+          ["Does she plays tennis?", "Does she play tennis?"],
+          ["They is playing now.", "They are playing now."],
+          ["I am knowing the answer.", "I know the answer."],
+        ],
+        tips: [
+          "Step 1: Look for a clue. Every day, usually, always → Present Simple. Now, at the moment, Look! → Present Continuous.",
+          "Step 2: Check the helper words. He / she / it needs -s, does or is. After do / does / don't / doesn't, the verb goes back to the base form.",
+        ],
+        mistake: "Do not fix only one word and leave another mistake in the sentence. Check the verb ending and the helper word (am / is / are, do / does) together.",
+      },
+      items: [
+        mc("pr6-1", "Find the mistake and choose the correct sentence: \"My brother play football every Saturday.\"", ["My brother plays football every Saturday.", "My brother playing football every Saturday.", "My brother is play football every Saturday."], "\"My brother\" is singular (he), so add -s: plays. For example: \"She walks to school.\""),
+        mc("pr6-2", "Find the mistake and choose the correct sentence: \"She don't like spicy food.\"", ["She doesn't like spicy food.", "She don't likes spicy food.", "She doesn't likes spicy food."], "With he, she and it, use doesn't, and keep the verb in the base form. For example: \"He doesn't eat meat.\""),
+        mc("pr6-3", "Find the mistake and choose the correct sentence: \"Look! The children plays in the garden.\"", ["Look! The children are playing in the garden.", "Look! The children is playing in the garden.", "Look! The children play in the garden now."], "\"Look!\" shows something happening now, and \"the children\" is plural: are playing. For example: \"Listen! The birds are singing.\""),
+        mc("pr6-4", "Find the mistake and choose the correct sentence: \"Does your dad drives to work every day?\"", ["Does your dad drive to work every day?", "Do your dad drive to work every day?", "Is your dad drive to work every day?"], "After does, the verb goes back to the base form: drive. For example: \"Does she play the piano?\""),
+        mc("pr6-5", "Find the mistake and choose the correct sentence: \"I am knowing the answer to that question.\"", ["I know the answer to that question.", "I knowing the answer to that question.", "I am know the answer to that question."], "Know is a state verb, so we do not use -ing: I know. For example: \"I love this song.\""),
+        mc("pr6-6", "Find the mistake and choose the correct sentence: \"He watchs TV every evening.\"", ["He watches TV every evening.", "He watch TV every evening.", "He watchies TV every evening."], "Watch ends in ch, so add -es: watches. For example: \"She washes the dishes.\""),
+        mc("pr6-7", "Find the mistake and choose the correct sentence: \"My mum is cook dinner at the moment.\"", ["My mum is cooking dinner at the moment.", "My mum cooks dinner at the moment.", "My mum are cooking dinner at the moment."], "After is, the verb needs -ing: cooking. For example: \"Dad is reading a book now.\""),
+        mc("pr6-8", "Find the mistake and choose the correct sentence: \"The baby cryes a lot at night.\"", ["The baby cries a lot at night.", "The baby crys a lot at night.", "The baby cry a lot at night."], "Cry ends in consonant + y, so change y to ies: cries. For example: \"He studies every evening.\""),
+        mc("pr6-9", "Find the mistake and choose the correct sentence: \"They doesn't have school on Sundays.\"", ["They don't have school on Sundays.", "They doesn't has school on Sundays.", "They aren't have school on Sundays."], "\"They\" takes don't, not doesn't. For example: \"We don't have homework today.\""),
+        mc("pr6-10", "Find the mistake and choose the correct sentence: \"Every morning, he is walking to school.\"", ["Every morning, he walks to school.", "Every morning, he walk to school.", "Every morning, he is walk to school."], "\"Every morning\" shows a routine, so use the Present Simple: walks. For example: \"They play chess every Friday.\""),
+      ],
+    },
   ];
 
   const PAST_CONTINUOUS = [
@@ -297,12 +336,13 @@ window.App.Content = window.App.Content || {};
           ["While I cooked, the phone rang", "While I was cooking, the phone rang"],
           ["She was watch TV", "She was watching TV"],
           ["Was they waiting?", "Were they waiting?"],
+          ["What was you doing?", "What were you doing?"],
         ],
         tips: [
           "Check was / were matches the subject: I / he / she / it → was, you / we / they → were.",
           "After was / were, the verb must end in -ing.",
         ],
-        mistake: "",
+        mistake: "Do not fix only one word and leave another mistake in the sentence. Check was / were and the -ing ending together.",
       },
       items: [
         mc("pc4-1", "Find the mistake and choose the correct sentence: \"They was playing football when it rained.\"", ["They were playing football when it rained.", "They was play football when it rained.", "They were played football when it rained."], "\"They\" takes were, not was. For example: \"We were swimming when it rained.\""),
@@ -313,6 +353,8 @@ window.App.Content = window.App.Content || {};
         mc("pc4-6", "Find the mistake and choose the correct sentence: \"Was they waiting for the bus?\"", ["Were they waiting for the bus?", "Did they waiting for the bus?", "Was they wait for the bus?"], "\"They\" takes were: Were they waiting? For example: \"Were you sleeping?\""),
         mc("pc4-7", "Find the mistake and choose the correct sentence: \"He didn't was sleeping at ten o'clock.\"", ["He wasn't sleeping at ten o'clock.", "He didn't sleeping at ten o'clock.", "He weren't sleeping at ten o'clock."], "The negative of the Past Continuous is wasn't / weren't + -ing, not didn't. For example: \"They weren't listening.\""),
         mc("pc4-8", "Find the mistake and choose the correct sentence: \"The children were play in the garden.\"", ["The children were playing in the garden.", "The children was playing in the garden.", "The children were played in the garden."], "After were, the verb needs -ing: playing. For example: \"The birds were singing.\""),
+        mc("pc4-9", "Find the mistake and choose the correct sentence: \"What was you doing at seven o'clock?\"", ["What were you doing at seven o'clock?", "What did you doing at seven o'clock?", "What was you do at seven o'clock?"], "\"You\" takes were, not was. For example: \"What were they doing?\""),
+        mc("pc4-10", "Find the mistake and choose the correct sentence: \"At nine o'clock last night, it were raining hard.\"", ["At nine o'clock last night, it was raining hard.", "At nine o'clock last night, it was rain hard.", "At nine o'clock last night, it were rained hard."], "\"It\" takes was, not were. For example: \"The sun was shining all morning.\""),
       ],
     },
   ];
@@ -483,6 +525,41 @@ window.App.Content = window.App.Content || {};
         fb("pp5-8", "___ you ever tried bubble tea?", ["Have", "Did", "Has", "Are"], "\"Ever\" asks about life experience, so use the Present Perfect: Have you ever tried. For example: \"Have they ever been abroad?\""),
       ],
     },
+    {
+      id: "pp-6",
+      emoji: "✏️",
+      title: "Editing: fix the mistake",
+      blurb: "Find the error in Present Perfect sentences",
+      learn: {
+        intro:
+          "Editing means finding a mistake in a sentence and correcting it. For the Present Perfect, check three things: the time clue, have / has, and the past participle.",
+        headers: ["Mistake", "Fix"],
+        rows: [
+          ["She have finished", "She has finished"],
+          ["I have seen him yesterday", "I saw him yesterday"],
+          ["He has went home", "He has gone home"],
+          ["I haven't ate yet", "I haven't eaten yet"],
+          ["We have lived here since five years", "We have lived here for five years"],
+        ],
+        tips: [
+          "Step 1: Check the time clue. Yesterday, last week, ago → Past Simple. Ever, never, already, just, yet, for, since → Present Perfect.",
+          "Step 2: Check have / has and the past participle. Irregular verbs have special participles: gone, eaten, seen, written, broken.",
+        ],
+        mistake: "Do not fix only one word and leave another mistake in the sentence. Check have / has, the past participle and the time clue together.",
+      },
+      items: [
+        mc("pp6-1", "Find the mistake and choose the correct sentence: \"My sister have already left for school.\"", ["My sister has already left for school.", "My sister have already leaving for school.", "My sister is already left for school."], "\"My sister\" is singular (she), so use has, not have. For example: \"He has just arrived.\""),
+        mc("pp6-2", "Find the mistake and choose the correct sentence: \"I have seen that film last night.\"", ["I saw that film last night.", "I have saw that film last night.", "I have see that film last night."], "\"Last night\" is a finished time, so use the Past Simple: saw. For example: \"We visited Japan last year.\""),
+        mc("pp6-3", "Find the mistake and choose the correct sentence: \"She has went to the library already.\"", ["She has gone to the library already.", "She has go to the library already.", "She have gone to the library already."], "The past participle of go is gone, not went. For example: \"They have gone home.\""),
+        mc("pp6-4", "Find the mistake and choose the correct sentence: \"I haven't ate lunch yet.\"", ["I haven't eaten lunch yet.", "I haven't eat lunch yet.", "I hasn't eaten lunch yet."], "The past participle of eat is eaten, not ate. For example: \"She hasn't eaten breakfast.\""),
+        mc("pp6-5", "Find the mistake and choose the correct sentence: \"We have lived here since five years.\"", ["We have lived here for five years.", "We lived here since five years.", "We have live here for five years."], "Use for with a length of time (five years) and since with a starting point (2020). For example: \"He has studied here for two months.\""),
+        mc("pp6-6", "Find the mistake and choose the correct sentence: \"Have you ever visit Japan?\"", ["Have you ever visited Japan?", "Did you ever visited Japan?", "Has you ever visited Japan?"], "After have you ever, use the past participle: visited. For example: \"Have they ever tried sushi?\""),
+        mc("pp6-7", "Find the mistake and choose the correct sentence: \"He has broke his arm, so he can't play.\"", ["He has broken his arm, so he can't play.", "He have broken his arm, so he can't play.", "He has break his arm, so he can't play."], "The past participle of break is broken, not broke. For example: \"She has spoken to the teacher.\""),
+        mc("pp6-8", "Find the mistake and choose the correct sentence: \"They has just finished their homework.\"", ["They have just finished their homework.", "They has just finishing their homework.", "They have just finish their homework."], "\"They\" takes have, not has. For example: \"We have just arrived.\""),
+        mc("pp6-9", "Find the mistake and choose the correct sentence: \"I have met her two days ago.\"", ["I met her two days ago.", "I have meet her two days ago.", "I has met her two days ago."], "\"Two days ago\" is a finished time, so use the Past Simple: met. For example: \"We arrived three hours ago.\""),
+        mc("pp6-10", "Find the mistake and choose the correct sentence: \"She hasn't wrote to me since last month.\"", ["She hasn't written to me since last month.", "She haven't written to me since last month.", "She hasn't write to me since last month."], "The past participle of write is written, not wrote. For example: \"He has written a long story.\""),
+      ],
+    },
   ];
 
   const FUTURE = [
@@ -611,6 +688,41 @@ window.App.Content = window.App.Content || {};
         fb("fu4-8", "I promise I ___ be late again.", ["won't", "am not going", "don't", "isn't"], "A promise uses will / won't. For example: \"I promise I won't forget.\""),
       ],
     },
+    {
+      id: "fu-5",
+      emoji: "✏️",
+      title: "Editing: fix the mistake",
+      blurb: "Find the error in future sentences",
+      learn: {
+        intro:
+          "Editing means finding a mistake in a sentence and correcting it. For future forms, check the form: will + base verb, am / is / are going to + base verb, or am / is / are + -ing for an arrangement.",
+        headers: ["Mistake", "Fix"],
+        rows: [
+          ["I will to help you.", "I will help you."],
+          ["She is going to buys a bike.", "She is going to buy a bike."],
+          ["It will rains tomorrow.", "It will rain tomorrow."],
+          ["We going to visit Japan.", "We are going to visit Japan."],
+          ["I willn't be late.", "I won't be late."],
+        ],
+        tips: [
+          "Step 1: Check the meaning. A sudden decision, offer or promise → will. A plan or a clear sign now → going to. A fixed arrangement → am / is / are + -ing.",
+          "Step 2: Check the form. After will and after going to, use the base verb (no to, no -s, no -ing). Do not forget am / is / are before going.",
+        ],
+        mistake: "Do not say \"will to\" or \"will goes\". After will, use the base verb straight away.",
+      },
+      items: [
+        mc("fu5-1", "Find the mistake and choose the correct sentence: \"I will to help you with your bag.\"", ["I will help you with your bag.", "I will helping you with your bag.", "I going to help you with your bag."], "After will, use the base verb without to: will help. For example: \"I will carry that for you.\""),
+        mc("fu5-2", "Find the mistake and choose the correct sentence: \"She is going to buys a new bike tomorrow.\"", ["She is going to buy a new bike tomorrow.", "She is going to buying a new bike tomorrow.", "She going to buy a new bike tomorrow."], "After going to, the verb stays in the base form: buy. For example: \"They are going to visit us.\""),
+        mc("fu5-3", "Find the mistake and choose the correct sentence: \"It will rains tomorrow, I think.\"", ["It will rain tomorrow, I think.", "It will raining tomorrow, I think.", "It wills rain tomorrow, I think."], "After will, use the base verb with no -s: rain. For example: \"She will win, I think.\""),
+        mc("fu5-4", "Find the mistake and choose the correct sentence: \"We going to visit Japan next summer.\"", ["We are going to visit Japan next summer.", "We is going to visit Japan next summer.", "We are go to visit Japan next summer."], "Going to needs am / is / are before it: we are going to. For example: \"They are going to move house.\""),
+        mc("fu5-5", "Find the mistake and choose the correct sentence: \"I willn't be late for school again.\"", ["I won't be late for school again.", "I don't will be late for school again.", "I will not to be late for school again."], "The short negative of will is won't. For example: \"He won't forget his keys.\""),
+        mc("fu5-6", "Find the mistake and choose the correct sentence: \"Look at those dark clouds! It is go to rain soon.\"", ["Look at those dark clouds! It is going to rain soon.", "Look at those dark clouds! It is going rain soon.", "Look at those dark clouds! It goes to rain soon."], "Use going to for a prediction from evidence you can see now, and keep the whole form: is going to rain. For example: \"Look! He is going to fall.\""),
+        mc("fu5-7", "Find the mistake and choose the correct sentence: \"Tomorrow, I am meet my cousin at the mall.\"", ["Tomorrow, I am meeting my cousin at the mall.", "Tomorrow, I meeting my cousin at the mall.", "Tomorrow, I are meeting my cousin at the mall."], "For an arrangement, use am / is / are + -ing: am meeting. For example: \"We are having dinner with Grandma on Friday.\""),
+        mc("fu5-8", "Find the mistake and choose the correct sentence: \"They is going to play football after school.\"", ["They are going to play football after school.", "They are going to played football after school.", "They are goes to play football after school."], "\"They\" takes are: they are going to. For example: \"We are going to eat soon.\""),
+        mc("fu5-9", "Find the mistake and choose the correct sentence: \"Do you will come to my party?\"", ["Will you come to my party?", "Do you will to come to my party?", "Will you to come to my party?"], "A question with will starts with will: Will you come? Do not add do. For example: \"Will he help us?\""),
+        mc("fu5-10", "Find the mistake and choose the correct sentence: \"He isn't going to passes the exam.\"", ["He isn't going to pass the exam.", "He isn't going to passing the exam.", "He doesn't going to pass the exam."], "After going to, use the base verb: pass. In the negative, put not after is: isn't going to. For example: \"They aren't going to win.\""),
+      ],
+    },
   ];
 
   const paths = (window.App.Content.GRAMMAR_PATHS = window.App.Content.GRAMMAR_PATHS || []);
@@ -620,7 +732,7 @@ window.App.Content = window.App.Content || {};
       emoji: "🌤️",
       label: "Present Tenses",
       blurb: "Present Simple and Present Continuous, step by step.",
-      sections: { 0: "Present Simple", 3: "Present Continuous", 4: "Choosing the tense" },
+      sections: { 0: "Present Simple", 3: "Present Continuous", 4: "Choosing the tense", 5: "Editing" },
       levels: PRESENT,
     },
     {
@@ -636,7 +748,7 @@ window.App.Content = window.App.Content || {};
       emoji: "🎒",
       label: "Present Perfect",
       blurb: "have / has + past participle, for / since, already / yet.",
-      sections: { 0: "Form", 2: "Using it", 4: "Choosing the tense" },
+      sections: { 0: "Form", 2: "Using it", 4: "Choosing the tense", 5: "Editing" },
       levels: PRESENT_PERFECT,
     },
     {
@@ -644,7 +756,7 @@ window.App.Content = window.App.Content || {};
       emoji: "🚀",
       label: "Future Forms",
       blurb: "will, going to, and the Present Continuous for plans.",
-      sections: { 0: "Ways to talk about the future" },
+      sections: { 0: "Ways to talk about the future", 4: "Editing" },
       levels: FUTURE,
     }
   );
