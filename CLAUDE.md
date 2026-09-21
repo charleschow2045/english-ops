@@ -436,7 +436,7 @@ feature used elsewhere.
 
 ## Build status
 - [x] Project scaffold — theme, storage, Daily Missions home screen, hub-and-spoke nav
-- [x] Module 1 — Listening (3 passages/tier)
+- [x] Module 1 — Listening (10 passages/tier, 40 total; expanded from 3. Each session plays every passage in the tier, shuffled. Passages grow from ~25 words (easy, direct facts, sequence, simple inference) to ~45 words (expert: implication, author's point, attitude); medium and above add inference questions. Option lengths balanced by script: mean gap 0.50 chars, max 4.5, including the 7 older items that were rebalanced)
 - [x] Module 2 — Speaking (4 sentences/tier, raised past toddler-level words)
 - [x] Module 3 — Story-telling (6 stories/tier, 24 total, each with a writing-technique tip and the 4 tagged skill questions; expanded from 2 — new stories are ~160-260 words; option lengths balanced by script)
 - [x] Module 4 — Reading (6 passages/tier, 24 total; expanded from 2. New passages cover sport, science, history, daily life and society; answer options were length-balanced so the correct option is never noticeably longer than the distractors)
