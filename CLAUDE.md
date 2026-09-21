@@ -495,8 +495,24 @@ feature used elsewhere.
       correct sentence" mc items, a Learn card with a Mistake -> Fix table
       and Step 1 / Step 2 tips, and a `mistake` note): ps-11, pr-6, pc-4
       (topped up to 10 items), pp-6, fu-5.
-      Still to do: parts of speech, sentence structure, punctuation, articles
-      and quantifiers, and active/passive and other advanced points.
+      Agreed order for the rest (one path at a time, stop for review after
+      each): A Parts of Speech -> B Articles & Quantifiers -> C Sentence
+      Structure -> D Punctuation & Capitals -> E Advanced (E's Conditional 3
+      and dangling modifiers only at expert tier, not S1 must-haves, so E
+      will need a per-level tier gate). Older Mixed/Tenses banks are left
+      alone for now.
+- [x] Grammar path A, "Parts of Speech" (`grammarPartsOfSpeechContent.jsx`,
+      script tag after the Prepositions path in index.html): 8 levels x 10
+      items = 80 (32 mc, 48 fill-blank): nouns (plurals, proper nouns), verbs
+      (action / state / be / helping / modal), adjectives (comparing),
+      adverbs, pronouns (subject / object / possessive / reflexive),
+      conjunctions, a mixed "which part of speech?" level, and an editing
+      level in the Past Simple level-11 shape. Option lengths checked by
+      script (mean gap 0.04 chars, max 5.0 over all 80 items).
+- [ ] Grammar path B Articles & Quantifiers, C Sentence Structure, D
+      Punctuation & Capitals, E Advanced (not started); Grammar level-done
+      progress is still component state only (localStorage persistence agreed,
+      to be done as its own small commit).
 - [x] Grammar drills (3 categories × 4 tiers, 8-12 items each with worked-example
       explanations, incl. mixed-tense paragraph questions)
 - [x] Word Hunt (Bookworm/Word Wipe-style, replaces earlier Wordle-clone)
