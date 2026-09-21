@@ -378,14 +378,10 @@ translations) from the user would make a much bigger jump possible.
 
 ## History & Science
 `src/content/knowledgeContent.jsx`, rendered through the existing
-`PassageModule` (no new component needed) — four history + four science
-passages per tier (24 total, ~150-300 words), each with a "🔍 Fun Fact" bonus
+`PassageModule` (no new component needed) — 15 passages per tier (60 total, about half history and half science; ~120-250 words, longer at higher tiers), each with a "🔍 Fun Fact" bonus
 callout (reuses the same `tipTitle`/`tip` fields Storytelling uses) and 2-3
 questions (expert-tier passages include a `shortanswer` critical-thinking
-question). Session picks one of the eight at random per the same
-`sampleArray`-based logic as other `PassageModule` content. History items
-optionally carry `era` (ancient/medieval/modern/myth) and `region`; science
-items optionally carry `field` (biology/chemistry/physics/etc) — added per
+question). A session draws 5 of the 15 at random (`sessionSize={5}` in Root.jsx, kept at 5 after the expansion: 5 passages of up to ~250 words each is already a long read, and 5 of 15 gives far more variety than 5 of 6 did). Every history item carries `era` (ancient/medieval/modern/myth) and `region`; every science item carries `field` (biology/chemistry/physics/earth science/astronomy/technology/ecology) — added per
 feedback asking for content organised "by era, by location, by science
 discipline"; the tags exist as metadata now but aren't yet wired into a
 picker UI (would need one if the user wants to filter/browse by them later,
@@ -541,7 +537,18 @@ feature used elsewhere.
 - [ ] Word Hunt full dictionary validation — still a ~7,200-word common-word
       list, not an exhaustive dictionary; very obscure/rare words still won't
       be recognized
-- [ ] More History & Science passages, and a full era/region/discipline
-      *picker UI* using the new tags — 24 passages is a solid base, but the
-      user described a much larger 3-era × 7-region grid that would need a
-      dedicated follow-up, not one more content pass
+- [x] History & Science expanded to 15 passages per tier (24 → 60; 36 new).
+      New topics span ancient Egypt, Inca Peru, Japan, Hong Kong trams,
+      Greek myth, the Olympics, the Mongol relay, London 1666, Panama,
+      Aztec Mexico, Mandela, the Rosetta Stone, the Black Death, Angkor,
+      Roman aqueducts, the Green Revolution, Magna Carta and Ashoka; and
+      science from magnets, tides, batteries and GPS to the microbiome,
+      carbon dating, continental drift, the greenhouse effect and
+      gravitational waves. Older items were back-filled with era/region/field
+      tags. MC option lengths were rebalanced across all 165 questions (mean
+      gap 10.21 -> 1.16 chars, max 68.5 -> 6.0). ~120 glossary entries added;
+      `GlossaryText` now also matches hyphenated compounds (half-life,
+      double-decker). Root.jsx `sessionSize` deliberately left at 5.
+- [ ] A full era/region/discipline *picker UI* using the tags — the user
+      described a larger 3-era × 7-region grid that would need a dedicated
+      follow-up, not another content pass
