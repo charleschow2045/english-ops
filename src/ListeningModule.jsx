@@ -19,11 +19,13 @@ window.App = window.App || {};
     return copy;
   }
 
-  function ListeningModule({ tier, onBack, onComplete, voicePref, onVoiceChange }) {
+  // sessionSize: how many passages one session plays (drawn at random from the
+  // tier's pool; "Do it again" draws a fresh set). Omit to play the whole pool.
+  function ListeningModule({ tier, onBack, onComplete, voicePref, onVoiceChange, sessionSize }) {
     const basePassages = window.App.Content.LISTENING_PASSAGES[tier] || window.App.Content.LISTENING_PASSAGES.easy;
     const [runSeed, setRunSeed] = useState(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const passages = useMemo(() => shuffleArray(basePassages), [basePassages, runSeed]);
+    const passages = useMemo(() => shuffleArray(basePassages).slice(0, sessionSize || basePassages.length), [basePassages, runSeed, sessionSize]);
     const [index, setIndex] = useState(0);
     const [selected, setSelected] = useState(null);
     const [played, setPlayed] = useState(false);
