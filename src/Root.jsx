@@ -93,6 +93,7 @@ window.App = window.App || {};
               voicePref={state.voicePref}
               onVoiceChange={changeVoice}
               onBack={() => setView("home")}
+              sessionSize={5}
               onComplete={() => completeModule("speaking")}
             />
           )}

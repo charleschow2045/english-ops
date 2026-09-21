@@ -45,11 +45,13 @@ window.App = window.App || {};
     return hits / targetWords.length;
   }
 
-  function SpeakingModule({ tier, onBack, onComplete, voicePref, onVoiceChange }) {
+  // sessionSize: how many sentences one session uses (drawn at random from the
+  // tier's pool; "New questions" draws a fresh set). Omit to use the whole pool.
+  function SpeakingModule({ tier, onBack, onComplete, voicePref, onVoiceChange, sessionSize }) {
     const baseItems = window.App.Content.SPEAKING_ITEMS[tier] || window.App.Content.SPEAKING_ITEMS.easy;
     const [runSeed, setRunSeed] = useState(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const items = useMemo(() => shuffleArray(baseItems), [baseItems, runSeed]);
+    const items = useMemo(() => shuffleArray(baseItems).slice(0, sessionSize || baseItems.length), [baseItems, runSeed, sessionSize]);
     const [index, setIndex] = useState(0);
     const [status, setStatus] = useState("idle"); // idle | listening | correct | tryAgain | unsupported | micBlocked
     const [heard, setHeard] = useState("");
