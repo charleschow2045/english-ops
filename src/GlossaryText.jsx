@@ -24,7 +24,11 @@ window.App = window.App || {};
     );
   }
 
-  const TOKEN_RE = /([A-Za-z']+)/g;
+  // Hyphenated compounds ("half-life", "double-decker") stay in one token so
+  // the whole compound can be looked up; if the compound is not in the
+  // glossary, each part is looked up on its own (so "well-known" still
+  // highlights a glossary word inside it).
+  const TOKEN_RE = /([A-Za-z'-]+)/g;
 
   function GlossaryText({ text, className = "" }) {
     const glossary = (window.App.Content && window.App.Content.GLOSSARY) || {};
@@ -35,6 +39,16 @@ window.App = window.App || {};
           if (!part) return null;
           const entry = glossary[part.toLowerCase()];
           if (entry) return <GlossaryWord key={i} word={part} zh={entry.zh} />;
+          if (part.length > 1 && part.includes("-")) {
+            return (
+              <React.Fragment key={i}>
+                {part.split(/(-)/).map((piece, j) => {
+                  const e = glossary[piece.toLowerCase()];
+                  return e ? <GlossaryWord key={j} word={piece} zh={e.zh} /> : <React.Fragment key={j}>{piece}</React.Fragment>;
+                })}
+              </React.Fragment>
+            );
+          }
           return <React.Fragment key={i}>{part}</React.Fragment>;
         })}
       </p>
