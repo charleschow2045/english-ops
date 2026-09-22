@@ -463,8 +463,9 @@ feature used elsewhere.
       fix-the-mistake editing level), 10 items each in
       `src/content/grammarPastSimpleContent.jsx`. Every level opens with a
       Learn card (rule, verb table, tips, common mistake) before practice;
-      these levels are the same for every tier. Level-complete state lives
-      only in component state (no localStorage yet).
+      these levels are the same for every tier. (Level-complete state was
+      component-only at first; it is now saved, see the persistence item
+      below.)
       **Coverage audit of the older Grammar content against the framework**
       (Mixed/Tenses/Prepositions in `grammarContent.jsx`): covered — subject-
       verb agreement, tense forms, prepositions as collocations, inversion/
@@ -509,10 +510,18 @@ feature used elsewhere.
       conjunctions, a mixed "which part of speech?" level, and an editing
       level in the Past Simple level-11 shape. Option lengths checked by
       script (mean gap 0.04 chars, max 5.0 over all 80 items).
+- [x] Grammar level progress now persists: finished path levels are stored in
+      `state.moduleProgress.grammar.doneLevels` as "<pathKey>:<levelId>"
+      (level ids, not positions, so adding or reordering levels never shifts
+      saved progress). `Storage.markGrammarLevelDone` (pure) + an
+      `ensureGrammarProgress` step in `loadState` that upgrades older saved
+      states whose `grammar` was `{}`; Root passes `doneLevels` /
+      `onLevelDone` into GrammarModule (which falls back to component state
+      if they are not passed). Verified in the real app: an old-shape saved
+      state loads, completing a level writes the key, and after a reload the
+      level shows the check mark. Only completion is stored, not scores.
 - [ ] Grammar path B Articles & Quantifiers, C Sentence Structure, D
-      Punctuation & Capitals, E Advanced (not started); Grammar level-done
-      progress is still component state only (localStorage persistence agreed,
-      to be done as its own small commit).
+      Punctuation & Capitals, E Advanced (not started).
 - [x] Grammar drills (3 categories × 4 tiers, 8-12 items each with worked-example
       explanations, incl. mixed-tense paragraph questions)
 - [x] Word Hunt (Bookworm/Word Wipe-style, replaces earlier Wordle-clone)

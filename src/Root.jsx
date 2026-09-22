@@ -140,7 +140,13 @@ window.App = window.App || {};
             <WritingModule tier={state.tier} onBack={() => setView("home")} onComplete={() => completeModule("writing")} />
           )}
           {view === "grammar" && (
-            <GrammarModule tier={state.tier} onBack={() => setView("home")} onComplete={() => completeModule("grammar")} />
+            <GrammarModule
+              tier={state.tier}
+              doneLevels={state.moduleProgress.grammar.doneLevels}
+              onLevelDone={(levelKey) => setState((s) => Storage.markGrammarLevelDone(s, levelKey))}
+              onBack={() => setView("home")}
+              onComplete={() => completeModule("grammar")}
+            />
           )}
           {view === "wordhunt" && (
             <WordHuntModule tier={state.tier} onBack={() => setView("home")} onComplete={() => completeModule("wordhunt")} />

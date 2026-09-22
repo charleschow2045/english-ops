@@ -85,7 +85,10 @@ window.App = window.App || {};
     );
   }
 
-  function GrammarModule({ tier, onBack, onComplete }) {
+  // doneLevels / onLevelDone: finished path levels ("<pathKey>:<levelId>"),
+  // kept in the saved app state by Root so they survive a page reload. If a
+  // caller does not pass them, progress falls back to plain component state.
+  function GrammarModule({ tier, onBack, onComplete, doneLevels: savedDoneLevels, onLevelDone }) {
     const [category, setCategory] = useState(null);
     const [runSeed, setRunSeed] = useState(0);
     const [index, setIndex] = useState(0);
@@ -93,7 +96,13 @@ window.App = window.App || {};
     const [doneAll, setDoneAll] = useState(false);
     const [levelIdx, setLevelIdx] = useState(null);
     const [started, setStarted] = useState(false);
-    const [doneLevels, setDoneLevels] = useState([]);
+    const [localDoneLevels, setLocalDoneLevels] = useState([]);
+    const doneLevels = savedDoneLevels || localDoneLevels;
+
+    function markLevelDone(key) {
+      if (onLevelDone) onLevelDone(key);
+      else setLocalDoneLevels((d) => (d.includes(key) ? d : [...d, key]));
+    }
 
     function resetQuiz() {
       setRunSeed(0);
@@ -125,7 +134,7 @@ window.App = window.App || {};
     const catMeta = CATEGORIES.find((c) => c.key === category) || CATEGORIES[0];
     const bank = window.App.Content.GRAMMAR_ITEMS[isPS ? "mixed" : category || "mixed"];
     const baseItems = isPS ? (level ? level.items : psLevels[0].items) : bank[tier] || bank.easy;
-    const doneKey = (i) => `${category}:${i}`;
+    const doneKey = (i) => `${category}:${psLevels[i] ? psLevels[i].id : i}`;
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const items = useMemo(() => sampleArray(baseItems, SESSION_SIZE), [baseItems, runSeed]);
     const rawQ = items[index];
@@ -249,7 +258,7 @@ window.App = window.App || {};
 
     function handleNext() {
       if (isLast) {
-        if (isPS) setDoneLevels((d) => (d.includes(doneKey(levelIdx)) ? d : [...d, doneKey(levelIdx)]));
+        if (isPS) markLevelDone(doneKey(levelIdx));
         setDoneAll(true);
       } else {
         setIndex((x) => x + 1);

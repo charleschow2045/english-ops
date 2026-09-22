@@ -66,7 +66,35 @@ window.App = window.App || {};
         reading: {},
         comprehension: {},
         writing: {},
-        grammar: {},
+        // Grammar path levels the child has finished, as "<pathKey>:<levelId>"
+        // (level ids, not positions, so adding or reordering levels later
+        // never shifts existing progress).
+        grammar: { doneLevels: [] },
+      },
+    };
+  }
+
+  // Older saved states have `moduleProgress.grammar` as an empty object (or no
+  // moduleProgress at all); make sure the shape above exists and is clean.
+  function ensureGrammarProgress(state) {
+    if (!state.moduleProgress || typeof state.moduleProgress !== "object") state.moduleProgress = {};
+    const g = state.moduleProgress.grammar;
+    if (!g || typeof g !== "object") state.moduleProgress.grammar = { doneLevels: [] };
+    const list = state.moduleProgress.grammar.doneLevels;
+    state.moduleProgress.grammar.doneLevels = Array.isArray(list) ? list.filter((k) => typeof k === "string") : [];
+    return state;
+  }
+
+  // Pure: returns a new state with the Grammar level key recorded (no-op if
+  // already recorded).
+  function markGrammarLevelDone(state, levelKey) {
+    const done = (state.moduleProgress && state.moduleProgress.grammar && state.moduleProgress.grammar.doneLevels) || [];
+    if (done.includes(levelKey)) return state;
+    return {
+      ...state,
+      moduleProgress: {
+        ...state.moduleProgress,
+        grammar: { ...state.moduleProgress.grammar, doneLevels: [...done, levelKey] },
       },
     };
   }
@@ -176,6 +204,7 @@ window.App = window.App || {};
       if (typeof parsed.stats.totalMissionsCompleted !== "number") parsed.stats.totalMissionsCompleted = 0;
       if (typeof parsed.stats.bestStreak !== "number") parsed.stats.bestStreak = parsed.streak.count || 0;
       if (typeof parsed.stats.freezesUsedTotal !== "number") parsed.stats.freezesUsedTotal = 0;
+      ensureGrammarProgress(parsed);
       return ensureToday(parsed);
     } catch (e) {
       console.error("Failed to load English Ops data:", e);
@@ -200,6 +229,7 @@ window.App = window.App || {};
     todayStr,
     implementedModuleKeys,
     markModuleComplete,
+    markGrammarLevelDone,
     earnedBadgeKeys,
     loadState,
     saveState,
