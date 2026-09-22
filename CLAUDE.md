@@ -531,8 +531,19 @@ feature used elsewhere.
       Cantonese-speaking learners commonly have (no articles or plural
       marking in Cantonese). Option lengths checked by script (mean gap
       -0.42 chars, max 4.0 over all 80 items). Verified in the real app.
-- [ ] Grammar path C Sentence Structure, D Punctuation & Capitals, E
-      Advanced (not started).
+- [x] Grammar path C, "Sentence Structure" (`grammarSentenceStructureContent.jsx`,
+      script tag after Articles & Quantifiers in index.html): 8 levels x 10
+      items = 80 (all mc except one fill-blank level): what makes a complete
+      sentence vs a fragment (incl. -ing with no helping verb), word order
+      (SVO and question inversion), the four sentence types, compound
+      sentences (comma before and/but/or/so joining two independent clauses,
+      vs no comma for two objects or a shared-subject compound predicate),
+      complex sentences (comma after a fronted dependent clause, usually none
+      when it comes second), relative clauses (who/that/where), fixing
+      run-ons and comma splices, a mixed review level, and an editing level.
+      Option lengths checked by script (mean gap 0.51 chars, max 6.0 over
+      all 80 items). Verified in the real app.
+- [ ] Grammar path D Punctuation & Capitals, E Advanced (not started).
 - [x] Grammar drills (3 categories × 4 tiers, 8-12 items each with worked-example
       explanations, incl. mixed-tense paragraph questions)
 - [x] Word Hunt (Bookworm/Word Wipe-style, replaces earlier Wordle-clone)
