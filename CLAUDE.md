@@ -482,15 +482,20 @@ feature used elsewhere.
       generic — every entry in `window.App.Content.GRAMMAR_PATHS` (`key`,
       `emoji`, `label`, `blurb`, `sections` = label shown before a given
       level index, `levels`) becomes a Grammar category, so adding a path is
-      just a new content file plus a script tag. Now 6 paths / 38 levels /
-      ~360 items: Past Simple Steps (11), Present Tenses (6), Past Continuous
-      (4), Present Perfect (6), Future Forms (5), and
-      Prepositions Explained (6: what a preposition is with a mouse-and-box,
-      the "object of a preposition" rule, at/in/on for place and time,
-      movement, what follows a preposition, adjective+preposition pairs).
-      The older advanced Prepositions set was relabelled "Prepositions:
-      Advanced". Content files: grammarPastSimpleContent.jsx,
-      grammarTensePathsContent.jsx, grammarPrepositionPathContent.jsx.
+      just a new content file plus a script tag. Now 11 paths / 77 levels /
+      ~760 items: Past Simple Steps (11), Present Tenses (6), Past Continuous
+      (4), Present Perfect (6), Future Forms (5), Prepositions Explained (6:
+      what a preposition is with a mouse-and-box, the "object of a
+      preposition" rule, at/in/on for place and time, movement, what follows
+      a preposition, adjective+preposition pairs), Parts of Speech (8),
+      Articles & Quantifiers (8), Sentence Structure (8), Punctuation &
+      Capitals (7), and Advanced (8, with an expert-only-item mechanism —
+      see that entry below). The older advanced Prepositions set was
+      relabelled "Prepositions: Advanced". Content files:
+      grammarPastSimpleContent.jsx, grammarTensePathsContent.jsx,
+      grammarPrepositionPathContent.jsx, grammarPartsOfSpeechContent.jsx,
+      grammarArticlesContent.jsx, grammarSentenceStructureContent.jsx,
+      grammarPunctuationContent.jsx, grammarAdvancedContent.jsx.
       Every tense path now ends with an "Editing: fix the mistake" level in
       the Past Simple level-11 shape (10 "Find the mistake and choose the
       correct sentence" mc items, a Learn card with a Mistake -> Fix table
@@ -555,7 +560,24 @@ feature used elsewhere.
       lengths checked by script (mean gap 0.30 chars, max 2.0 over all 70
       items). Verified in the real app, including that the nested-quote
       escaping in the quotation-marks and editing levels renders correctly.
-- [ ] Grammar path E Advanced (not started).
+- [x] Grammar path E, "Advanced" (`grammarAdvancedContent.jsx`, script tag
+      after Punctuation & Capitals in index.html): 8 levels x 10 items = 80:
+      active/passive voice, modal verbs (can/could/may/might/must/should),
+      conditionals (zero/first/second for everyone, third conditional as an
+      expert-only stretch), reported speech tense shifts, Past Perfect,
+      Present Perfect Continuous, modifier placement (misplaced modifiers
+      for everyone, dangling modifiers as an expert-only stretch), and an
+      editing level. Added a generic tier-gating mechanism for this: an item
+      can carry `tiers: ["expert"]` (see the `expertOnly()` helper in the
+      content file) and GrammarModule.jsx filters `baseItems` by it before
+      sampling a session; items without `tiers` are unaffected and always
+      show, so every earlier path's behaviour is unchanged. 9 of the 80
+      items (3 in Conditionals, 4 in Modifier placement, 2 in Editing) are
+      expert-only. Option lengths checked by script (mean gap 0.50 chars,
+      max 5.5 over all 80 items). Verified in the real app in both
+      directions: an easy-tier session in the Conditionals level never drew
+      a third-conditional item across two full sessions, and an expert-tier
+      session did.
 - [x] Grammar drills (3 categories × 4 tiers, 8-12 items each with worked-example
       explanations, incl. mixed-tense paragraph questions)
 - [x] Word Hunt (Bookworm/Word Wipe-style, replaces earlier Wordle-clone)

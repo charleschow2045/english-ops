@@ -133,7 +133,13 @@ window.App = window.App || {};
     const level = isPS && levelIdx !== null ? psLevels[levelIdx] : null;
     const catMeta = CATEGORIES.find((c) => c.key === category) || CATEGORIES[0];
     const bank = window.App.Content.GRAMMAR_ITEMS[isPS ? "mixed" : category || "mixed"];
-    const baseItems = isPS ? (level ? level.items : psLevels[0].items) : bank[tier] || bank.easy;
+    // Path items are the same for every tier by default. An item can opt in to
+    // a `tiers: [...]` allow-list (e.g. ["expert"]) to appear only for those
+    // tiers — used for sub-topics like the third conditional or dangling
+    // modifiers that are an expert-only stretch, not a general requirement.
+    // Items without `tiers` are unaffected and always included.
+    const rawItems = isPS ? (level ? level.items : psLevels[0].items) : bank[tier] || bank.easy;
+    const baseItems = isPS ? rawItems.filter((it) => !it.tiers || it.tiers.includes(tier)) : rawItems;
     const doneKey = (i) => `${category}:${psLevels[i] ? psLevels[i].id : i}`;
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const items = useMemo(() => sampleArray(baseItems, SESSION_SIZE), [baseItems, runSeed]);
