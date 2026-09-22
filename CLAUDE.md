@@ -520,8 +520,19 @@ feature used elsewhere.
       if they are not passed). Verified in the real app: an old-shape saved
       state loads, completing a level writes the key, and after a reload the
       level shows the check mark. Only completion is stored, not scores.
-- [ ] Grammar path B Articles & Quantifiers, C Sentence Structure, D
-      Punctuation & Capitals, E Advanced (not started).
+- [x] Grammar path B, "Articles & Quantifiers" (`grammarArticlesContent.jsx`,
+      script tag after Parts of Speech in index.html): 8 levels x 10 items =
+      80 (24 mc, 56 fill-blank): a/an (sound not letter, incl. "an hour" /
+      "a university"), the (specific/unique/landmarks), no article (general
+      plural/uncountable, meals, sports, go to school/bed/work, by bus),
+      countable vs uncountable (many/much/a lot of), some/any (incl.
+      something/anything), few/a few vs little/a little plus each/every/
+      all/both, a mixed review level, and an editing level. Targets a gap
+      Cantonese-speaking learners commonly have (no articles or plural
+      marking in Cantonese). Option lengths checked by script (mean gap
+      -0.42 chars, max 4.0 over all 80 items). Verified in the real app.
+- [ ] Grammar path C Sentence Structure, D Punctuation & Capitals, E
+      Advanced (not started).
 - [x] Grammar drills (3 categories × 4 tiers, 8-12 items each with worked-example
       explanations, incl. mixed-tense paragraph questions)
 - [x] Word Hunt (Bookworm/Word Wipe-style, replaces earlier Wordle-clone)
