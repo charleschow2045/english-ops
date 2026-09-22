@@ -543,7 +543,19 @@ feature used elsewhere.
       run-ons and comma splices, a mixed review level, and an editing level.
       Option lengths checked by script (mean gap 0.51 chars, max 6.0 over
       all 80 items). Verified in the real app.
-- [ ] Grammar path D Punctuation & Capitals, E Advanced (not started).
+- [x] Grammar path D, "Punctuation & Capitals" (`grammarPunctuationContent.jsx`,
+      script tag after Sentence Structure in index.html): 7 levels (not 8 —
+      no separate mixed-review level, matching the original plan for this
+      path) x 10 items = 70: capital letters, end punctuation (. ? !),
+      commas (lists and introductory words — list-comma territory only; the
+      compound/complex-sentence comma rules live in path C), apostrophes
+      (contractions, singular/plural/irregular possessives, its vs it's),
+      quotation marks for direct speech (punctuation inside the closing
+      mark), colons/semicolons/dashes/brackets, and an editing level. Option
+      lengths checked by script (mean gap 0.30 chars, max 2.0 over all 70
+      items). Verified in the real app, including that the nested-quote
+      escaping in the quotation-marks and editing levels renders correctly.
+- [ ] Grammar path E Advanced (not started).
 - [x] Grammar drills (3 categories × 4 tiers, 8-12 items each with worked-example
       explanations, incl. mixed-tense paragraph questions)
 - [x] Word Hunt (Bookworm/Word Wipe-style, replaces earlier Wordle-clone)
