@@ -1,10 +1,18 @@
 // Grammar path D: "Punctuation & Capitals" — capital letters, end
 // punctuation (. ? !), commas (lists and introductory words), apostrophes
 // (contractions, possessives, its vs it's), quotation marks for direct
-// speech, then a level covering colons, semicolons, dashes and brackets,
-// and finally an editing level. Seven levels (not eight): unlike the other
-// paths, there is no separate "mixed review" level here, matching the
-// original plan for this path.
+// speech, then a level covering colons, semicolons, dashes and brackets
+// (expert-only — see below), and finally an editing level. Seven levels
+// (not eight): unlike the other paths, there is no separate "mixed review"
+// level here, matching the original plan for this path.
+//
+// Tier gating: level pun-6 (colons/semicolons/dashes/brackets) is more
+// advanced than the rest of this path, so every item in it is wrapped in
+// expertOnly() and carries `tiers: ["expert"]` — the level only appears in
+// a session when the child's tier is expert. This uses the same generic
+// `tiers` allow-list mechanism as grammarAdvancedContent.jsx (see the
+// filter on `baseItems` in GrammarModule.jsx); items without `tiers` are
+// unaffected, so every other level in this path is unchanged.
 // Registered into GRAMMAR_PATHS; same level / Learn-card shape as the other
 // paths (Learn card first, then 10 items; the editing level matches Past
 // Simple level 11). Items use correctIndex 0 (options are shuffled at
@@ -16,6 +24,11 @@ window.App.Content = window.App.Content || {};
 (function () {
   const fb = (id, sentence, options, explanation) => ({ id, type: "fillblank", sentence, options, correctIndex: 0, explanation });
   const mc = (id, prompt, options, explanation) => ({ id, type: "mc", prompt, options, correctIndex: 0, explanation });
+  // Marks an item (or, as here, a whole level's worth of items) as an
+  // expert-only stretch topic. GrammarModule.jsx filters items by `tiers`
+  // before sampling a session; items without `tiers` are unaffected. Same
+  // mechanism as grammarAdvancedContent.jsx's expertOnly() helper.
+  const expertOnly = (item) => ({ ...item, tiers: ["expert"] });
 
   const LEVELS = [
     {
@@ -191,9 +204,15 @@ window.App.Content = window.App.Content || {};
     },
     {
       id: "pun-6",
+      // Level-level gate: only shows up in the level list (and "Next level")
+      // for the expert tier. See the `lv.tiers` check in GrammarModule.jsx.
+      // Every item below is also individually wrapped in expertOnly() as
+      // belt-and-braces, so the item filter agrees even if this level were
+      // ever reached another way.
+      tiers: ["expert"],
       emoji: "🧰",
       title: "Colons, semicolons, dashes and brackets",
-      blurb: "one goal: to win · The rain stopped; the sun came out. · (extra info)",
+      blurb: "one goal: to win · The rain stopped; the sun came out. · (extra info) — Expert challenge",
       learn: {
         intro:
           "A colon (:) introduces a list or an explanation. A semicolon (;) joins two closely related complete sentences without a joining word. A pair of dashes or a pair of brackets adds extra information in the middle of a sentence, and both marks of the pair must be used.",
@@ -211,16 +230,16 @@ window.App.Content = window.App.Content || {};
         mistake: "\"She packed three things, a hat, a scarf, and gloves\" should use a colon before the list, not a comma: \"She packed three things: a hat, a scarf, and gloves.\"",
       },
       items: [
-        mc("pun6-1", "Which sentence is punctuated correctly?", ["She packed three things: a hat, a scarf, and gloves.", "She packed three things, a hat, a scarf, and gloves.", "She packed three things; a hat, a scarf, and gloves."], "A colon introduces the list that follows. For example: He needed one tool: a hammer."),
-        mc("pun6-2", "Which sentence is punctuated correctly?", ["The rain stopped; the sun came out.", "The rain stopped, the sun came out.", "The rain stopped: the sun came out."], "A semicolon joins two closely related complete sentences. For example: The lights dimmed; the show began."),
-        mc("pun6-3", "Which sentence is punctuated correctly?", ["My brother — who is only seven — can already swim.", "My brother who is only seven can already swim —", "My brother — who is only seven, can already swim."], "The extra remark needs a matching pair of dashes, one on each side. For example: My cousin — a talented artist — painted the mural."),
-        mc("pun6-4", "Which sentence is punctuated correctly?", ["The Great Wall (built over centuries) is very long.", "The Great Wall built over centuries) is very long.", "The Great Wall (built over centuries is very long."], "The extra information needs a matching pair of brackets, one on each side. For example: The museum (opened last year) is very popular."),
-        mc("pun6-5", "Which sentence is punctuated correctly?", ["He had one goal: to win the race.", "He had one goal, to win the race.", "He had one goal; to win the race."], "A colon introduces the explanation that follows. For example: She had one wish: to travel the world."),
-        mc("pun6-6", "Which sentence is punctuated correctly?", ["I was tired; I still finished the race.", "I was tired, I still finished the race.", "I was tired: I still finished the race."], "A semicolon joins two closely related complete sentences. For example: He was nervous; he still gave the speech."),
-        mc("pun6-7", "Which sentence is punctuated correctly?", ["The museum (open until six) is free today.", "The museum open until six) is free today.", "The museum (open until six is free today."], "The extra information needs a matching pair of brackets. For example: The park (closed on Mondays) is very quiet."),
-        mc("pun6-8", "Which sentence is punctuated correctly?", ["She needed just one thing: courage.", "She needed just one thing, courage.", "She needed just one thing; courage."], "A colon introduces the single-word explanation that follows. For example: He lacked one skill: patience."),
-        mc("pun6-9", "Which sentence is punctuated correctly?", ["The concert was cancelled; the tickets were refunded.", "The concert was cancelled, the tickets were refunded.", "The concert was cancelled: the tickets were refunded."], "A semicolon joins two closely related complete sentences. For example: The match was postponed; the fans were disappointed."),
-        mc("pun6-10", "Which sentence is punctuated correctly?", ["My uncle — a keen photographer — took hundreds of photos.", "My uncle, a keen photographer — took hundreds of photos.", "My uncle — a keen photographer, took hundreds of photos."], "The extra remark needs a matching pair of dashes, not a mix of a comma and a dash. For example: My aunt — a talented chef — cooked the whole meal."),
+        expertOnly(mc("pun6-1", "Which sentence is punctuated correctly?", ["She packed three things: a hat, a scarf, and gloves.", "She packed three things, a hat, a scarf, and gloves.", "She packed three things; a hat, a scarf, and gloves."], "A colon introduces the list that follows. For example: He needed one tool: a hammer.")),
+        expertOnly(mc("pun6-2", "Which sentence is punctuated correctly?", ["The rain stopped; the sun came out.", "The rain stopped, the sun came out.", "The rain stopped: the sun came out."], "A semicolon joins two closely related complete sentences. For example: The lights dimmed; the show began.")),
+        expertOnly(mc("pun6-3", "Which sentence is punctuated correctly?", ["My brother — who is only seven — can already swim.", "My brother who is only seven can already swim —", "My brother — who is only seven, can already swim."], "The extra remark needs a matching pair of dashes, one on each side. For example: My cousin — a talented artist — painted the mural.")),
+        expertOnly(mc("pun6-4", "Which sentence is punctuated correctly?", ["The Great Wall (built over centuries) is very long.", "The Great Wall built over centuries) is very long.", "The Great Wall (built over centuries is very long."], "The extra information needs a matching pair of brackets, one on each side. For example: The museum (opened last year) is very popular.")),
+        expertOnly(mc("pun6-5", "Which sentence is punctuated correctly?", ["He had one goal: to win the race.", "He had one goal, to win the race.", "He had one goal; to win the race."], "A colon introduces the explanation that follows. For example: She had one wish: to travel the world.")),
+        expertOnly(mc("pun6-6", "Which sentence is punctuated correctly?", ["I was tired; I still finished the race.", "I was tired, I still finished the race.", "I was tired: I still finished the race."], "A semicolon joins two closely related complete sentences. For example: He was nervous; he still gave the speech.")),
+        expertOnly(mc("pun6-7", "Which sentence is punctuated correctly?", ["The museum (open until six) is free today.", "The museum open until six) is free today.", "The museum (open until six is free today."], "The extra information needs a matching pair of brackets. For example: The park (closed on Mondays) is very quiet.")),
+        expertOnly(mc("pun6-8", "Which sentence is punctuated correctly?", ["She needed just one thing: courage.", "She needed just one thing, courage.", "She needed just one thing; courage."], "A colon introduces the single-word explanation that follows. For example: He lacked one skill: patience.")),
+        expertOnly(mc("pun6-9", "Which sentence is punctuated correctly?", ["The concert was cancelled; the tickets were refunded.", "The concert was cancelled, the tickets were refunded.", "The concert was cancelled: the tickets were refunded."], "A semicolon joins two closely related complete sentences. For example: The match was postponed; the fans were disappointed.")),
+        expertOnly(mc("pun6-10", "Which sentence is punctuated correctly?", ["My uncle — a keen photographer — took hundreds of photos.", "My uncle, a keen photographer — took hundreds of photos.", "My uncle — a keen photographer, took hundreds of photos."], "The extra remark needs a matching pair of dashes, not a mix of a comma and a dash. For example: My aunt — a talented chef — cooked the whole meal.")),
       ],
     },
     {

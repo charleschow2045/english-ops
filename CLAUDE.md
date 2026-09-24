@@ -560,6 +560,23 @@ feature used elsewhere.
       lengths checked by script (mean gap 0.30 chars, max 2.0 over all 70
       items). Verified in the real app, including that the nested-quote
       escaping in the quotation-marks and editing levels renders correctly.
+      Follow-up fix: level pun-6 (colons/semicolons/dashes/brackets) had
+      been left un-gated after path E introduced tier gating — it now
+      carries `tiers: ["expert"]` on the level object itself (all 10 items
+      are also individually wrapped in `expertOnly()`, belt-and-braces).
+      This needed a small GrammarModule.jsx addition beyond the item-level
+      filter added for path E: the level list now skips rendering a level
+      whose `tiers` doesn't include the current tier (index `i` into the
+      full, unfiltered `psLevels` stays the index used for `sections[i]`
+      and `doneKey(i)`, so nothing shifts), and "Next level" after
+      finishing a level now scans forward to the next tier-visible level
+      instead of always doing `levelIdx + 1`, so it can't land on a hidden
+      level. A level with no `tiers` field is unaffected, exactly like an
+      item. Verified in the real app in both directions: at easy tier the
+      level list has 6 entries with no "Colons..." row, and finishing level
+      5 (Quotation marks) jumps straight to level 7 (Editing) via "Next
+      level"; at expert tier the level list shows all 7, including
+      "Colons, semicolons, dashes and brackets — Expert challenge".
 - [x] Grammar path E, "Advanced" (`grammarAdvancedContent.jsx`, script tag
       after Punctuation & Capitals in index.html): 8 levels x 10 items = 80:
       active/passive voice, modal verbs (can/could/may/might/must/should),

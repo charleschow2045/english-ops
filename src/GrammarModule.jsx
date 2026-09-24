@@ -198,7 +198,16 @@ window.App = window.App || {};
             </p>
           </PaperCard>
           <div className="flex flex-col gap-3">
-            {psLevels.map((lv, i) => (
+            {psLevels.map((lv, i) => {
+              // A level can opt in to a `tiers: [...]` allow-list (same
+              // mechanism as an item's `tiers` field, see baseItems above)
+              // to only appear in the level list for those tiers — used for
+              // a whole level that's an expert-only stretch. Levels without
+              // `tiers` are unaffected. Index `i` still refers to the level's
+              // position in the full, unfiltered list, so `sections[i]` and
+              // `doneKey(i)` stay correct even when a level is hidden.
+              if (lv.tiers && !lv.tiers.includes(tier)) return null;
+              return (
               <div key={lv.id}>
                 {path.sections && path.sections[i] && (
                   <p className={`text-xs mb-2 mt-1 ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
@@ -233,7 +242,8 @@ window.App = window.App || {};
                   </div>
                 </button>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       );
@@ -273,7 +283,19 @@ window.App = window.App || {};
     }
 
     if (doneAll) {
-      const hasNext = isPS && levelIdx < psLevels.length - 1;
+      // Skip over any level the current tier can't see (see the `tiers`
+      // allow-list check in the level list above and in baseItems), so
+      // "Next level" never lands on a hidden level.
+      let nextVisibleLevelIdx = -1;
+      if (isPS) {
+        for (let j = levelIdx + 1; j < psLevels.length; j++) {
+          if (!psLevels[j].tiers || psLevels[j].tiers.includes(tier)) {
+            nextVisibleLevelIdx = j;
+            break;
+          }
+        }
+      }
+      const hasNext = isPS && nextVisibleLevelIdx !== -1;
       return (
         <PaperCard className="text-center">
           <p className="text-5xl mb-2">{isPS ? level.emoji : catMeta.emoji}</p>
@@ -284,7 +306,7 @@ window.App = window.App || {};
             {isPS ? level.title : "Nice work spotting the right words."}
           </p>
           {hasNext && (
-            <InkButton accent={ACCENT} className="w-full mb-3" onClick={() => pickLevel(levelIdx + 1)}>
+            <InkButton accent={ACCENT} className="w-full mb-3" onClick={() => pickLevel(nextVisibleLevelIdx)}>
               Next level →
             </InkButton>
           )}
