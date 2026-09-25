@@ -577,6 +577,16 @@ feature used elsewhere.
       5 (Quotation marks) jumps straight to level 7 (Editing) via "Next
       level"; at expert tier the level list shows all 7, including
       "Colons, semicolons, dashes and brackets — Expert challenge".
+      Numbering follow-up: the numbers shown to the child (list badge, Learn
+      card "Level N", "Level N complete!", and "Level N of M" in the quiz)
+      count only the levels the current tier can see (`levelNumber(i)` and
+      `visibleLevelCount` in GrammarModule.jsx), so easy/medium/hard show
+      1-6 with no jump to 7, and expert shows 1-7. Internal indices
+      (`sections[i]`, `doneKey(i)`, `levelIdx`) still use the full list.
+      NOTE: this one was pushed without local runtime verification (headless
+      Edge had stopped working after an Edge update and the in-app browser
+      pane was hidden), at the user's explicit request; the user checks it by
+      eye on the live app.
 - [x] Grammar path E, "Advanced" (`grammarAdvancedContent.jsx`, script tag
       after Punctuation & Capitals in index.html): 8 levels x 10 items = 80:
       active/passive voice, modal verbs (can/could/may/might/must/should),

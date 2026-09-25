@@ -31,12 +31,12 @@ window.App = window.App || {};
 
   const SESSION_SIZE = 8;
 
-  function LearnCard({ level, levelIdx, onStart }) {
+  function LearnCard({ level, levelNumber, onStart }) {
     const learn = level.learn;
     return (
       <PaperCard accent={ACCENT}>
         <p className={`text-xs mb-1 ${TYPE.caption}`} style={{ color: ACCENT.solid }}>
-          📖 Learn first · Level {levelIdx + 1}
+          📖 Learn first · Level {levelNumber}
         </p>
         <h2 className={`text-xl mb-2 leading-snug ${TYPE.heading}`} style={{ color: INK.ink }}>
           {level.emoji} {level.title}
@@ -141,6 +141,13 @@ window.App = window.App || {};
     const rawItems = isPS ? (level ? level.items : psLevels[0].items) : bank[tier] || bank.easy;
     const baseItems = isPS ? rawItems.filter((it) => !it.tiers || it.tiers.includes(tier)) : rawItems;
     const doneKey = (i) => `${category}:${psLevels[i] ? psLevels[i].id : i}`;
+    // Levels this tier can see (a level with a `tiers` allow-list is hidden
+    // for other tiers). Numbers shown to the child count only visible levels,
+    // so an expert-only level 6 doesn't leave a gap (1-5, 7) at other tiers.
+    // Array indices (sections, doneKey, levelIdx) still use the full list.
+    const isLevelVisible = (lv) => !lv.tiers || lv.tiers.includes(tier);
+    const visibleLevelCount = psLevels.filter(isLevelVisible).length;
+    const levelNumber = (i) => psLevels.slice(0, i + 1).filter(isLevelVisible).length;
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const items = useMemo(() => sampleArray(baseItems, SESSION_SIZE), [baseItems, runSeed]);
     const rawQ = items[index];
@@ -206,7 +213,7 @@ window.App = window.App || {};
               // `tiers` are unaffected. Index `i` still refers to the level's
               // position in the full, unfiltered list, so `sections[i]` and
               // `doneKey(i)` stay correct even when a level is hidden.
-              if (lv.tiers && !lv.tiers.includes(tier)) return null;
+              if (!isLevelVisible(lv)) return null;
               return (
               <div key={lv.id}>
                 {path.sections && path.sections[i] && (
@@ -230,7 +237,7 @@ window.App = window.App || {};
                       color: doneLevels.includes(doneKey(i)) ? ACCENT.on : ACCENT.solid,
                     }}
                   >
-                    {doneLevels.includes(doneKey(i)) ? "✓" : i + 1}
+                    {doneLevels.includes(doneKey(i)) ? "✓" : levelNumber(i)}
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className={`text-base leading-tight ${TYPE.heading}`} style={{ color: INK.ink }}>
@@ -255,7 +262,7 @@ window.App = window.App || {};
           <div className="flex items-center justify-between gap-2">
             <PaperBackButton onClick={() => setLevelIdx(null)}>← Levels</PaperBackButton>
           </div>
-          <LearnCard level={level} levelIdx={levelIdx} onStart={() => setStarted(true)} />
+          <LearnCard level={level} levelNumber={levelNumber(levelIdx)} onStart={() => setStarted(true)} />
         </div>
       );
     }
@@ -289,7 +296,7 @@ window.App = window.App || {};
       let nextVisibleLevelIdx = -1;
       if (isPS) {
         for (let j = levelIdx + 1; j < psLevels.length; j++) {
-          if (!psLevels[j].tiers || psLevels[j].tiers.includes(tier)) {
+          if (isLevelVisible(psLevels[j])) {
             nextVisibleLevelIdx = j;
             break;
           }
@@ -300,7 +307,7 @@ window.App = window.App || {};
         <PaperCard className="text-center">
           <p className="text-5xl mb-2">{isPS ? level.emoji : catMeta.emoji}</p>
           <h2 className={`text-xl mb-1 ${TYPE.heading}`} style={{ color: INK.ink }}>
-            {isPS ? `Level ${levelIdx + 1} complete!` : `${catMeta.label} complete!`}
+            {isPS ? `Level ${levelNumber(levelIdx)} complete!` : `${catMeta.label} complete!`}
           </h2>
           <p className="font-bold mb-4" style={{ color: INK.mutedInk }}>
             {isPS ? level.title : "Nice work spotting the right words."}
@@ -354,7 +361,7 @@ window.App = window.App || {};
               className={`inline-block text-xs px-2.5 py-1 rounded-full ${TYPE.caption}`}
               style={{ backgroundColor: ACCENT.tint, color: ACCENT.solid, border: `1px solid ${ACCENT.tintBorder}` }}
             >
-              Level {levelIdx + 1} of {psLevels.length}
+              Level {levelNumber(levelIdx)} of {visibleLevelCount}
             </span>
           ) : (
             <PaperTierBadge tier={tier} />
