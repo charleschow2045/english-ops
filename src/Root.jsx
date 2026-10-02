@@ -7,6 +7,7 @@ window.App = window.App || {};
     Storage,
     DailyMissions,
     BadgesScreen,
+    BackupScreen,
     ListeningModule,
     SpeakingModule,
     PassageModule,
@@ -36,6 +37,13 @@ window.App = window.App || {};
 
     function openModule(key) {
       setView(key);
+    }
+
+    // `next` is a state already validated and normalised by Storage.parseBackup.
+    // Replacing state is enough to persist it (the effect above saves it).
+    function restoreBackup(next) {
+      setState(next);
+      setFreezeBanner(false);
     }
 
     function completeModule(key) {
@@ -72,11 +80,13 @@ window.App = window.App || {};
               onChangeTier={changeTier}
               onOpenModule={openModule}
               onOpenBadges={() => setView("badges")}
+              onOpenBackup={() => setView("backup")}
               freezeBanner={freezeBanner}
               onDismissFreezeBanner={() => setFreezeBanner(false)}
             />
           )}
           {view === "badges" && <BadgesScreen state={state} onBack={() => setView("home")} />}
+          {view === "backup" && <BackupScreen state={state} onBack={() => setView("home")} onRestore={restoreBackup} />}
           {view === "listening" && (
             <ListeningModule
               tier={state.tier}

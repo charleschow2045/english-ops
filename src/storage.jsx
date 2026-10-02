@@ -187,25 +187,33 @@ window.App = window.App || {};
     return BADGES.filter((b) => b.check(state)).map((b) => b.key);
   }
 
+  // Fills in anything an older saved state is missing and rolls the day over.
+  // Shared by loadState (localStorage) and parseBackup (an imported file) so
+  // both paths end up with exactly the same shape. Mutates `parsed`; throws
+  // (TypeError) if the stats block is malformed, which callers catch.
+  function normalizeState(parsed) {
+    if (!TIER_KEYS.includes(parsed.tier)) parsed.tier = "easy";
+    if (!parsed.voicePref) parsed.voicePref = { voiceURI: null, rate: 0.85 };
+    if (typeof parsed.streakFreezes !== "number") parsed.streakFreezes = 1;
+    if (parsed.lastFreezeUsedOn === undefined) parsed.lastFreezeUsedOn = null;
+    if (!parsed.stats) parsed.stats = defaultStats();
+    MODULES.forEach((m) => {
+      if (typeof parsed.stats.moduleCompletions[m.key] !== "number") parsed.stats.moduleCompletions[m.key] = 0;
+    });
+    if (typeof parsed.stats.totalMissionsCompleted !== "number") parsed.stats.totalMissionsCompleted = 0;
+    if (typeof parsed.stats.bestStreak !== "number") parsed.stats.bestStreak = parsed.streak.count || 0;
+    if (typeof parsed.stats.freezesUsedTotal !== "number") parsed.stats.freezesUsedTotal = 0;
+    ensureGrammarProgress(parsed);
+    return ensureToday(parsed);
+  }
+
   function loadState() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return defaultState();
       const parsed = JSON.parse(raw);
       if (!parsed || !parsed.dailyProgress || !parsed.streak) return defaultState();
-      if (!TIER_KEYS.includes(parsed.tier)) parsed.tier = "easy";
-      if (!parsed.voicePref) parsed.voicePref = { voiceURI: null, rate: 0.85 };
-      if (typeof parsed.streakFreezes !== "number") parsed.streakFreezes = 1;
-      if (parsed.lastFreezeUsedOn === undefined) parsed.lastFreezeUsedOn = null;
-      if (!parsed.stats) parsed.stats = defaultStats();
-      MODULES.forEach((m) => {
-        if (typeof parsed.stats.moduleCompletions[m.key] !== "number") parsed.stats.moduleCompletions[m.key] = 0;
-      });
-      if (typeof parsed.stats.totalMissionsCompleted !== "number") parsed.stats.totalMissionsCompleted = 0;
-      if (typeof parsed.stats.bestStreak !== "number") parsed.stats.bestStreak = parsed.streak.count || 0;
-      if (typeof parsed.stats.freezesUsedTotal !== "number") parsed.stats.freezesUsedTotal = 0;
-      ensureGrammarProgress(parsed);
-      return ensureToday(parsed);
+      return normalizeState(parsed);
     } catch (e) {
       console.error("Failed to load English Ops data:", e);
       return defaultState();
@@ -220,7 +228,117 @@ window.App = window.App || {};
     }
   }
 
+  // ---- Backup / restore ---------------------------------------------------
+  // The app has no server, so progress lives only in this browser's
+  // localStorage; clearing site data or switching device loses it. English Ops
+  // uses exactly ONE localStorage key (STORAGE_KEY) — the voice choice is
+  // inside it as state.voicePref — so that one key is the whole app. The
+  // backup file keys its payload by localStorage key, so another key could be
+  // added later without changing the file shape.
+  //
+  // File: { app: "english-ops", version: 1, exportedAt: ISO string,
+  //         data: { "englishOps:v1": <state> } }
+  const BACKUP_APP = "english-ops";
+  const BACKUP_VERSION = 1;
+  const MAX_BACKUP_BYTES = 2 * 1024 * 1024; // real saves are a few KB
+  const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+  const isPlainObject = (x) => x !== null && typeof x === "object" && !Array.isArray(x);
+  const isFiniteNumber = (x) => typeof x === "number" && Number.isFinite(x);
+  const isDateString = (x) => typeof x === "string" && DATE_RE.test(x);
+
+  function buildBackup(state) {
+    return {
+      app: BACKUP_APP,
+      version: BACKUP_VERSION,
+      exportedAt: new Date().toISOString(),
+      data: { [STORAGE_KEY]: state },
+    };
+  }
+
+  function backupFileName() {
+    return `english-ops-backup-${todayStr()}.json`;
+  }
+
+  // Checks the parts of an imported state the app reads without guarding, then
+  // keeps only the known top-level fields. Throws Error("invalid") on a bad
+  // shape; the caller turns that into a "can't use this file" message.
+  function sanitizeImportedState(raw) {
+    const bad = () => {
+      throw new Error("invalid");
+    };
+    if (!isPlainObject(raw)) bad();
+    const dp = raw.dailyProgress;
+    const st = raw.streak;
+    if (!isPlainObject(dp) || !isDateString(dp.date) || !Array.isArray(dp.completedModules)) bad();
+    if (!isPlainObject(st) || !isFiniteNumber(st.count) || st.count < 0) bad();
+    if (st.lastCompletedDate != null && !isDateString(st.lastCompletedDate)) bad();
+    if (raw.lastFreezeUsedOn != null && !isDateString(raw.lastFreezeUsedOn)) bad();
+    if (raw.stats !== undefined && (!isPlainObject(raw.stats) || !isPlainObject(raw.stats.moduleCompletions))) bad();
+    if (raw.voicePref !== undefined && !isPlainObject(raw.voicePref)) bad();
+    if (raw.moduleProgress !== undefined && !isPlainObject(raw.moduleProgress)) bad();
+
+    const clean = {};
+    Object.keys(defaultState()).forEach((k) => {
+      if (raw[k] !== undefined) clean[k] = raw[k];
+    });
+    clean.dailyProgress = { date: dp.date, completedModules: dp.completedModules.filter((k) => typeof k === "string") };
+    clean.streak = { count: st.count, lastCompletedDate: st.lastCompletedDate == null ? null : st.lastCompletedDate };
+    if (clean.voicePref) {
+      const vp = clean.voicePref;
+      clean.voicePref = {
+        voiceURI: typeof vp.voiceURI === "string" ? vp.voiceURI : null,
+        rate: isFiniteNumber(vp.rate) && vp.rate >= 0.1 && vp.rate <= 3 ? vp.rate : 0.85,
+      };
+    }
+    return clean;
+  }
+
+  // Never throws. Returns { ok: true, state, exportedAt } with a fully
+  // normalised state ready to replace the live one, or { ok: false, reason }
+  // where reason is one of: too_big, not_json, wrong_app, too_new, invalid.
+  function parseBackup(text) {
+    if (typeof text !== "string" || text.length > MAX_BACKUP_BYTES) return { ok: false, reason: "too_big" };
+    let file;
+    try {
+      file = JSON.parse(text);
+    } catch (e) {
+      return { ok: false, reason: "not_json" };
+    }
+    if (!isPlainObject(file) || file.app !== BACKUP_APP) return { ok: false, reason: "wrong_app" };
+    if (!Number.isInteger(file.version) || file.version < 1) return { ok: false, reason: "invalid" };
+    if (file.version > BACKUP_VERSION) return { ok: false, reason: "too_new" };
+    if (!isPlainObject(file.data) || !isPlainObject(file.data[STORAGE_KEY])) return { ok: false, reason: "invalid" };
+    try {
+      const state = normalizeState(sanitizeImportedState(file.data[STORAGE_KEY]));
+      return { ok: true, state, exportedAt: typeof file.exportedAt === "string" ? file.exportedAt : null };
+    } catch (e) {
+      return { ok: false, reason: "invalid" };
+    }
+  }
+
+  // A few headline numbers for the restore confirmation screen.
+  function summarizeState(state) {
+    const done = state.moduleProgress && state.moduleProgress.grammar && state.moduleProgress.grammar.doneLevels;
+    return {
+      badgesEarned: earnedBadgeKeys(state).length,
+      badgesTotal: BADGES.length,
+      streak: state.streak.count,
+      bestStreak: state.stats.bestStreak,
+      missions: state.stats.totalMissionsCompleted,
+      grammarLevels: Array.isArray(done) ? done.length : 0,
+      tier: state.tier,
+    };
+  }
+
   window.App.Storage = {
+    BACKUP_APP,
+    BACKUP_VERSION,
+    MAX_BACKUP_BYTES,
+    buildBackup,
+    backupFileName,
+    parseBackup,
+    summarizeState,
     STORAGE_KEY,
     TIERS,
     MODULES,

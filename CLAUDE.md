@@ -605,6 +605,38 @@ feature used elsewhere.
       directions: an easy-tier session in the Conditionals level never drew
       a third-conditional item across two full sessions, and an expert-tier
       session did.
+- [x] Progress backup / restore (`src/BackupScreen.jsx` + backup functions at
+      the bottom of `storage.jsx`). All progress lives in one localStorage key
+      (`englishOps:v1`; the voice choice is inside it as `state.voicePref`, and
+      a grep of `src/` and `index.html` found no other storage use), so one
+      key is the whole app. File format: `{ app: "english-ops", version: 1,
+      exportedAt, data: { "englishOps:v1": <state> } }`, file name
+      `english-ops-backup-YYYY-MM-DD.json` (local date). Entry point: a small
+      low-key link at the very bottom of the home screen (a "backup" view in
+      Root, like Badges), parent-facing so the copy is Traditional Chinese;
+      it carries the "建議每星期備份一次" reminder and an iPad add-to-home-
+      screen tip (which also warns that the home-screen app and Safari
+      normally keep separate storage, so back up in Safari BEFORE adding to
+      the home screen and restore afterwards). Import: `Storage.parseBackup`
+      never throws — it rejects by reason (too_big > 2 MB, not_json,
+      wrong_app = no/other `app` field incl. a beetle-care file, too_new =
+      version above 1, invalid = shape problems such as non-numeric
+      streak.count, bad dates, missing data) and accepts only a state that
+      passes `sanitizeImportedState` (keeps known top-level fields only,
+      clamps voice rate) and then the same `normalizeState` that
+      `loadState` now uses (extracted from loadState, behaviour unchanged).
+      Nothing is written until the child/parent taps "確認覆蓋" on a
+      confirmation screen that shows the file's date and a file-vs-current
+      table (badges, streak, missions, Grammar levels, tier). Tested: unit
+      round trip + 33 rejected inputs + a 3000-file random-damage fuzz (no
+      throw; every accepted state usable by the app), and an end-to-end run
+      in the real app (export -> clear localStorage -> reload -> import ->
+      progress identical, survives another reload; garbage, truncated,
+      beetle-care, other-app, corrupt, too-new and oversized files all
+      rejected with progress untouched; cancel leaves progress untouched).
+      NOT tested: a real iPad — iOS home-screen web apps can handle
+      `<a download>` blob downloads badly; if that happens the fallback would
+      be `navigator.share({ files })` on iOS standalone.
 - [x] Grammar drills (3 categories × 4 tiers, 8-12 items each with worked-example
       explanations, incl. mixed-tense paragraph questions)
 - [x] Word Hunt (Bookworm/Word Wipe-style, replaces earlier Wordle-clone)

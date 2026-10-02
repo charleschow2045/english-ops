@@ -64,7 +64,7 @@ window.App = window.App || {};
     );
   }
 
-  function DailyMissions({ state, onChangeTier, onOpenModule, onOpenBadges, freezeBanner, onDismissFreezeBanner }) {
+  function DailyMissions({ state, onChangeTier, onOpenModule, onOpenBadges, onOpenBackup, freezeBanner, onDismissFreezeBanner }) {
     const completedCount = Storage.implementedModuleKeys().filter((k) =>
       state.dailyProgress.completedModules.includes(k)
     ).length;
@@ -143,6 +143,17 @@ window.App = window.App || {};
               onOpen={() => onOpenModule(mod.key)}
             />
           ))}
+        </div>
+
+        {/* Parent-facing, kept low-key at the very bottom: easy to find, not competing with the missions. */}
+        <div className="text-center pt-2">
+          <button
+            onClick={onOpenBackup}
+            className={`text-xs underline decoration-dotted ${TYPE.caption}`}
+            style={{ color: INK.mutedInk }}
+          >
+            💾 進度備份 / 還原(建議每星期備份一次)
+          </button>
         </div>
       </div>
     );
