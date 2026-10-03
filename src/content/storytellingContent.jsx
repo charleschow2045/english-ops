@@ -24,6 +24,7 @@ window.App.Content = window.App.Content || {};
         tip: "Great stories often start with a character doing something ordinary — like walking home from school — then something unexpected happens! Try starting your own story the same way.",
         questions: [
           {
+            id: "story-easy-1-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "Every story has a beginning, a middle, and an end. Which sentence belongs to the END of this story?",
@@ -36,6 +37,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The end is where the problem is finished: the owner is found. The blanket and milk are part of the middle, and the meow is the beginning.",
           },
           {
+            id: "story-easy-1-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "Ben had a problem: he had found a kitten but didn't know who it belonged to. What clever thing did he do?",
@@ -48,6 +50,7 @@ window.App.Content = window.App.Content || {};
             explanation: "Ben and his mum made colourful posters with the kitten's photo and put them up around the neighbourhood. That is how the owner found them.",
           },
           {
+            id: "story-easy-1-q3",
             type: "mc",
             tag: "🎭 Expression",
             prompt: "The elderly woman knocks on the door \"tears in her eyes\". If you were telling this part out loud, how should you sound?",
@@ -60,6 +63,7 @@ window.App.Content = window.App.Content || {};
             explanation: "She is relieved and emotional, so a soft, slightly shaky voice with a teary smile shows her feelings. A party voice would not match tears.",
           },
           {
+            id: "story-easy-1-q4",
             type: "mc",
             tag: "👀 Engagement",
             prompt: "You are telling this story to your class. Which sound effect would make the opening scene more exciting for your listeners?",
@@ -82,6 +86,7 @@ window.App.Content = window.App.Content || {};
         tip: "The most memorable characters change a little by the end of a story. Maddie starts out disappointed, but she chooses kindness — and that choice is what makes the story satisfying.",
         questions: [
           {
+            id: "story-easy-2-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "The turning point is the moment a story changes direction. Which moment is the turning point here?",
@@ -94,6 +99,7 @@ window.App.Content = window.App.Content || {};
             explanation: "Losing the vote is the problem, but the story turns when Maddie chooses kindness instead of leaving. Painting the banner is the ending that follows.",
           },
           {
+            id: "story-easy-2-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "Maddie felt disappointed and wanted to leave the room. What smart choice did she make instead?",
@@ -106,6 +112,7 @@ window.App.Content = window.App.Content || {};
             explanation: "She dealt with her feelings by being a good sport. That choice is what led to the new friendship.",
           },
           {
+            id: "story-easy-2-q3",
             type: "mc",
             tag: "🎭 Expression",
             prompt: "Maddie tells Carlos his gecko \"really did look cool with its sunglasses\". How should you say her line to show she means it, even though she is still a little sad?",
@@ -118,6 +125,7 @@ window.App.Content = window.App.Content || {};
             explanation: "She is being sincere. A warm, steady voice and a small smile show real kindness, while teasing or shouting would change her meaning.",
           },
           {
+            id: "story-easy-2-q4",
             type: "mc",
             tag: "👀 Engagement",
             prompt: "You want listeners to feel Maddie's \"stomach drop\". Which storytelling move works best?",
@@ -140,6 +148,7 @@ window.App.Content = window.App.Content || {};
         tip: "The rain looks like the problem at first, but it ends up making the day special. A twist where the problem turns into something good makes a story feel warm and surprising.",
         questions: [
           {
+            id: "story-easy-3-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "The turning point is the moment a story changes direction. Which moment is the turning point here?",
@@ -152,6 +161,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The rain is the problem, but the story turns when Lily has an idea and acts on it. Saying it was the best picnic is the ending.",
           },
           {
+            id: "story-easy-3-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "The rain cancelled the picnic in the park. What did Lily do about it?",
@@ -164,6 +174,7 @@ window.App.Content = window.App.Content || {};
             explanation: "Lily changed the place, not the plan. She and Toby built a fort in the living room and had the picnic there.",
           },
           {
+            id: "story-easy-3-q3",
             type: "mc",
             tag: "🎭 Expression",
             prompt: "Lily's face fell and she sighed, \"Our picnic is ruined.\" How should you say her line?",
@@ -176,6 +187,7 @@ window.App.Content = window.App.Content || {};
             explanation: "Lily is disappointed, so a low, sad voice and a sigh show her feelings. Excitement or whispering would not match \"her face fell\".",
           },
           {
+            id: "story-easy-3-q4",
             type: "mc",
             tag: "👀 Engagement",
             prompt: "You want your listeners to hear the rain. Which sound effect works best?",
@@ -198,6 +210,7 @@ window.App.Content = window.App.Content || {};
         tip: "Hana fails three times before she succeeds. Repeating the failure builds tension, so that the success feels big when it finally arrives.",
         questions: [
           {
+            id: "story-easy-4-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "Which moment is the turning point, where the story stops going badly and starts going well?",
@@ -210,6 +223,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The crashes are the problem and the flying at sunset is the ending. The story turns when Grandpa's question makes Hana think about the wind.",
           },
           {
+            id: "story-easy-4-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "What was the real cause of the problem, and how was it solved?",
@@ -222,6 +236,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The kite was never broken. Hana was facing the wrong way, and once she turned her back to the wind, it flew.",
           },
           {
+            id: "story-easy-4-q3",
             type: "mc",
             tag: "🎭 Expression",
             prompt: "Hana says, \"It's broken. Maybe kites don't like me.\" How should you say it?",
@@ -234,6 +249,7 @@ window.App.Content = window.App.Content || {};
             explanation: "Hana is discouraged, not angry or amused. A flat, sad voice and a shrug show that she is giving up.",
           },
           {
+            id: "story-easy-4-q4",
             type: "mc",
             tag: "👀 Engagement",
             prompt: "The kite crashes again and again. How can you help listeners feel each try?",
@@ -256,6 +272,7 @@ window.App.Content = window.App.Content || {};
         tip: "When Nora remembers Ollie running in to play, the story plants a clue. Later the clue pays off in the toy box. Good stories drop small hints early so the solution feels fair.",
         questions: [
           {
+            id: "story-easy-5-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "Every story has a beginning, a middle, and an end. Which sentence belongs to the MIDDLE?",
@@ -268,6 +285,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The middle is where Nora works on her problem. The missing book is the beginning, and Miss Chan's kind answer is the end.",
           },
           {
+            id: "story-easy-5-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "How did Nora solve the problem of the missing book?",
@@ -280,6 +298,7 @@ window.App.Content = window.App.Content || {};
             explanation: "Nora did not just search harder. She thought about where she had last seen the book, and that led her to the toy box.",
           },
           {
+            id: "story-easy-5-q3",
             type: "mc",
             tag: "🎭 Expression",
             prompt: "Nora hands over the book and explains about the scribble. How should you say her line to show she is honest but a little nervous?",
@@ -292,6 +311,7 @@ window.App.Content = window.App.Content || {};
             explanation: "Nora is choosing to be honest. A quiet, steady voice with eye contact shows that, and the gulp shows she is nervous.",
           },
           {
+            id: "story-easy-5-q4",
             type: "mc",
             tag: "👀 Engagement",
             prompt: "You want to build suspense as Nora looks in the toy box. What could you do?",
@@ -314,6 +334,7 @@ window.App.Content = window.App.Content || {};
         tip: "Omar and Turbo do not win the race, but the story still feels like a victory. Sometimes the best ending is not \"I won\" but \"I did something I did not think I could do\".",
         questions: [
           {
+            id: "story-easy-6-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "Every story has a beginning, a middle, and an end. Which sentence belongs to the END?",
@@ -326,6 +347,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The end is where the problem is finished: Turbo makes it. The laughing is the beginning, and noticing the dry board is the middle.",
           },
           {
+            id: "story-easy-6-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "Omar wanted to give up. What did he work out instead?",
@@ -338,6 +360,7 @@ window.App.Content = window.App.Content || {};
             explanation: "Omar noticed the dry board while the other snails were on damp patches. Adding water solved the real problem.",
           },
           {
+            id: "story-easy-6-q3",
             type: "mc",
             tag: "🎭 Expression",
             prompt: "Omar's cheeks felt hot as his friends laughed. How could you act out his feelings?",
@@ -350,6 +373,7 @@ window.App.Content = window.App.Content || {};
             explanation: "Omar feels embarrassed. Looking down, a quiet voice and a small posture show that. Laughing or booming would show different feelings.",
           },
           {
+            id: "story-easy-6-q4",
             type: "mc",
             tag: "👀 Engagement",
             prompt: "You want your listeners to feel how slow Turbo is. What could you do?",
@@ -374,6 +398,7 @@ window.App.Content = window.App.Content || {};
         tip: "A good story needs a problem to solve. Aiden's problem (his ruined poster, the night before the deadline) is exactly what made us want to keep reading to find out what happened next.",
         questions: [
           {
+            id: "story-medium-1-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "Which moment is the turning point, where the story stops going badly and starts going well?",
@@ -386,6 +411,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The spill is the crisis, but the story turns when Aiden chooses to keep going. The ribbon is the ending.",
           },
           {
+            id: "story-medium-1-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "Aiden fixed his poster so the same accident couldn't ruin it again. What change did he make?",
@@ -398,6 +424,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The passage says he used laminated labels that \"wouldn't be ruined by a little foam\". The other choices sound sensible, but they are not what he did.",
           },
           {
+            id: "story-medium-1-q3",
             type: "mc",
             tag: "🎭 Expression",
             prompt: "The story says Aiden \"just stared at the mess\". Which way of acting this out shows his feeling best?",
@@ -410,6 +437,7 @@ window.App.Content = window.App.Content || {};
             explanation: "Aiden feels like his work has been wasted, so he is stunned and quiet, not cheerful or furious. Staring means he goes still.",
           },
           {
+            id: "story-medium-1-q4",
             type: "mc",
             tag: "👀 Engagement",
             prompt: "Before you reveal that the volcano \"erupted perfectly\" in front of the judges, how could you build suspense for your listeners?",
@@ -432,6 +460,7 @@ window.App.Content = window.App.Content || {};
         tip: "Instead of just saying \"Coach Reyes was a good coach,\" the story shows specific things she did (asking each player what they needed) — letting readers reach that conclusion themselves.",
         questions: [
           {
+            id: "story-medium-2-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "The beginning shows a worry, the middle shows a change, and the end shows the result. Which sentence belongs to the MIDDLE?",
@@ -444,6 +473,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The middle is where things change: Coach Reyes proves herself through her drills. The ankle is the beginning, and the win is the end.",
           },
           {
+            id: "story-medium-2-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "Coach Reyes had to win the team's trust in only two weeks. How did she do it?",
@@ -456,6 +486,7 @@ window.App.Content = window.App.Content || {};
             explanation: "She did the opposite of a one-size-fits-all routine. Asking each player what to improve showed she cared, and the drills proved she was skilled.",
           },
           {
+            id: "story-medium-2-q3",
             type: "mc",
             tag: "🎭 Expression",
             prompt: "Jonah admits he \"completely misjudged\" Coach Reyes. How would you say his line to show he is a little embarrassed but honest?",
@@ -468,6 +499,7 @@ window.App.Content = window.App.Content || {};
             explanation: "Jonah is owning up to a mistake. A quiet voice, a glance down, and a half-smile show embarrassment and honesty together.",
           },
           {
+            id: "story-medium-2-q4",
             type: "mc",
             tag: "👀 Engagement",
             prompt: "You want your listeners to think about first impressions while you tell this story. What could you do?",
@@ -490,6 +522,7 @@ window.App.Content = window.App.Content || {};
         tip: "Mei's solution comes from something already in the scene: the phones in the queue. When the answer was hiding in plain sight, readers feel it was fair and clever.",
         questions: [
           {
+            id: "story-medium-3-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "Which moment is the turning point, where the story stops going badly and starts going well?",
@@ -502,6 +535,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The blackout is the crisis and Grandmother's line is the ending. The story turns when Mei spots the phone lights and sees what she can use.",
           },
           {
+            id: "story-medium-3-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "Mei needed light and needed the customers to stay. How did she solve both problems at once?",
@@ -514,6 +548,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The phone torches gave the stall light, and being part of the solution made the customers want to stay. Candles and waiting are never mentioned.",
           },
           {
+            id: "story-medium-3-q3",
             type: "mc",
             tag: "🎭 Expression",
             prompt: "Grandmother says, \"Tonight, the customers were the lamps.\" How would you say her line?",
@@ -526,6 +561,7 @@ window.App.Content = window.App.Content || {};
             explanation: "Grandmother is proud and grateful. A warm, slow voice and a smile show that, while a sharp or sad voice would change her meaning.",
           },
           {
+            id: "story-medium-3-q4",
             type: "mc",
             tag: "👀 Engagement",
             prompt: "You want listeners to feel the sudden blackout. Which storytelling move works best?",
@@ -548,6 +584,7 @@ window.App.Content = window.App.Content || {};
         tip: "The kick-off time counts down through the whole story. A deadline makes every choice matter more, so readers keep turning the page to find out whether Tomás will make it.",
         questions: [
           {
+            id: "story-medium-4-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "Which moment is the turning point of the story?",
@@ -560,6 +597,7 @@ window.App.Content = window.App.Content || {};
             explanation: "Realising the mistake is the crisis and the sprint is the ending. The story turns when Tomás chooses to think instead of panic.",
           },
           {
+            id: "story-medium-4-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "Tomás's phone was almost dead. What smart step solved his problem?",
@@ -572,6 +610,7 @@ window.App.Content = window.App.Content || {};
             explanation: "He used the person who knew the most, the driver, and asked a specific question. Waiting or giving up would not have got him there.",
           },
           {
+            id: "story-medium-4-q3",
             type: "mc",
             tag: "🎭 Expression",
             prompt: "The story says Tomás's \"stomach dropped\". How would you show that moment?",
@@ -584,6 +623,7 @@ window.App.Content = window.App.Content || {};
             explanation: "A dropping stomach means sudden fear. Stillness, wide eyes and a tight voice show this, while cheerful or sleepy would not.",
           },
           {
+            id: "story-medium-4-q4",
             type: "mc",
             tag: "👀 Engagement",
             prompt: "You want your listeners to feel that time is running out. What could you do?",
@@ -606,6 +646,7 @@ window.App.Content = window.App.Content || {};
         tip: "The story lets us see what Zara is thinking, \"If she said nothing, she would probably win\", before she decides. When readers know how tempting the easy choice is, the brave choice means more.",
         questions: [
           {
+            id: "story-medium-5-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "Which moment is the turning point of the story?",
@@ -618,6 +659,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The worry is the problem and the certificate is the ending. The story changes direction when Zara chooses honesty over winning.",
           },
           {
+            id: "story-medium-5-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "Which sentence best explains why Zara chose to speak up?",
@@ -630,6 +672,7 @@ window.App.Content = window.App.Content || {};
             explanation: "Zara had the choice to stay silent and win. She chose honesty because it mattered more to her than the trophy.",
           },
           {
+            id: "story-medium-5-q3",
             type: "mc",
             tag: "🎭 Expression",
             prompt: "Zara says, \"Excuse me, I made a mistake. I spelled it wrong.\" How should you say it?",
@@ -642,6 +685,7 @@ window.App.Content = window.App.Content || {};
             explanation: "Zara is nervous but brave. A clear voice with a slight tremble and eye contact show both feelings.",
           },
           {
+            id: "story-medium-5-q4",
             type: "mc",
             tag: "👀 Engagement",
             prompt: "The story says \"The hall went silent.\" How could you use that moment with your listeners?",
@@ -664,6 +708,7 @@ window.App.Content = window.App.Content || {};
         tip: "The whole story changes because of one small question, \"What if we made our own museum?\" A character who asks \"What if?\" when things go wrong makes readers curious about what will happen next.",
         questions: [
           {
+            id: "story-medium-6-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "Which moment is the turning point, where the story stops going badly and starts going well?",
@@ -676,6 +721,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The broken bus is the problem and the amazed head teacher is the ending. The story turns on Anna's \"What if?\".",
           },
           {
+            id: "story-medium-6-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "The trip was cancelled. How did the class deal with the problem?",
@@ -688,6 +734,7 @@ window.App.Content = window.App.Content || {};
             explanation: "They did not wait or give up. They used what they already had, such as coins and a radio, to create the experience themselves.",
           },
           {
+            id: "story-medium-6-q3",
             type: "mc",
             tag: "🎭 Expression",
             prompt: "\"A groan filled the room.\" How could you act out that moment?",
@@ -700,6 +747,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The class is disappointed. A groan and slumped shoulders show that clearly, while cheering or a flat voice would not.",
           },
           {
+            id: "story-medium-6-q4",
             type: "mc",
             tag: "👀 Engagement",
             prompt: "You reach the part where the students act as museum guides. How could you involve your listeners?",
@@ -724,6 +772,7 @@ window.App.Content = window.App.Content || {};
         tip: "Setting the scene helps readers feel like they're there. Words like \"howled\" and \"flickered ominously\" make you feel the danger right along with Priya, instead of just being told \"it was scary.\"",
         questions: [
           {
+            id: "story-hard-1-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "Which moment is the turning point that changes the night from frightening to meaningful?",
@@ -736,6 +785,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The flickering light raises the tension, and the sunlight is the calm ending. The story turns when Priya's grandfather starts talking.",
           },
           {
+            id: "story-hard-1-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "Priya's real problem was her fear, not the storm itself. How did her grandfather help solve it?",
@@ -748,6 +798,7 @@ window.App.Content = window.App.Content || {};
             explanation: "He never argued with her fear. He shifted her attention with stories until she was \"more absorbed\" than afraid. The walls and the ferry are never used to comfort her.",
           },
           {
+            id: "story-hard-1-q3",
             type: "shortanswer",
             tag: "🎭 Expression",
             prompt: "Imagine you are telling this story aloud and reach the line \"the wind howled against the thick stone walls\". Describe how you would use your voice, face, and body to bring that line to life.",
@@ -755,6 +806,7 @@ window.App.Content = window.App.Content || {};
               "I would start in a low, rumbling voice and let the word \"howled\" stretch out and rise, as if the wind is growing. My shoulders would hunch and my eyes go wide, and I might cup a hand to my ear as if I can hear it outside. Then I would drop to a hushed voice for \"thick stone walls\" to show how solid the walls are, and how small Priya feels inside them.",
           },
           {
+            id: "story-hard-1-q4",
             type: "shortanswer",
             tag: "👀 Engagement",
             prompt: "Design ONE sound effect and ONE moment of eye contact that would make your listeners feel like they are inside the lighthouse with Priya. Say where you would use each and why.",
@@ -772,6 +824,7 @@ window.App.Content = window.App.Content || {};
         tip: "Sometimes the turning point in a story isn't an action — it's a single well-timed question. Ms. Okafor's question is what unlocks the group's solution, instead of her just telling them what to do.",
         questions: [
           {
+            id: "story-hard-2-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "Which moment is the turning point of the story?",
@@ -784,6 +837,7 @@ window.App.Content = window.App.Content || {};
             explanation: "Devon's accusation is the peak of the argument, and the sketching is the ending. The story only changes direction once Ms. Okafor's question makes the group think.",
           },
           {
+            id: "story-hard-2-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "What made the group's final plan clever, rather than just a compromise where everyone gave something up?",
@@ -796,6 +850,7 @@ window.App.Content = window.App.Content || {};
             explanation: "A compromise splits the difference. This solution combined the ideas so the ship and the skit both helped explain the trade routes. The other options avoid the real problem.",
           },
           {
+            id: "story-hard-2-q3",
             type: "shortanswer",
             tag: "🎭 Expression",
             prompt: "Devon accuses the others of not valuing creativity, and Aisha accuses Devon of not caring about grades. How would you perform this argument out loud so listeners can always tell which character is speaking?",
@@ -803,6 +858,7 @@ window.App.Content = window.App.Content || {};
               "I would give each character a different voice and posture. Devon could be loud and quick, with a wide gesture, as if defending his ship. Aisha could be sharper and firmer, with folded arms and a lifted chin. I would turn my body slightly toward each one as they speak, and let my voice get tighter as the argument rises, so it is clear who is talking and how heated it is getting.",
           },
           {
+            id: "story-hard-2-q4",
             type: "shortanswer",
             tag: "👀 Engagement",
             prompt: "Ms. Okafor's question is the turning point. How could you use a pause, eye contact, or a change in volume to make your listeners feel that moment?",
@@ -820,6 +876,7 @@ window.App.Content = window.App.Content || {};
         tip: "Ken's problem is not that he lacks words; it is that two cultures use the same words differently. A dilemma between two \"wrong\" easy answers, word for word or changing the meaning, gives a story depth.",
         questions: [
           {
+            id: "story-hard-3-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "Which moment is the turning point, where Ken moves from being stuck to finding his way?",
@@ -832,6 +889,7 @@ window.App.Content = window.App.Content || {};
             explanation: "Mr Hall's request starts the story and the purchase is the ending. It turns when Ken pauses and chooses a third way between the two easy options.",
           },
           {
+            id: "story-hard-3-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "Ken considered translating word for word, or changing the meaning to make it easier. Why was his final solution better than both?",
@@ -844,6 +902,7 @@ window.App.Content = window.App.Content || {};
             explanation: "Word for word would confuse Mr Hall, and changing the meaning would be untrue. Ken's explanation kept the meaning and made it clear. It was not shorter, and Ken understood the idea well.",
           },
           {
+            id: "story-hard-3-q3",
             type: "shortanswer",
             tag: "🎭 Expression",
             prompt: "Imagine you perform this scene aloud with three voices: Grandmother, Mr Hall and Ken. How would you use your voice and body to show each person, and to show Ken's pause when he is stuck?",
@@ -851,6 +910,7 @@ window.App.Content = window.App.Content || {};
               "I would give Grandmother a warm, steady, slightly slower voice with small nods, and Mr Hall a higher, polite voice with his hands open as if he is asking for help. For Ken, I would turn my body between the two of them, then freeze, lower my eyes and go silent for a second while he thinks. When he speaks again, I would slow down and choose each word carefully so listeners can hear him translating meaning, not just words.",
           },
           {
+            id: "story-hard-3-q4",
             type: "shortanswer",
             tag: "👀 Engagement",
             prompt: "Many of your listeners do not speak Cantonese. Describe how you could let them feel the language gap in this scene, and how you would use ONE pause to make them care about Ken's choice.",
@@ -868,6 +928,7 @@ window.App.Content = window.App.Content || {};
         tip: "Yuki does not completely change her mind. She keeps her opinion but understands it better. Small, realistic changes often make characters feel more true than big, sudden ones.",
         questions: [
           {
+            id: "story-hard-4-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "Which moment is the turning point of the story?",
@@ -880,6 +941,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The coin toss creates the problem and the win is the result. It turns when Yuki listens to the other side and finds real reasons instead of weak ones.",
           },
           {
+            id: "story-hard-4-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "How did Yuki solve the problem of arguing for a view she did not hold?",
@@ -892,6 +954,7 @@ window.App.Content = window.App.Content || {};
             explanation: "Yuki expected weak arguments, but by interviewing people she found strong ones. She built her speech on what she learned, not on pretending or attacking weak points.",
           },
           {
+            id: "story-hard-4-q3",
             type: "shortanswer",
             tag: "🎭 Expression",
             prompt: "Yuki first whispers, \"How can I argue for something I don't believe?\" and later gives the strongest speech of her life. How would you use your voice and body to show that change?",
@@ -899,6 +962,7 @@ window.App.Content = window.App.Content || {};
               "For the whisper I would hunch my shoulders, lean towards the coach and speak in a small, tight, unsure voice. For the speech, I would stand tall, open my hands and let my voice grow steadier and stronger, with clear pauses after each point. The contrast between the hunched whisper and the confident speech shows how much she has learned.",
           },
           {
+            id: "story-hard-4-q4",
             type: "shortanswer",
             tag: "👀 Engagement",
             prompt: "Yuki's last line is, \"I know exactly what I'm arguing against, and that makes my own argument stronger.\" How could you use a pause and eye contact to make listeners think about it?",
@@ -916,6 +980,7 @@ window.App.Content = window.App.Content || {};
         tip: "When a character runs out of something important, such as cups, time or food, the story feels urgent. Rosa's solution is clever because she makes the small amount go further instead of finding more.",
         questions: [
           {
+            id: "story-hard-5-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "Which moment is the turning point, where the story changes from going wrong to going right?",
@@ -928,6 +993,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The heat and crowds cause the crisis, and the truck arrives after the problem is solved. The story turns on Rosa's idea.",
           },
           {
+            id: "story-hard-5-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "What made Rosa's solution clever?",
@@ -940,6 +1006,7 @@ window.App.Content = window.App.Content || {};
             explanation: "Rosa did not wait or pass the problem on. She used what was already there, half-cups and the runners' own bottles, to serve more people.",
           },
           {
+            id: "story-hard-5-q3",
             type: "shortanswer",
             tag: "🎭 Expression",
             prompt: "Describe how you would perform the moment when the team leader stares at the empty box and Rosa makes her suggestion. How would their voices and faces be different?",
@@ -947,6 +1014,7 @@ window.App.Content = window.App.Content || {};
               "For the team leader I would go still, speak in a low, tight voice and let my face go pale and fixed, as if I am afraid to look away from the empty box. For Rosa, I would speak a little faster and lighter, raise my eyebrows and lean forward, as if the idea has just arrived. I would also make the sentence \"What if we fill the cups only halfway\" sound like a question so that it feels like a new spark.",
           },
           {
+            id: "story-hard-5-q4",
             type: "shortanswer",
             tag: "👀 Engagement",
             prompt: "Describe ONE sound effect and ONE way of involving your audience that would make listeners feel the pressure of the water running out.",
@@ -964,6 +1032,7 @@ window.App.Content = window.App.Content || {};
         tip: "The stain hides one line, and that gap gives the story a goal. Whenever a character is missing something, such as a key, a name or an answer, readers keep reading to find out how it will be filled.",
         questions: [
           {
+            id: "story-hard-6-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "Which moment is the turning point of the story?",
@@ -976,6 +1045,7 @@ window.App.Content = window.App.Content || {};
             explanation: "Finding the recipe starts the story and the handwriting is the ending. The story turns when Lena stops collecting opinions and starts an experiment.",
           },
           {
+            id: "story-hard-6-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "Her relatives disagreed about the steaming time. Why was Lena's method a good way to settle it?",
@@ -988,6 +1058,7 @@ window.App.Content = window.App.Content || {};
             explanation: "A fair test with the same batter and blind tasting removes guesses and opinions. Her aunt and uncle did not agree, and her mother remembered no number.",
           },
           {
+            id: "story-hard-6-q3",
             type: "shortanswer",
             tag: "🎭 Expression",
             prompt: "Lena's mother laughs and says, \"Your great-grandmother never used a timer. She steamed it until it smelled right.\" How would you perform this line so listeners can hear both the humour and the memory in it?",
@@ -995,6 +1066,7 @@ window.App.Content = window.App.Content || {};
               "I would begin with a light laugh and a warm, amused voice for \"never used a timer\", shaking my head slightly. Then I would slow down and soften my voice for \"until it smelled right\", looking off into the distance as if I can see the old kitchen. The shift from a laugh to a soft, dreamy voice shows that the joke is also a loving memory.",
           },
           {
+            id: "story-hard-6-q4",
             type: "shortanswer",
             tag: "👀 Engagement",
             prompt: "In the blind taste test, the family does not know which cake is which. How could you involve your audience so that they feel as if they are tasting with Lena's family?",
@@ -1014,6 +1086,7 @@ window.App.Content = window.App.Content || {};
         tip: "Not every story needs to answer every question. Leaving something unsolved at the end — like whether the manuscript was fact or fiction — makes readers keep thinking about your story even after they finish it.",
         questions: [
           {
+            id: "story-expert-1-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "Unlike most stories, this one does not fully resolve. Which description of its structure is the most accurate?",
@@ -1026,6 +1099,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The discovery and the sketches build the story, but the passage ends on \"no one has been able to determine with certainty\". Nothing confirms the invention worked.",
           },
           {
+            id: "story-expert-1-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "Historians wanted to know whether the manuscript was fact or fiction. According to the passage, how did they try to work it out?",
@@ -1038,6 +1112,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The historians inferred from the notes and drawings. No prototype and no patent were ever found, so building it or matching a patent is not what happened.",
           },
           {
+            id: "story-expert-1-q3",
             type: "shortanswer",
             tag: "🎭 Expression",
             prompt: "The manuscript's final page \"ended mid-sentence\". How would you perform that moment out loud so listeners feel the sudden interruption?",
@@ -1045,6 +1120,7 @@ window.App.Content = window.App.Content || {};
               "I would slow down as I approach the last sentence, then stop in the middle of a word with no ending sound, as if the voice itself has been cut off. I would freeze my face and hands and hold the silence for two or three seconds. Then I would speak the next line very softly, so the pause itself becomes the effect.",
           },
           {
+            id: "story-expert-1-q4",
             type: "shortanswer",
             tag: "👀 Engagement",
             prompt: "You are reading this story to a small group in a dim room. Describe ONE sound effect and ONE way of involving the audience that would build the mystery, and explain why each would work.",
@@ -1062,6 +1138,7 @@ window.App.Content = window.App.Content || {};
         tip: "Instead of Maya just deciding instantly, the story shows her actually weighing both outcomes side by side. Letting readers see a character's reasoning makes their final choice feel earned, not random.",
         questions: [
           {
+            id: "story-expert-2-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "Which part of the story is its climax, the moment the main character makes the key decision?",
@@ -1074,6 +1151,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The supervisor's reply raises the tension and the testing is the aftermath. The climax is Maya's decision to act, made after she weighs the costs.",
           },
           {
+            id: "story-expert-2-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "Maya's problem was a real dilemma with no perfect answer. What made her way of handling it sound rather than reckless?",
@@ -1086,6 +1164,7 @@ window.App.Content = window.App.Content || {};
             explanation: "She reasoned about the costs and used the proper channel. Going to the client or refusing to work are dramatic moves that the story never describes.",
           },
           {
+            id: "story-expert-2-q3",
             type: "shortanswer",
             tag: "🎭 Expression",
             prompt: "Her supervisor says the defect is \"within acceptable tolerance\". How would you use your voice and body to make him sound dismissive, and how would you make Maya's worry sound different?",
@@ -1093,6 +1172,7 @@ window.App.Content = window.App.Content || {};
               "For the supervisor I would use a flat, relaxed voice with a little wave of the hand and barely any eye contact, as if the matter is already closed. For Maya I would speak a little quicker and higher with a small pause before each word, my brow slightly furrowed and my hands tense. The contrast between his ease and her tension shows who takes the problem seriously.",
           },
           {
+            id: "story-expert-2-q4",
             type: "shortanswer",
             tag: "👀 Engagement",
             prompt: "The most important part of the story is Maya weighing the two costs. How could you use pacing, a pause, and eye contact so that listeners weigh the decision with her?",
@@ -1110,6 +1190,7 @@ window.App.Content = window.App.Content || {};
         tip: "Forty years of delay is what gives this story its feeling. When time passes between an action and its result, readers feel what was lost, and what might still be saved.",
         questions: [
           {
+            id: "story-expert-3-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "Which description of this story's structure is the most accurate?",
@@ -1122,6 +1203,7 @@ window.App.Content = window.App.Content || {};
             explanation: "Reading the letter changes what Mrs Chan believes, so it is the turning point. The story stops as she dials, so we never learn whether Henry answers.",
           },
           {
+            id: "story-expert-3-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "For forty years, Mrs Chan believed that Henry had chosen silence. How did the letter change her understanding?",
@@ -1134,6 +1216,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The letter shows Henry did try to reach her, and it was lost. Nothing in it suggests he was not sorry, and it does not say who started the quarrel.",
           },
           {
+            id: "story-expert-3-q3",
             type: "shortanswer",
             tag: "🎭 Expression",
             prompt: "Describe how you would read Henry's letter aloud, and then how you would show Mrs Chan's reaction as she sits with the page while her tea goes cold.",
@@ -1141,6 +1224,7 @@ window.App.Content = window.App.Content || {};
               "I would read the letter slowly and quietly in a slightly rough, hesitant voice, as if Henry is choosing every word with difficulty, with small pauses before \"sorry\" and \"forgive\". Then I would drop my voice and stop moving altogether for Mrs Chan: my eyes lowered, my hands still, and long silence in place of description. The stillness after the shaky voice shows how much the words mean to her.",
           },
           {
+            id: "story-expert-3-q4",
             type: "shortanswer",
             tag: "👀 Engagement",
             prompt: "The story ends as Mrs Chan dials, with no answer. How could you use sound, timing and eye contact in the last line so that listeners keep wondering about it afterwards?",
@@ -1158,6 +1242,7 @@ window.App.Content = window.App.Content || {};
         tip: "Daniel does not have to choose between \"the town's pride\" and \"the truth\". The best solution keeps both. Stories with two things that matter are more interesting than stories with one right answer and one wrong.",
         questions: [
           {
+            id: "story-expert-4-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "Which part of the story is its climax, the moment the main character makes the key decision?",
@@ -1170,6 +1255,7 @@ window.App.Content = window.App.Content || {};
             explanation: "Finding the diary begins the story and the exhibition is the aftermath. The climax is Daniel's decision to take a third path.",
           },
           {
+            id: "story-expert-4-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "What made Daniel's solution more than a simple compromise?",
@@ -1182,6 +1268,7 @@ window.App.Content = window.App.Content || {};
             explanation: "A compromise gives up part of each side. Daniel's exhibition kept the festival and the diary, so both mattered. It was open, not private or hidden.",
           },
           {
+            id: "story-expert-4-q3",
             type: "shortanswer",
             tag: "🎭 Expression",
             prompt: "The chairman says to keep the diary in the basement \"for preservation\", and Daniel answers calmly. How would you use your voice and face to show that the chairman is hiding his real reason, and that Daniel sees it?",
@@ -1189,6 +1276,7 @@ window.App.Content = window.App.Content || {};
               "For the chairman I would use a smooth, friendly voice with a small smile and quick eyes, and put a slight stress on \"preservation\", as if it is a polite excuse. For Daniel, I would slow down, keep my voice level and look straight at him without smiling. The contrast between the smooth voice and the calm, direct stare tells listeners that Daniel understands the real reason.",
           },
           {
+            id: "story-expert-4-q4",
             type: "shortanswer",
             tag: "👀 Engagement",
             prompt: "The exhibition is called \"The Man and the Story\". How could you use two gestures or objects and a question to your audience so that listeners weigh both sides for themselves?",
@@ -1206,6 +1294,7 @@ window.App.Content = window.App.Content || {};
         tip: "Sun searches inside the clock, while the answer is on the floor. Stories that make the reader look in the wrong place, and then reveal the right one, feel like satisfying puzzles.",
         questions: [
           {
+            id: "story-expert-5-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "Which moment is the turning point of the story?",
@@ -1218,6 +1307,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The customer starts the story, and the folded card is the solution. The story turns when Sun stops fixing and starts watching.",
           },
           {
+            id: "story-expert-5-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "How did Sun find the real cause of the problem?",
@@ -1230,6 +1320,7 @@ window.App.Content = window.App.Content || {};
             explanation: "All his known repairs had failed. Listening to the uneven tick led him to the leaning floor. The passage does not mention new gears or the customer's history.",
           },
           {
+            id: "story-expert-5-q3",
             type: "shortanswer",
             tag: "🎭 Expression",
             prompt: "Mr Lam says, \"Sit with it,\" without looking up, and Sun frowns. How would you use your voice and body to show the difference between the calm old master and the impatient apprentice?",
@@ -1237,6 +1328,7 @@ window.App.Content = window.App.Content || {};
               "For Mr Lam I would use a low, slow, quiet voice, keep my eyes down as if I am working, and barely move. For Sun I would speak faster and sharper, with a scowl, tapping fingers and a restless shifting of my weight. The contrast between stillness and restlessness makes the difference between the two characters clear.",
           },
           {
+            id: "story-expert-5-q4",
             type: "shortanswer",
             tag: "👀 Engagement",
             prompt: "For an hour there is \"only the tick, tick, tick\". How could you use rhythm and silence so that listeners \"sit with it\" too, and notice the uneven tick before Sun does?",
@@ -1254,6 +1346,7 @@ window.App.Content = window.App.Content || {};
         tip: "Amina does not win by shouting or by being older. She wins with numbers that everyone can see. A character who solves a problem by looking carefully and sharing what she found feels believable and inspiring.",
         questions: [
           {
+            id: "story-expert-6-q1",
             type: "mc",
             tag: "🧱 Structure",
             prompt: "Which moment is the turning point, where the story changes from conflict to a solution?",
@@ -1266,6 +1359,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The arguments are the problem and the falling level stopping is the result. The story turns when Amina brings evidence that everyone can see.",
           },
           {
+            id: "story-expert-6-q2",
             type: "mc",
             tag: "🧩 Problem-Solving",
             prompt: "What made Amina's plan different from the earlier proposals?",
@@ -1278,6 +1372,7 @@ window.App.Content = window.App.Content || {};
             explanation: "The earlier proposals seemed to favour someone. Amina used the numbers to show the real problem, then gave tokens by household size, with a reserve for the sick.",
           },
           {
+            id: "story-expert-6-q3",
             type: "shortanswer",
             tag: "🎭 Expression",
             prompt: "Amina is twelve and speaks to a room of elders with an unsteady voice at first. How would you perform her speech so that listeners feel her nerves, and then her growing confidence?",
@@ -1285,6 +1380,7 @@ window.App.Content = window.App.Content || {};
               "I would start with a small, careful voice, holding an imaginary paper in both hands and looking at it more than at the elders. As she reaches the numbers, I would lift my head, slow down and let my voice grow steadier, using a firm finger to point to the columns. By the end I would look directly at the elders, showing that her nerves have been replaced by conviction.",
           },
           {
+            id: "story-expert-6-q4",
             type: "shortanswer",
             tag: "👀 Engagement",
             prompt: "Amina says, \"Fifty-two buckets come out each day, but only about forty are refilled.\" How could you help listeners see and feel those two numbers, using your hands, your voice or your audience?",
