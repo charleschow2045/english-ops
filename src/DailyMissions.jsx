@@ -64,7 +64,7 @@ window.App = window.App || {};
     );
   }
 
-  function DailyMissions({ state, onChangeTier, onOpenModule, onOpenBadges, onOpenBackup, freezeBanner, onDismissFreezeBanner }) {
+  function DailyMissions({ state, onChangeTier, onOpenModule, onOpenBadges, onOpenBackup, dueCount, onOpenReview, freezeBanner, onDismissFreezeBanner }) {
     const completedCount = Storage.implementedModuleKeys().filter((k) =>
       state.dailyProgress.completedModules.includes(k)
     ).length;
@@ -130,6 +130,28 @@ window.App = window.App || {};
             </p>
             <p className={`text-xs ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
               {earnedBadgeCount}/{Storage.BADGES.length} earned — tap to see them all
+            </p>
+          </div>
+        </button>
+
+        <button
+          onClick={onOpenReview}
+          className="w-full flex items-center gap-3 rounded-2xl p-3 text-left active:translate-y-[2px] transition-all"
+          style={{
+            backgroundColor: INK.paperCard,
+            border: `1.5px solid ${dueCount > 0 ? "#E7C9C4" : "#E4D9BE"}`,
+            boxShadow: "0 1px 2px rgba(35,49,66,0.05), 0 6px 14px -8px rgba(35,49,66,0.18)",
+          }}
+        >
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0" style={{ backgroundColor: dueCount > 0 ? "#F3E1DF" : INK.goldTint }}>
+            📒
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className={`text-base ${TYPE.heading}`} style={{ color: INK.ink }}>
+              錯題本
+            </p>
+            <p className={`text-sm font-bold`} style={{ color: dueCount > 0 ? INK.stamp : INK.mutedInk }}>
+              {dueCount > 0 ? `今日要重溫 ${dueCount} 題` : "今日冇錯題要溫 👍"}
             </p>
           </div>
         </button>

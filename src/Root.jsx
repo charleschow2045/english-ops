@@ -8,6 +8,8 @@ window.App = window.App || {};
     DailyMissions,
     BadgesScreen,
     BackupScreen,
+    Mistakes,
+    MistakesReview,
     ListeningModule,
     SpeakingModule,
     PassageModule,
@@ -37,6 +39,16 @@ window.App = window.App || {};
 
     function openModule(key) {
       setView(key);
+    }
+
+    // Mistakes notebook. Practice answers: only a wrong one changes anything.
+    // Review answers advance or reset the schedule. Dates are local, whole days.
+    function recordAnswer(moduleKey, questionId, correct) {
+      setState((s) => Mistakes.recordPracticeAnswer(s, moduleKey, questionId, correct, Storage.todayStr()));
+    }
+
+    function recordReview(key, correct) {
+      setState((s) => Mistakes.recordReviewAnswer(s, key, correct, Storage.todayStr()));
     }
 
     // `next` is a state already validated and normalised by Storage.parseBackup.
@@ -81,14 +93,20 @@ window.App = window.App || {};
               onOpenModule={openModule}
               onOpenBadges={() => setView("badges")}
               onOpenBackup={() => setView("backup")}
+              dueCount={Mistakes.countDue(state, Storage.todayStr())}
+              onOpenReview={() => setView("review")}
               freezeBanner={freezeBanner}
               onDismissFreezeBanner={() => setFreezeBanner(false)}
             />
           )}
           {view === "badges" && <BadgesScreen state={state} onBack={() => setView("home")} />}
-          {view === "backup" && <BackupScreen state={state} onBack={() => setView("home")} onRestore={restoreBackup} />}
+          {view === "review" && (
+            <MistakesReview state={state} voicePref={state.voicePref} onBack={() => setView("home")} onAnswer={recordReview} />
+          )}
+          {view === "backup" &&<BackupScreen state={state} onBack={() => setView("home")} onRestore={restoreBackup} />}
           {view === "listening" && (
             <ListeningModule
+              onAnswer={recordAnswer}
               tier={state.tier}
               voicePref={state.voicePref}
               onVoiceChange={changeVoice}
@@ -114,6 +132,8 @@ window.App = window.App || {};
               itemLabel="Story"
               sessionSize={3}
               accent={window.App.UI.MODULE_ACCENTS.storytelling}
+              moduleKey="storytelling"
+              onAnswer={recordAnswer}
               completionEmoji="📖"
               completionTitle="Great storytelling today!"
               onBack={() => setView("home")}
@@ -127,6 +147,8 @@ window.App = window.App || {};
               itemLabel="Passage"
               sessionSize={3}
               accent={window.App.UI.MODULE_ACCENTS.reading}
+              moduleKey="reading"
+              onAnswer={recordAnswer}
               completionEmoji="📚"
               completionTitle="Awesome reading today!"
               onBack={() => setView("home")}
@@ -140,6 +162,8 @@ window.App = window.App || {};
               itemLabel="Passage"
               sessionSize={3}
               accent={window.App.UI.MODULE_ACCENTS.comprehension}
+              moduleKey="comprehension"
+              onAnswer={recordAnswer}
               completionEmoji="🧠"
               completionTitle="Great thinking today!"
               onBack={() => setView("home")}
@@ -153,6 +177,7 @@ window.App = window.App || {};
             <GrammarModule
               tier={state.tier}
               doneLevels={state.moduleProgress.grammar.doneLevels}
+              onAnswer={recordAnswer}
               onLevelDone={(levelKey) => setState((s) => Storage.markGrammarLevelDone(s, levelKey))}
               onBack={() => setView("home")}
               onComplete={() => completeModule("grammar")}
@@ -179,6 +204,8 @@ window.App = window.App || {};
               itemLabel="Story"
               sessionSize={5}
               accent={window.App.UI.MODULE_ACCENTS.knowledge}
+              moduleKey="knowledge"
+              onAnswer={recordAnswer}
               completionEmoji="🏛️"
               completionTitle="Great learning today!"
               onBack={() => setView("home")}

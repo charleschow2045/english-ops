@@ -88,7 +88,7 @@ window.App = window.App || {};
   // doneLevels / onLevelDone: finished path levels ("<pathKey>:<levelId>"),
   // kept in the saved app state by Root so they survive a page reload. If a
   // caller does not pass them, progress falls back to plain component state.
-  function GrammarModule({ tier, onBack, onComplete, doneLevels: savedDoneLevels, onLevelDone }) {
+  function GrammarModule({ tier, onBack, onComplete, doneLevels: savedDoneLevels, onLevelDone, onAnswer }) {
     const [category, setCategory] = useState(null);
     const [runSeed, setRunSeed] = useState(0);
     const [index, setIndex] = useState(0);
@@ -270,6 +270,8 @@ window.App = window.App || {};
     function selectOption(i) {
       if (selected !== null) return;
       setSelected(i);
+      // Feeds the mistakes notebook (a wrong answer is recorded by question id).
+      if (onAnswer && rawQ && rawQ.id) onAnswer("grammar", rawQ.id, i === q.correctIndex);
     }
 
     function handleRefresh() {

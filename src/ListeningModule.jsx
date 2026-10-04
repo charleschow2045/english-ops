@@ -21,7 +21,7 @@ window.App = window.App || {};
 
   // sessionSize: how many passages one session plays (drawn at random from the
   // tier's pool; "Do it again" draws a fresh set). Omit to play the whole pool.
-  function ListeningModule({ tier, onBack, onComplete, voicePref, onVoiceChange, sessionSize }) {
+  function ListeningModule({ tier, onBack, onComplete, voicePref, onVoiceChange, sessionSize, onAnswer }) {
     const basePassages = window.App.Content.LISTENING_PASSAGES[tier] || window.App.Content.LISTENING_PASSAGES.easy;
     const [runSeed, setRunSeed] = useState(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -51,6 +51,8 @@ window.App = window.App || {};
     function selectOption(i) {
       if (selected !== null) return;
       setSelected(i);
+      // Feeds the mistakes notebook (a wrong answer is recorded by question id).
+      if (onAnswer && rawPassage && rawPassage.id) onAnswer("listening", rawPassage.id, i === passage.correctIndex);
     }
 
     function handleRefresh() {

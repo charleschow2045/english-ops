@@ -16,7 +16,7 @@ window.App = window.App || {};
   // renders with the new "探險護照" kraft-paper/ink look instead of the
   // legacy `color`-based Tailwind one — used for Reading only so far (see
   // Root.jsx and theme.jsx comments for the staged-rollout rationale).
-  function PassageModule({ items, tier, onBack, onComplete, itemLabel, color, accent, completionEmoji, completionTitle, sessionSize = 1 }) {
+  function PassageModule({ items, tier, onBack, onComplete, itemLabel, color, accent, completionEmoji, completionTitle, sessionSize = 1, moduleKey, onAnswer }) {
     const bank = items[tier] || items.easy;
     const [runSeed, setRunSeed] = useState(0);
     // Picks a fresh random subset every session (including the very first
@@ -42,6 +42,8 @@ window.App = window.App || {};
     function selectOption(i) {
       if (selected !== null) return;
       setSelected(i);
+      // Feeds the mistakes notebook (mc/fillblank only; short-answer is self-checked).
+      if (onAnswer && moduleKey && rawQ && rawQ.id) onAnswer(moduleKey, rawQ.id, i === q.correctIndex);
     }
 
     function resetQuestionState() {

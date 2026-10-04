@@ -637,6 +637,36 @@ feature used elsewhere.
       NOT tested: a real iPad — iOS home-screen web apps can handle
       `<a download>` blob downloads badly; if that happens the fallback would
       be `navigator.share({ files })` on iOS standalone.
+- [x] Mistakes notebook ("錯題本") with spaced re-review (`src/mistakes.jsx`
+      core, `src/MistakesReview.jsx` screen, hooks in Grammar/Listening/
+      PassageModule). Wired modules: Grammar (all 839 items, old banks and
+      paths), Listening (40), Reading, Storytelling, Comprehension, History &
+      Science (mc/fillblank only). NOT wired: short-answer questions, Speaking,
+      Writing, Hangman, Word Hunt, and Vocabulary Builder (flashcards — there is
+      no right/wrong answer to record; it would need a new quiz mode).
+      Key format `<module>:<question id>` (modules grammar, listening,
+      reading, storytelling, comprehension, knowledge), e.g. grammar:pos1-7,
+      listening:easy-2, reading:read-easy-6-q1, knowledge:know-easy-science-4-q1.
+      Ids are data in the content files (the passage-module question ids were
+      added in their own commit, `<passageId>-q<n>`; give any NEW question a new
+      unique id and never renumber). Schedule (local whole days): wrong ->
+      due +1 day; right in a review -> +3 days -> +7 days -> mastered (kept
+      only as a small record, never due); wrong again, in a review OR in
+      ordinary practice, resets to +1 day (and re-opens a mastered one); a right
+      answer in ordinary practice changes nothing. Home card shows "今日要重溫
+      N 題" or "今日冇錯題要溫 👍"; a round is at most 10 questions, longest-
+      overdue first; reading-type questions have a "睇返文章" toggle,
+      Listening has a play button (transcript stays hidden), and the correct
+      answer + original explanation + next review date show right after each
+      answer. Entries whose question no longer exists are ignored. Stored in
+      `state.mistakes = { entries }` (added to defaultState, `normalizeState`
+      and `sanitizeImportedState`, so backups keep it; malformed entries are
+      dropped, well-formed ones round-trip unchanged); capped at 300 entries
+      (mastered first, oldest first, then oldest active). The backup restore
+      screen shows the notebook count. Tested: 45 logic checks (schedule,
+      dates, cap, validation, backup round trip, 2000-file fuzz) and a 45-check
+      end-to-end run in the real app with a shifted clock (days 0, 1, 4, 11),
+      wrong answers in all six modules, reviews, export -> clear -> import.
 - [x] Grammar drills (3 categories × 4 tiers, 8-12 items each with worked-example
       explanations, incl. mixed-tense paragraph questions)
 - [x] Word Hunt (Bookworm/Word Wipe-style, replaces earlier Wordle-clone)

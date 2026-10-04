@@ -37,6 +37,7 @@ window.App = window.App || {};
       ["連續打卡", (s) => `${s.streak} 日(最長 ${s.bestStreak} 日)`],
       ["完成嘅任務", (s) => `${s.missions} 次`],
       ["Grammar 完成關卡", (s) => `${s.grammarLevels} 關`],
+      ["錯題本(未掌握)", (s) => `${s.mistakesActive} 題`],
       ["程度", (s) => TIER_LABEL[s.tier] || s.tier],
     ];
     return (

@@ -71,6 +71,8 @@ window.App = window.App || {};
         // never shifts existing progress).
         grammar: { doneLevels: [] },
       },
+      // Mistakes notebook (spaced re-review) — shape and rules in mistakes.jsx.
+      mistakes: window.App.Mistakes.emptyMistakes(),
     };
   }
 
@@ -204,6 +206,9 @@ window.App = window.App || {};
     if (typeof parsed.stats.bestStreak !== "number") parsed.stats.bestStreak = parsed.streak.count || 0;
     if (typeof parsed.stats.freezesUsedTotal !== "number") parsed.stats.freezesUsedTotal = 0;
     ensureGrammarProgress(parsed);
+    // Older saves have no notebook; also drops malformed entries and applies
+    // the size cap (well-formed entries pass through unchanged).
+    parsed.mistakes = window.App.Mistakes.sanitize(parsed.mistakes);
     return ensureToday(parsed);
   }
 
@@ -282,6 +287,9 @@ window.App = window.App || {};
     Object.keys(defaultState()).forEach((k) => {
       if (raw[k] !== undefined) clean[k] = raw[k];
     });
+    // The mistakes notebook is a known field: keep every well-formed entry,
+    // drop only malformed ones (a non-object value just becomes empty).
+    clean.mistakes = window.App.Mistakes.sanitize(raw.mistakes);
     clean.dailyProgress = { date: dp.date, completedModules: dp.completedModules.filter((k) => typeof k === "string") };
     clean.streak = { count: st.count, lastCompletedDate: st.lastCompletedDate == null ? null : st.lastCompletedDate };
     if (clean.voicePref) {
@@ -327,6 +335,7 @@ window.App = window.App || {};
       bestStreak: state.stats.bestStreak,
       missions: state.stats.totalMissionsCompleted,
       grammarLevels: Array.isArray(done) ? done.length : 0,
+      mistakesActive: window.App.Mistakes.summary(state).active,
       tier: state.tier,
     };
   }
