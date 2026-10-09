@@ -1,7 +1,7 @@
-// Mistakes notebook review screen ("錯題重溫"): walks through the questions that
+// Mistakes notebook review screen ("Mistake Review"): walks through the questions that
 // are due today (oldest due first, at most Mistakes.REVIEW_BATCH per round).
 // Each question is shown the way it was originally asked: reading-type
-// questions get a "睇返文章" toggle with the original text, Listening
+// questions get a "Show passage" toggle with the original text, Listening
 // questions get a play button (the passage is never shown, as in Listening
 // itself). After answering, the correct answer and the original explanation
 // appear straight away (QuestionBlock), plus when the question will come back.
@@ -24,10 +24,10 @@ window.App = window.App || {};
 
   function nextReviewText(entry) {
     if (!entry) return "";
-    if (entry.status === "mastered") return "🎉 已掌握,移出錯題本";
-    if (entry.stage === 0) return "📅 明日再溫";
-    if (entry.stage === 1) return "📅 3 日後再溫";
-    return "📅 7 日後再溫";
+    if (entry.status === "mastered") return "🎉 Mastered! Removed from the notebook";
+    if (entry.stage === 0) return "📅 Review again tomorrow";
+    if (entry.stage === 1) return "📅 Review again in 3 days";
+    return "📅 Review again in 7 days";
   }
 
   function MistakesReview({ state, voicePref, onBack, onAnswer }) {
@@ -83,14 +83,14 @@ window.App = window.App || {};
           <PaperCard className="text-center">
             <p className="text-5xl mb-2">{finished ? "🎉" : "👍"}</p>
             <h2 className={`text-xl mb-2 ${TYPE.heading}`} style={{ color: INK.ink }}>
-              {finished ? `今次溫咗 ${session.length} 題,答啱 ${right} 題` : "今日冇錯題要溫 👍"}
+              {finished ? `You reviewed ${session.length} question${session.length === 1 ? "" : "s"} and got ${right} right` : "Nothing to review today 👍"}
             </h2>
             <p className="font-bold text-sm" style={{ color: INK.mutedInk }}>
-              錯題本入面仲有 {sum.active} 題未掌握,已掌握 {sum.mastered} 題。
+              {sum.active} still to master · {sum.mastered} mastered.
             </p>
             {remaining > 0 && (
               <InkButton accent={ACCENT} className="w-full mt-4" onClick={startNextBatch}>
-                仲有 {remaining} 題到期,再溫下一批
+                {remaining} more due — review the next batch
               </InkButton>
             )}
           </PaperCard>
@@ -106,14 +106,14 @@ window.App = window.App || {};
         <PaperBackButton onClick={onBack} />
         <div className="text-center">
           <span className={`text-sm ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
-            📒 錯題重溫 · 第 {index + 1}/{session.length} 題 · {moduleLabel(cur.module)}
+            📒 Mistake Review · Question {index + 1}/{session.length} · {moduleLabel(cur.module)}
           </span>
         </div>
 
         <PaperCard accent={ACCENT}>
           {cur.listenText && (
             <InkButton accent={ACCENT} className="w-full mb-3" onClick={() => speak(cur.listenText, voicePref)}>
-              🔊 播放
+              🔊 Listen
             </InkButton>
           )}
 
@@ -124,7 +124,7 @@ window.App = window.App || {};
                 className={`text-sm underline decoration-dotted ${TYPE.caption}`}
                 style={{ color: ACCENT.solid }}
               >
-                📖 {showPassage ? "收起文章" : "睇返文章"}
+                📖 {showPassage ? "Hide passage" : "Show passage"}
               </button>
               {showPassage && (
                 <div className="mt-2 rounded-2xl p-3" style={{ backgroundColor: INK.goldTint, border: `1.5px solid ${INK.goldTintBorder}` }}>
@@ -149,7 +149,7 @@ window.App = window.App || {};
 
           {answered && (
             <InkButton accent={ACCENT} className="w-full mt-4" onClick={handleNext}>
-              {index + 1 < session.length ? "下一題 →" : "完成 🎉"}
+              {index + 1 < session.length ? "Next →" : "Finish 🎉"}
             </InkButton>
           )}
         </PaperCard>

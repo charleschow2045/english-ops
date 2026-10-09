@@ -653,9 +653,14 @@ feature used elsewhere.
       due +1 day; right in a review -> +3 days -> +7 days -> mastered (kept
       only as a small record, never due); wrong again, in a review OR in
       ordinary practice, resets to +1 day (and re-opens a mastered one); a right
-      answer in ordinary practice changes nothing. Home card shows "今日要重溫
-      N 題" or "今日冇錯題要溫 👍"; a round is at most 10 questions, longest-
-      overdue first; reading-type questions have a "睇返文章" toggle,
+      answer in ordinary practice changes nothing. The notebook UI is English
+      like the rest of the app (the backup screen is the one parent-facing
+      Traditional Chinese screen): the home card is "Mistake Notebook" with
+      "N to review today" or "Nothing to review today 👍"; a round is at most
+      10 questions, longest-overdue first; reading-type questions have a
+      "Show passage" / "Hide passage" toggle, schedule lines read "Review
+      again tomorrow / in 3 days / in 7 days" and "Mastered! Removed from the
+      notebook";
       Listening has a play button (transcript stays hidden), and the correct
       answer + original explanation + next review date show right after each
       answer. Entries whose question no longer exists are ignored. Stored in

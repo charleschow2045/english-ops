@@ -148,10 +148,10 @@ window.App = window.App || {};
           </div>
           <div className="min-w-0 flex-1">
             <p className={`text-base ${TYPE.heading}`} style={{ color: INK.ink }}>
-              錯題本
+              Mistake Notebook
             </p>
             <p className={`text-sm font-bold`} style={{ color: dueCount > 0 ? INK.stamp : INK.mutedInk }}>
-              {dueCount > 0 ? `今日要重溫 ${dueCount} 題` : "今日冇錯題要溫 👍"}
+              {dueCount > 0 ? `${dueCount} to review today` : "Nothing to review today 👍"}
             </p>
           </div>
         </button>
