@@ -8,6 +8,7 @@ window.App = window.App || {};
     DailyMissions,
     BadgesScreen,
     BackupScreen,
+    TestModeBanner,
     Mistakes,
     MistakesReview,
     ListeningModule,
@@ -68,6 +69,8 @@ window.App = window.App || {};
     }
 
     return (
+      <>
+      <TestModeBanner />
       <div className="min-h-screen relative overflow-hidden" style={{ backgroundColor: "#EFE6D3", color: "#233142" }}>
         <div className="pointer-events-none absolute inset-0 overflow-hidden select-none">
           <div className="absolute -top-16 -left-16 w-72 h-72 rounded-full opacity-[0.14] blur-3xl" style={{ backgroundColor: "#B8923A" }} />
@@ -215,6 +218,7 @@ window.App = window.App || {};
         </main>
         </div>
       </div>
+      </>
     );
   }
 

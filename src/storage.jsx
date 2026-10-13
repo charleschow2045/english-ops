@@ -2,7 +2,24 @@
 window.App = window.App || {};
 
 (function () {
-  const STORAGE_KEY = "englishOps:v1";
+  // ---- Test mode ----
+  // Opening the site with `?today=YYYY-MM-DD` switches to test mode: the app
+  // pretends today is that date AND uses a completely separate localStorage
+  // key, so the real progress (REAL_KEY) is never read, written, exported over
+  // or restored over. This makes it safe to test streaks on the iPad the child
+  // actually uses. Test mode is decided once, at load time, from the URL; any
+  // `today` parameter (even a malformed one) selects the test key.
+  const REAL_KEY = "englishOps:v1";
+  const TEST_KEY = "englishOps:test";
+  let TEST_DATE_PARAM = null; // the raw ?today= value, or null when not in test mode
+  try {
+    const q = new URLSearchParams(window.location.search);
+    if (q.has("today")) TEST_DATE_PARAM = q.get("today") || "";
+  } catch (e) {
+    TEST_DATE_PARAM = null;
+  }
+  const TEST_MODE = TEST_DATE_PARAM !== null;
+  const STORAGE_KEY = TEST_MODE ? TEST_KEY : REAL_KEY;
 
   const TIERS = [
     { key: "easy", label: "Easy" },
@@ -28,17 +45,48 @@ window.App = window.App || {};
     { key: "hangman", label: "Hangman", emoji: "🎯", color: "amber", implemented: true },
   ];
 
+  const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+  function pad2(n) {
+    return String(n).padStart(2, "0");
+  }
+
+  // Whole days since the epoch for a "YYYY-MM-DD" string, or null if it is not
+  // a real calendar date (so "2026-13-45" and "2026-02-30" are rejected).
+  function dayNumber(str) {
+    if (typeof str !== "string" || !DATE_RE.test(str)) return null;
+    const y = Number(str.slice(0, 4));
+    const m = Number(str.slice(5, 7));
+    const d = Number(str.slice(8, 10));
+    const t = Date.UTC(y, m - 1, d);
+    const back = new Date(t);
+    if (back.getUTCFullYear() !== y || back.getUTCMonth() !== m - 1 || back.getUTCDate() !== d) return null;
+    return Math.round(t / 86400000);
+  }
+
+  function isValidDateStr(str) {
+    return dayNumber(str) !== null;
+  }
+
+  // Days from date `a` to date `b` (positive when b is later). Both must be valid.
+  function daysBetween(a, b) {
+    return dayNumber(b) - dayNumber(a);
+  }
+
+  // The date `n` days after (or before, if negative) a valid "YYYY-MM-DD".
+  function addDays(dateStr, n) {
+    const t = new Date(dayNumber(dateStr) * 86400000 + n * 86400000);
+    return `${t.getUTCFullYear()}-${pad2(t.getUTCMonth() + 1)}-${pad2(t.getUTCDate())}`;
+  }
+
   function todayStr() {
+    if (TEST_MODE && isValidDateStr(TEST_DATE_PARAM)) return TEST_DATE_PARAM;
     const d = new Date();
-    const pad = (n) => String(n).padStart(2, "0");
-    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
   }
 
   function yesterdayStr(dateStr) {
-    const d = new Date(`${dateStr}T00:00:00`);
-    d.setDate(d.getDate() - 1);
-    const pad = (n) => String(n).padStart(2, "0");
-    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    return addDays(dateStr, -1);
   }
 
   function defaultStats() {
@@ -246,7 +294,6 @@ window.App = window.App || {};
   const BACKUP_APP = "english-ops";
   const BACKUP_VERSION = 1;
   const MAX_BACKUP_BYTES = 2 * 1024 * 1024; // real saves are a few KB
-  const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
   const isPlainObject = (x) => x !== null && typeof x === "object" && !Array.isArray(x);
   const isFiniteNumber = (x) => typeof x === "number" && Number.isFinite(x);
@@ -257,12 +304,13 @@ window.App = window.App || {};
       app: BACKUP_APP,
       version: BACKUP_VERSION,
       exportedAt: new Date().toISOString(),
+      ...(TEST_MODE ? { testMode: true } : {}),
       data: { [STORAGE_KEY]: state },
     };
   }
 
   function backupFileName() {
-    return `english-ops-backup-${todayStr()}.json`;
+    return `english-ops-${TEST_MODE ? "test-" : ""}backup-${todayStr()}.json`;
   }
 
   // Checks the parts of an imported state the app reads without guarding, then
@@ -304,7 +352,7 @@ window.App = window.App || {};
 
   // Never throws. Returns { ok: true, state, exportedAt } with a fully
   // normalised state ready to replace the live one, or { ok: false, reason }
-  // where reason is one of: too_big, not_json, wrong_app, too_new, invalid.
+  // where reason is one of: too_big, not_json, wrong_app, too_new, test_file, invalid.
   function parseBackup(text) {
     if (typeof text !== "string" || text.length > MAX_BACKUP_BYTES) return { ok: false, reason: "too_big" };
     let file;
@@ -316,9 +364,17 @@ window.App = window.App || {};
     if (!isPlainObject(file) || file.app !== BACKUP_APP) return { ok: false, reason: "wrong_app" };
     if (!Number.isInteger(file.version) || file.version < 1) return { ok: false, reason: "invalid" };
     if (file.version > BACKUP_VERSION) return { ok: false, reason: "too_new" };
-    if (!isPlainObject(file.data) || !isPlainObject(file.data[STORAGE_KEY])) return { ok: false, reason: "invalid" };
+    if (!isPlainObject(file.data)) return { ok: false, reason: "invalid" };
+    // A file exported from test mode is refused outside test mode so it can
+    // never overwrite real progress. Test mode itself may import a real backup
+    // (it only ever writes the test key).
+    if (!TEST_MODE && (file.testMode === true || (!(REAL_KEY in file.data) && TEST_KEY in file.data))) {
+      return { ok: false, reason: "test_file" };
+    }
+    const payload = isPlainObject(file.data[STORAGE_KEY]) ? file.data[STORAGE_KEY] : TEST_MODE ? file.data[REAL_KEY] : undefined;
+    if (!isPlainObject(payload)) return { ok: false, reason: "invalid" };
     try {
-      const state = normalizeState(sanitizeImportedState(file.data[STORAGE_KEY]));
+      const state = normalizeState(sanitizeImportedState(payload));
       return { ok: true, state, exportedAt: typeof file.exportedAt === "string" ? file.exportedAt : null };
     } catch (e) {
       return { ok: false, reason: "invalid" };
@@ -349,11 +405,17 @@ window.App = window.App || {};
     parseBackup,
     summarizeState,
     STORAGE_KEY,
+    TEST_MODE,
+    TEST_DATE_PARAM,
+    TEST_KEY,
     TIERS,
     MODULES,
     BADGES,
     MAX_STREAK_FREEZES,
     todayStr,
+    isValidDateStr,
+    daysBetween,
+    addDays,
     implementedModuleKeys,
     markModuleComplete,
     markGrammarLevelDone,
