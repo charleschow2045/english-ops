@@ -260,15 +260,35 @@ window.App = window.App || {};
     return ensureToday(parsed);
   }
 
-  function loadState() {
+  // If saved data exists but can't be used (damaged JSON, wrong shape, or a
+  // block normalizeState can't repair), the app starts from a fresh state and
+  // the next save would overwrite the original for good. Keep the raw text
+  // under "<key>:corrupt-<date>" first so it can still be recovered by hand.
+  // Never overwrites an earlier copy from the same day (that one is the
+  // original; anything later could already be a replacement).
+  function stashUnreadable(raw) {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const key = `${STORAGE_KEY}:corrupt-${todayStr()}`;
+      if (localStorage.getItem(key) === null) localStorage.setItem(key, raw);
+    } catch (e) {
+      console.error("Failed to keep a copy of unreadable English Ops data:", e);
+    }
+  }
+
+  function loadState() {
+    let raw = null;
+    try {
+      raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return defaultState();
       const parsed = JSON.parse(raw);
-      if (!parsed || !parsed.dailyProgress || !parsed.streak) return defaultState();
+      if (!parsed || !parsed.dailyProgress || !parsed.streak) {
+        stashUnreadable(raw);
+        return defaultState();
+      }
       return normalizeState(parsed);
     } catch (e) {
       console.error("Failed to load English Ops data:", e);
+      if (raw) stashUnreadable(raw);
       return defaultState();
     }
   }
