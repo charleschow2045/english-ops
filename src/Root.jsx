@@ -2,7 +2,7 @@
 window.App = window.App || {};
 
 (function () {
-  const { useState, useEffect } = React;
+  const { useState, useEffect, useRef } = React;
   const {
     Storage,
     DailyMissions,
@@ -24,11 +24,41 @@ window.App = window.App || {};
   function Root() {
     const [state, setState] = useState(() => Storage.loadState());
     const [view, setView] = useState("home");
-    const [freezeBanner, setFreezeBanner] = useState(false);
+    // How many freezes the last completion just spent (0 = no banner).
+    const [freezeBanner, setFreezeBanner] = useState(0);
+    const pendingFreezeRef = useRef(0);
+    // The app may stay open across midnight: track the date and roll the day over.
+    const [today, setToday] = useState(() => Storage.todayStr());
 
     useEffect(() => {
       Storage.saveState(state);
+      // completeModule's updater leaves the freeze count here; show it once state has settled.
+      if (pendingFreezeRef.current > 0) {
+        setFreezeBanner(pendingFreezeRef.current);
+        pendingFreezeRef.current = 0;
+      }
     }, [state]);
+
+    useEffect(() => {
+      const sync = () => setToday(Storage.todayStr());
+      document.addEventListener("visibilitychange", sync);
+      window.addEventListener("focus", sync);
+      window.addEventListener("pageshow", sync);
+      window.addEventListener(Storage.DATE_CHANGE_EVENT, sync);
+      const timer = setInterval(sync, 60000);
+      return () => {
+        document.removeEventListener("visibilitychange", sync);
+        window.removeEventListener("focus", sync);
+        window.removeEventListener("pageshow", sync);
+        window.removeEventListener(Storage.DATE_CHANGE_EVENT, sync);
+        clearInterval(timer);
+      };
+    }, []);
+
+    // New day -> fresh daily checklist (same object back when nothing changed, so no re-render).
+    useEffect(() => {
+      setState((s) => Storage.ensureToday(s, today));
+    }, [today]);
 
     function changeTier(tier) {
       setState((s) => ({ ...s, tier }));
@@ -56,13 +86,13 @@ window.App = window.App || {};
     // Replacing state is enough to persist it (the effect above saves it).
     function restoreBackup(next) {
       setState(next);
-      setFreezeBanner(false);
+      setFreezeBanner(0);
     }
 
     function completeModule(key) {
       setState((s) => {
-        const { state: nextState, freezeUsed } = Storage.markModuleComplete(s, key);
-        if (freezeUsed) setFreezeBanner(true);
+        const { state: nextState, freezesUsedNow } = Storage.markModuleComplete(s, key);
+        pendingFreezeRef.current = freezesUsedNow; // idempotent, so safe if React runs the updater twice
         return nextState;
       });
       setView("home");
@@ -96,10 +126,10 @@ window.App = window.App || {};
               onOpenModule={openModule}
               onOpenBadges={() => setView("badges")}
               onOpenBackup={() => setView("backup")}
-              dueCount={Mistakes.countDue(state, Storage.todayStr())}
+              dueCount={Mistakes.countDue(state, today)}
               onOpenReview={() => setView("review")}
               freezeBanner={freezeBanner}
-              onDismissFreezeBanner={() => setFreezeBanner(false)}
+              onDismissFreezeBanner={() => setFreezeBanner(0)}
             />
           )}
           {view === "badges" && <BadgesScreen state={state} onBack={() => setView("home")} />}

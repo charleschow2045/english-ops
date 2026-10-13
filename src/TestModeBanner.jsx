@@ -6,6 +6,7 @@
 window.App = window.App || {};
 
 (function () {
+  const { useState, useEffect } = React;
   const { Storage } = window.App;
 
   function withToday(date) {
@@ -16,10 +17,22 @@ window.App = window.App || {};
   }
 
   function TestModeBanner() {
+    // Re-read the date when it is moved in memory (the "simulate midnight" button).
+    const [date, setDate] = useState(() => Storage.todayStr());
+    useEffect(() => {
+      const sync = () => setDate(Storage.todayStr());
+      window.addEventListener(Storage.DATE_CHANGE_EVENT, sync);
+      return () => window.removeEventListener(Storage.DATE_CHANGE_EVENT, sync);
+    }, []);
+
     if (!Storage.TEST_MODE) return null;
 
-    const date = Storage.todayStr();
     const validParam = Storage.isValidDateStr(Storage.TEST_DATE_PARAM);
+
+    // No reload: the app stays open and just sees the clock pass midnight.
+    function simulateMidnight() {
+      Storage.setTestDate(Storage.addDays(date, 1));
+    }
 
     function goDay(delta) {
       window.location.href = withToday(Storage.addDays(date, delta));
@@ -73,6 +86,9 @@ window.App = window.App || {};
             </button>
             <button onClick={() => goDay(1)} className="rounded-xl px-3 text-sm font-bold" style={pill}>
               後一日 ▶
+            </button>
+            <button onClick={simulateMidnight} className="rounded-xl px-3 text-sm font-bold" style={pill}>
+              🌙 模擬過午夜（唔重載）
             </button>
             <button onClick={resetTestData} className="rounded-xl px-3 text-sm font-bold" style={pill}>
               清除測試資料

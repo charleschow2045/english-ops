@@ -73,13 +73,15 @@ window.App = window.App || {};
 
     return (
       <div className="flex flex-col gap-4">
-        {freezeBanner && (
+        {freezeBanner > 0 && (
           <div
             className="rounded-2xl p-3 flex items-center justify-between gap-2"
             style={{ backgroundColor: "#E3EDEF", border: "1.5px solid #C3D9DD" }}
           >
             <p className={`text-sm ${TYPE.heading}`} style={{ color: "#1D4750" }}>
-              🧊 Streak Freeze used! You missed a day, but your streak was saved.
+              {freezeBanner > 1
+                ? `🧊 ${freezeBanner} streak freezes used! You missed ${freezeBanner} days, but your streak was saved.`
+                : "🧊 Streak freeze used! You missed a day, but your streak was saved."}
             </p>
             <button onClick={onDismissFreezeBanner} className="font-extrabold text-lg shrink-0" style={{ color: "#1D4750" }}>
               ×

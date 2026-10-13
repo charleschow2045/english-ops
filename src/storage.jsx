@@ -79,14 +79,40 @@ window.App = window.App || {};
     return `${t.getUTCFullYear()}-${pad2(t.getUTCMonth() + 1)}-${pad2(t.getUTCDate())}`;
   }
 
+  // Test mode only: the pretend date moved in memory (see setTestDate).
+  let testDateOverride = null;
+
   function todayStr() {
-    if (TEST_MODE && isValidDateStr(TEST_DATE_PARAM)) return TEST_DATE_PARAM;
+    if (TEST_MODE) {
+      if (testDateOverride) return testDateOverride;
+      if (isValidDateStr(TEST_DATE_PARAM)) return TEST_DATE_PARAM;
+    }
     const d = new Date();
     return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
   }
 
-  function yesterdayStr(dateStr) {
-    return addDays(dateStr, -1);
+  // Test mode only: moves the pretend date WITHOUT reloading the page, which
+  // is how "the app was left open past midnight" is simulated. Also rewrites
+  // ?today= so a reload stays on the new day, and tells listeners (Root, the
+  // banner) to re-read the date. Returns false (and does nothing) outside test
+  // mode or for an invalid date.
+  const DATE_CHANGE_EVENT = "englishops:datechange";
+  function setTestDate(dateStr) {
+    if (!TEST_MODE || !isValidDateStr(dateStr)) return false;
+    testDateOverride = dateStr;
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set("today", dateStr);
+      window.history.replaceState(null, "", url.toString());
+    } catch (e) {
+      // not fatal: only the reload-keeps-the-day nicety is lost
+    }
+    try {
+      window.dispatchEvent(new Event(DATE_CHANGE_EVENT));
+    } catch (e) {
+      // no DOM events available (e.g. unit tests)
+    }
+    return true;
   }
 
   function defaultStats() {
@@ -153,6 +179,7 @@ window.App = window.App || {};
   // status can always be recomputed, never stored as a separate flag that
   // could drift out of sync.
   const MAX_STREAK_FREEZES = 2;
+  const MAX_STREAK_DAYS = 36500;
   const BADGES = [
     { key: "first_steps", emoji: "🌱", label: "First Steps", description: "Complete your very first mission.", check: (s) => s.stats.totalMissionsCompleted >= 1 },
     { key: "week_warrior", emoji: "🔥", label: "Week Warrior", description: "Reach a 7-day streak.", check: (s) => s.stats.bestStreak >= 7 },
@@ -171,26 +198,39 @@ window.App = window.App || {};
 
   // Rolls dailyProgress over to today if a new day has started. Doesn't touch
   // the streak — that's only ever evaluated at completion time, in markModuleComplete.
-  function ensureToday(state) {
-    if (state.dailyProgress.date === todayStr()) return state;
-    return { ...state, dailyProgress: { date: todayStr(), completedModules: [] } };
+  function ensureToday(state, today = todayStr()) {
+    if (state.dailyProgress.date === today) return state;
+    return { ...state, dailyProgress: { date: today, completedModules: [] } };
   }
 
   function implementedModuleKeys() {
     return MODULES.filter((m) => m.implemented).map((m) => m.key);
   }
 
-  // Returns { state, freezeUsed } — freezeUsed lets the UI show a one-time
-  // "your streak was saved" moment right after this call, without storing a
-  // transient flag in persisted state.
-  function markModuleComplete(state, moduleKey) {
-    const today = todayStr();
-    if (state.dailyProgress.completedModules.includes(moduleKey)) return { state, freezeUsed: false };
+  // Returns { state, freezeUsed, freezesUsedNow, streakReset, dayCompleted } —
+  // the extra fields let the UI show a one-time "your streak was saved" moment
+  // right after this call, without storing a transient flag in persisted state.
+  //
+  // `today` defaults to the clock; it is a parameter so tests can pass a date.
+  // The day is rolled over FIRST: the app may have been left open past
+  // midnight, in which case the stored checklist still belongs to yesterday.
+  //
+  // Streak rule when the day's missions are all done and the streak wasn't
+  // already counted today: gap = days since the last counted day.
+  //   gap 1  -> streak + 1
+  //   gap >1 -> each missed day (gap - 1) costs one freeze; if there are
+  //             enough, spend them and streak + 1; if not, the streak restarts
+  //             at 1 and NO freeze is spent
+  //   gap <= 0 (already counted today, or the device clock went backwards)
+  //          -> unchanged, never counted twice
+  function markModuleComplete(state, moduleKey, today = todayStr()) {
+    state = ensureToday(state, today);
+    const events = { freezeUsed: false, freezesUsedNow: 0, streakReset: false, dayCompleted: false };
+    if (state.dailyProgress.completedModules.includes(moduleKey)) return { state, ...events };
 
     const completedModules = [...state.dailyProgress.completedModules, moduleKey];
     let streak = state.streak;
     let streakFreezes = state.streakFreezes;
-    let freezeUsed = false;
 
     const stats = {
       ...state.stats,
@@ -202,24 +242,35 @@ window.App = window.App || {};
     };
 
     const allDone = implementedModuleKeys().every((k) => completedModules.includes(k));
-    if (allDone && streak.lastCompletedDate !== today) {
-      const isConsecutive = streak.lastCompletedDate === yesterdayStr(today);
-      if (isConsecutive) {
-        streak = { count: streak.count + 1, lastCompletedDate: today };
-      } else if (streak.lastCompletedDate && streakFreezes > 0) {
-        // Had a streak going, missed a day, but a freeze covers the gap.
-        streak = { count: streak.count + 1, lastCompletedDate: today };
-        streakFreezes -= 1;
-        freezeUsed = true;
-        stats.freezesUsedTotal = stats.freezesUsedTotal + 1;
-      } else {
-        streak = { count: 1, lastCompletedDate: today };
+    if (allDone) {
+      const last = isValidDateStr(streak.lastCompletedDate) ? streak.lastCompletedDate : null;
+      const gap = last ? daysBetween(last, today) : null;
+      if (gap === null || gap > 0) {
+        const prevCount = streak.count;
+        if (gap === null) {
+          streak = { count: 1, lastCompletedDate: today };
+        } else if (gap === 1) {
+          streak = { count: prevCount + 1, lastCompletedDate: today };
+        } else {
+          const missed = gap - 1;
+          if (streakFreezes >= missed) {
+            streak = { count: prevCount + 1, lastCompletedDate: today };
+            streakFreezes -= missed;
+            stats.freezesUsedTotal = stats.freezesUsedTotal + missed;
+            events.freezesUsedNow = missed;
+            events.freezeUsed = true;
+          } else {
+            streak = { count: 1, lastCompletedDate: today };
+            events.streakReset = prevCount > 0;
+          }
+        }
+        events.dayCompleted = true;
+        // Earn a freeze back at every 7-day milestone, capped.
+        if (streak.count > prevCount && streak.count % 7 === 0 && streakFreezes < MAX_STREAK_FREEZES) {
+          streakFreezes += 1;
+        }
+        stats.bestStreak = Math.max(stats.bestStreak, streak.count);
       }
-      // Earn a freeze back at every 7-day milestone, capped.
-      if (streak.count % 7 === 0 && streakFreezes < MAX_STREAK_FREEZES) {
-        streakFreezes += 1;
-      }
-      stats.bestStreak = Math.max(stats.bestStreak, streak.count);
     }
 
     const nextState = {
@@ -227,10 +278,10 @@ window.App = window.App || {};
       dailyProgress: { ...state.dailyProgress, completedModules },
       streak,
       streakFreezes,
-      lastFreezeUsedOn: freezeUsed ? today : state.lastFreezeUsedOn,
+      lastFreezeUsedOn: events.freezeUsed ? today : state.lastFreezeUsedOn,
       stats,
     };
-    return { state: nextState, freezeUsed };
+    return { state: nextState, ...events };
   }
 
   function earnedBadgeKeys(state) {
@@ -244,9 +295,19 @@ window.App = window.App || {};
   function normalizeState(parsed) {
     if (!TIER_KEYS.includes(parsed.tier)) parsed.tier = "easy";
     if (!parsed.voicePref) parsed.voicePref = { voiceURI: null, rate: 0.85 };
-    if (typeof parsed.streakFreezes !== "number") parsed.streakFreezes = 1;
+    // Freezes: a whole number from 0 to the cap (an imported file could say 99).
+    parsed.streakFreezes = isFiniteNumber(parsed.streakFreezes)
+      ? Math.min(Math.max(Math.floor(parsed.streakFreezes), 0), MAX_STREAK_FREEZES)
+      : 1;
     if (parsed.lastFreezeUsedOn === undefined) parsed.lastFreezeUsedOn = null;
-    if (!parsed.stats) parsed.stats = defaultStats();
+    // Streak: a plain object with a non-negative whole count and a real date (or null).
+    if (!isPlainObject(parsed.streak)) parsed.streak = { count: 0, lastCompletedDate: null };
+    parsed.streak = {
+      count: isFiniteNumber(parsed.streak.count) ? Math.min(Math.max(Math.floor(parsed.streak.count), 0), MAX_STREAK_DAYS) : 0,
+      lastCompletedDate: isValidDateStr(parsed.streak.lastCompletedDate) ? parsed.streak.lastCompletedDate : null,
+    };
+    if (!isPlainObject(parsed.stats)) parsed.stats = defaultStats();
+    if (!isPlainObject(parsed.stats.moduleCompletions)) parsed.stats.moduleCompletions = {};
     MODULES.forEach((m) => {
       if (typeof parsed.stats.moduleCompletions[m.key] !== "number") parsed.stats.moduleCompletions[m.key] = 0;
     });
@@ -317,7 +378,7 @@ window.App = window.App || {};
 
   const isPlainObject = (x) => x !== null && typeof x === "object" && !Array.isArray(x);
   const isFiniteNumber = (x) => typeof x === "number" && Number.isFinite(x);
-  const isDateString = (x) => typeof x === "string" && DATE_RE.test(x);
+  const isDateString = (x) => isValidDateStr(x); // a real calendar date, not just the right shape
 
   function buildBackup(state) {
     return {
@@ -438,6 +499,9 @@ window.App = window.App || {};
     addDays,
     implementedModuleKeys,
     markModuleComplete,
+    ensureToday,
+    setTestDate,
+    DATE_CHANGE_EVENT,
     markGrammarLevelDone,
     earnedBadgeKeys,
     loadState,
