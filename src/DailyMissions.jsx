@@ -50,7 +50,7 @@ window.App = window.App || {};
     }
   }
 
-  function ModuleRow({ mod, done, onOpen }) {
+  function ModuleRow({ mod, done, isMission, onOpen }) {
     const a = MODULE_ACCENTS[mod.key] || MODULE_ACCENTS.listening;
     return (
       <button
@@ -76,7 +76,7 @@ window.App = window.App || {};
             {mod.label}
           </p>
           <p className={`text-xs ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
-            {!mod.implemented ? "Coming soon" : done ? "Done for today!" : "Tap to start"}
+            {!mod.implemented ? "Coming soon" : done ? "Done for today!" : isMission ? "⭐ Today's mission" : "Tap to start"}
           </p>
         </div>
       </button>
@@ -84,10 +84,10 @@ window.App = window.App || {};
   }
 
   function DailyMissions({ state, today, onChangeTier, onOpenModule, onOpenBadges, onOpenBackup, dueCount, onOpenReview, freezeBanner, onDismissFreezeBanner }) {
-    const completedCount = Storage.implementedModuleKeys().filter((k) =>
-      state.dailyProgress.completedModules.includes(k)
-    ).length;
-    const totalCount = Storage.implementedModuleKeys().length;
+    const daily = Storage.getDaily(state, today);
+    const moduleByKey = Object.fromEntries(Storage.MODULES.map((m) => [m.key, m]));
+    const completedCount = daily.done.length;
+    const totalCount = daily.missions.length;
     const earnedBadgeCount = Storage.earnedBadgeKeys(state).length;
     const streakView = Storage.getStreakView(state, today);
     const allDone = completedCount === totalCount;
@@ -157,6 +157,28 @@ window.App = window.App || {};
           <TierSelector tier={state.tier} onChangeTier={onChangeTier} />
         </PaperCard>
 
+        <PaperCard>
+          <p className={`text-xl ${TYPE.display}`} style={{ color: INK.ink }}>
+            Today's Missions
+          </p>
+          <p className="text-sm font-bold mb-3" style={{ color: completedCount === totalCount ? INK.gold : INK.mutedInk }}>
+            {completedCount === totalCount
+              ? "All done — great work! Every other activity is bonus practice."
+              : `Finish all ${totalCount} to complete your day. Every other activity is bonus practice.`}
+          </p>
+          <div className="flex flex-col gap-3">
+            {daily.missions.map((key) => (
+              <ModuleRow
+                key={key}
+                mod={moduleByKey[key]}
+                done={daily.done.includes(key)}
+                isMission
+                onOpen={() => onOpenModule(key)}
+              />
+            ))}
+          </div>
+        </PaperCard>
+
         <button
           onClick={onOpenBadges}
           className="w-full flex items-center gap-3 rounded-2xl p-3 text-left active:translate-y-[2px] transition-all"
@@ -201,12 +223,16 @@ window.App = window.App || {};
           </div>
         </button>
 
+        <p className={`text-xl -mb-1 ${TYPE.display}`} style={{ color: INK.ink }}>
+          All Activities
+        </p>
         <div className="flex flex-col gap-3">
           {Storage.MODULES.map((mod) => (
             <ModuleRow
               key={mod.key}
               mod={mod}
-              done={state.dailyProgress.completedModules.includes(mod.key)}
+              done={state.dailyProgress.date === today && state.dailyProgress.completedModules.includes(mod.key)}
+              isMission={daily.missions.includes(mod.key)}
               onOpen={() => onOpenModule(mod.key)}
             />
           ))}

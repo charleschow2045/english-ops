@@ -115,6 +115,50 @@ window.App = window.App || {};
     return true;
   }
 
+  // ---- Daily missions ----
+  // Each day has 3 missions: one module from each group below, chosen
+  // deterministically from the date (the same date always gives the same 3).
+  // Finishing all 3 completes the day and counts toward the streak. The other
+  // modules stay playable and still count in the lifetime stats and badges —
+  // they just don't count toward the day.
+  //   A  reading & knowledge:  rotates every day, so each comes up every 4 days
+  //   B  listening/speaking/writing: each comes up every 3 days
+  //   C  words, grammar & games: the extra floor(day/4) term shifts the A/C
+  //      pairing every 4 days so the same two don't keep appearing together
+  //      (all 16 pairs and 48 different triples occur); each module comes up
+  //      at least every 7 days and none ever appears on two days in a row
+  const MISSIONS_PER_DAY = 3;
+  const MISSION_GROUPS = [
+    ["reading", "comprehension", "storytelling", "knowledge"],
+    ["listening", "speaking", "writing"],
+    ["grammar", "vocabulary", "wordhunt", "hangman"],
+  ];
+
+  function pickMissions(dateStr) {
+    const day = dayNumber(dateStr) || 0;
+    const [a, b, c] = MISSION_GROUPS;
+    return [a[day % a.length], b[day % b.length], c[(day + Math.floor(day / 4)) % c.length]];
+  }
+
+  // A stored missions list is usable only if it is exactly 3 different known modules.
+  function validMissions(m) {
+    return (
+      Array.isArray(m) &&
+      m.length === MISSIONS_PER_DAY &&
+      m.every((k) => MODULES.some((x) => x.key === k)) &&
+      new Set(m).size === MISSIONS_PER_DAY
+    );
+  }
+
+  // The day's missions and what is done, as they should look on `today`, even
+  // if the stored block is for an earlier day or predates the missions field.
+  function getDaily(state, today = todayStr()) {
+    const dp = state.dailyProgress;
+    if (dp.date !== today) return { date: today, missions: pickMissions(today), done: [] };
+    const missions = validMissions(dp.missions) ? dp.missions : pickMissions(today);
+    return { date: today, missions, done: missions.filter((k) => dp.completedModules.includes(k)) };
+  }
+
   function defaultStats() {
     return {
       totalMissionsCompleted: 0,
@@ -132,7 +176,7 @@ window.App = window.App || {};
       streakFreezes: 1,
       lastFreezeUsedOn: null,
       stats: defaultStats(),
-      dailyProgress: { date: todayStr(), completedModules: [] },
+      dailyProgress: { date: todayStr(), completedModules: [], missions: pickMissions(todayStr()) },
       moduleProgress: {
         listening: { completedPassageIds: [] },
         speaking: {},
@@ -196,11 +240,17 @@ window.App = window.App || {};
     { key: "century_club", emoji: "💯", label: "Century Club", description: "Complete 100 missions in total.", check: (s) => s.stats.totalMissionsCompleted >= 100 },
   ];
 
-  // Rolls dailyProgress over to today if a new day has started. Doesn't touch
-  // the streak — that's only ever evaluated at completion time, in markModuleComplete.
+  // Rolls dailyProgress over to today if a new day has started (fresh checklist,
+  // today's missions), and fills in the missions for a saved day that predates
+  // them. Doesn't touch the streak — that's only ever evaluated at completion
+  // time, in markModuleComplete. Returns the same object when nothing changes.
   function ensureToday(state, today = todayStr()) {
-    if (state.dailyProgress.date === today) return state;
-    return { ...state, dailyProgress: { date: today, completedModules: [] } };
+    const dp = state.dailyProgress;
+    if (dp.date !== today) {
+      return { ...state, dailyProgress: { date: today, completedModules: [], missions: pickMissions(today) } };
+    }
+    if (validMissions(dp.missions)) return state;
+    return { ...state, dailyProgress: { ...dp, missions: pickMissions(today) } };
   }
 
   function implementedModuleKeys() {
@@ -241,7 +291,9 @@ window.App = window.App || {};
       },
     };
 
-    const allDone = implementedModuleKeys().every((k) => completedModules.includes(k));
+    // The day is complete when all of today's 3 missions are done (any other
+    // module played the same day counts for stats and badges, not for the day).
+    const allDone = state.dailyProgress.missions.every((k) => completedModules.includes(k));
     if (allDone) {
       const last = isValidDateStr(streak.lastCompletedDate) ? streak.lastCompletedDate : null;
       const gap = last ? daysBetween(last, today) : null;
@@ -315,6 +367,8 @@ window.App = window.App || {};
   function normalizeState(parsed) {
     if (!TIER_KEYS.includes(parsed.tier)) parsed.tier = "easy";
     if (!parsed.voicePref) parsed.voicePref = { voiceURI: null, rate: 0.85 };
+    if (!isPlainObject(parsed.dailyProgress)) parsed.dailyProgress = { date: todayStr(), completedModules: [] };
+    if (!Array.isArray(parsed.dailyProgress.completedModules)) parsed.dailyProgress.completedModules = [];
     // Freezes: a whole number from 0 to the cap (an imported file could say 99).
     parsed.streakFreezes = isFiniteNumber(parsed.streakFreezes)
       ? Math.min(Math.max(Math.floor(parsed.streakFreezes), 0), MAX_STREAK_FREEZES)
@@ -439,7 +493,10 @@ window.App = window.App || {};
     // The mistakes notebook is a known field: keep every well-formed entry,
     // drop only malformed ones (a non-object value just becomes empty).
     clean.mistakes = window.App.Mistakes.sanitize(raw.mistakes);
+    // `missions` is optional: a backup from before daily missions has none, and
+    // normalizeState (ensureToday) then fills in that day's missions.
     clean.dailyProgress = { date: dp.date, completedModules: dp.completedModules.filter((k) => typeof k === "string") };
+    if (validMissions(dp.missions)) clean.dailyProgress.missions = dp.missions;
     clean.streak = { count: st.count, lastCompletedDate: st.lastCompletedDate == null ? null : st.lastCompletedDate };
     if (clean.voicePref) {
       const vp = clean.voicePref;
@@ -518,6 +575,10 @@ window.App = window.App || {};
     daysBetween,
     addDays,
     implementedModuleKeys,
+    MISSIONS_PER_DAY,
+    MISSION_GROUPS,
+    pickMissions,
+    getDaily,
     markModuleComplete,
     getStreakView,
     ensureToday,

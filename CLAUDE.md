@@ -106,13 +106,18 @@ explicitly skipped since that needs a backend/accounts, which is out of scope.
   label, description, check(state) }`. Shown on `src/BadgesScreen.jsx`,
   reachable via a tile on the Daily Missions home screen. Locked badges show
   🔒 and their requirement; earned ones show their real emoji.
-- **Streak freeze**: `state.streakFreezes` (starts at 1, cap 2) auto-consumes
-  when a day's missions are completed but the previous streak day was missed
-  (not consecutive) — the streak is preserved and incremented instead of
-  reset to 1. A freeze is earned back at every 7-day streak milestone.
-  `markModuleComplete` returns `{ state, freezeUsed }`; `Root.jsx` shows a
-  dismissible "🧊 Streak Freeze used!" banner on the home screen when
-  `freezeUsed` is true (transient — not persisted, just local component state).
+- **Streak freeze**: `state.streakFreezes` (starts at 1, cap 2). When a day's
+  missions are completed and `gap` days have passed since the last counted
+  day, each missed day (`gap - 1`) costs ONE freeze: with enough freezes the
+  streak continues (+1) and they are spent; with too few the streak restarts
+  at 1 and NO freeze is spent. A freeze is earned back at every 7-day streak
+  milestone. `markModuleComplete(state, key, today)` returns `{ state,
+  freezeUsed, freezesUsedNow, streakReset, dayCompleted }`; `Root.jsx` shows a
+  dismissible "🧊 N streak freezes used!" banner (transient, not persisted).
+  The home screen shows the streak as it is *today* (`Storage.getStreakView`,
+  read-only, statuses none / doneToday / pending / saved / broken): a broken
+  streak reads "Streak ended" with the best streak, without touching the
+  stored count.
 
 ## Tech stack
 - Single-page web app: React + Tailwind CSS
@@ -189,14 +194,18 @@ Grammar Drills (category picker: Mixed Grammar / Tenses / Prepositions) is a
 supporting activity alongside these, not part of the original numbered list.
 
 ## Supporting features
-- **Daily missions** — a checklist/dashboard of today's tasks across all 11
-  activities; tapping an incomplete task jumps into that module
+- **Daily missions** — 3 missions a day, one from each group (A reading &
+  knowledge: reading / comprehension / storytelling / knowledge; B listening /
+  speaking / writing; C grammar / vocabulary / wordhunt / hangman), picked
+  deterministically from the date by `Storage.pickMissions` (see its comment
+  for the rotation and gap guarantees) and stored in
+  `dailyProgress.missions` so a later regrouping can't change today. The other
+  modules stay playable and still count in the lifetime stats and badges; only
+  the 3 missions complete the day. Tapping a mission jumps into that module
 - **Grammar drills** — category picker (Mixed / Tenses / Prepositions), each
   with tier-scaled fill-in-the-blank exercises
-- **Progress/streak tracking** — consecutive days where all *currently built*
-  daily tasks are completed; the streak target automatically grows as more
-  modules ship (a module only counts toward the day's checklist once it's
-  actually implemented — see Build status below)
+- **Progress/streak tracking** — consecutive days on which all 3 of that
+  day's missions were completed (see Daily missions above)
 - **Tier badge** — every module screen shows a small "EASY/MEDIUM/HARD/EXPERT
   level" badge (`UI.TierBadge` in `theme.jsx`) near the top, so it's always
   obvious which difficulty is active — added after feedback that content felt
@@ -417,7 +426,9 @@ feature used elsewhere.
     bestStreak: number,
     freezesUsedTotal: number
   },
-  dailyProgress: { date: "YYYY-MM-DD", completedModules: string[] },  // module keys, resets on day change
+  dailyProgress: { date: "YYYY-MM-DD", completedModules: string[],
+                   missions: [string, string, string] },  // module keys; resets on day change; `missions` is
+                                                          // optional on load/import (older saves lack it) and is filled in by ensureToday
   moduleProgress: {
     listening:     { completedPassageIds: string[] },
     speaking:      {},   // extended when Speaking is built
@@ -727,3 +738,34 @@ feature used elsewhere.
 - [ ] A full era/region/discipline *picker UI* using the tags — the user
       described a larger 3-era × 7-region grid that would need a dedicated
       follow-up, not another content pass
+- [x] Test mode (`?today=YYYY-MM-DD`): the app pretends today is that date and
+      uses its own localStorage key `englishOps:test`, so the real key
+      `englishOps:v1` is never read, written, exported over or restored over.
+      A banner (`src/TestModeBanner.jsx`, Traditional Chinese, tester-facing)
+      shows on every screen: previous/next day (reloads), "🌙 模擬過午夜" (moves
+      the pretend date in memory WITHOUT reloading, to test an app left open
+      past midnight; also rewrites ?today= so a reload stays on that day),
+      clear test data (only ever the test key) and exit. Any `today` param,
+      even a malformed one, selects the test key (a malformed date falls back
+      to the real today). Test-mode exports carry `testMode: true` and a
+      `test` file name and are refused outside test mode (`test_file`); test
+      mode may import a real backup (it only writes the test key). Decided
+      once at load from the URL. Use a Safari tab to test on the iPad (the
+      home-screen app can't take a query string, and keeps separate storage).
+- [x] Saved data the app can't read (damaged JSON, wrong shape) is copied to
+      `<key>:corrupt-<date>` before the fresh default state overwrites it
+      (never overwrites an earlier copy from the same day).
+- [x] Streak fixes: missing N days costs N freezes (or restarts the streak
+      without spending any); `markModuleComplete` rolls the day over first, so
+      a module finished after midnight with the app left open no longer counts
+      toward yesterday's checklist; Root tracks the date (visibilitychange,
+      focus, pageshow, 60s timer). `normalizeState` clamps freezes to 0-2 and
+      the streak count/date and repairs a stats block with no
+      moduleCompletions; backup dates must be real calendar dates.
+- [x] Daily missions reduced from 11 to 3 per day (groups above). Backup
+      format version stays 1: `dailyProgress.missions` is optional, so older
+      backups import (today's missions are filled in) and the previous app
+      version can still read a new backup (it just ignores the field).
+      Known one-day edge: if the previous app version had already finished
+      all 3 modules the new rule picks for the deploy day, the streak is not
+      settled until the next completion.
