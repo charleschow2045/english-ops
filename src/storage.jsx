@@ -284,6 +284,26 @@ window.App = window.App || {};
     return { state: nextState, ...events };
   }
 
+  // What the streak looks like *today*, for display only. The stored count
+  // changes only when a day is completed, so after missed days it is stale;
+  // this derives the truth without touching saved data (so backups and older
+  // versions of the app are unaffected).
+  // status: "none"      no streak yet
+  //         "doneToday" counted today
+  //         "pending"   counted through yesterday; today's missions would extend it
+  //         "saved"     days were missed but freezes would cover them
+  //         "broken"    days were missed and freezes can't cover them (count shows 0)
+  function getStreakView(state, today = todayStr()) {
+    const { count, lastCompletedDate } = state.streak;
+    if (!isValidDateStr(lastCompletedDate) || count <= 0) return { count: 0, status: "none", freezesNeeded: 0 };
+    const gap = daysBetween(lastCompletedDate, today);
+    if (gap <= 0) return { count, status: "doneToday", freezesNeeded: 0 };
+    if (gap === 1) return { count, status: "pending", freezesNeeded: 0 };
+    const missed = gap - 1;
+    if (state.streakFreezes >= missed) return { count, status: "saved", freezesNeeded: missed };
+    return { count: 0, status: "broken", freezesNeeded: missed };
+  }
+
   function earnedBadgeKeys(state) {
     return BADGES.filter((b) => b.check(state)).map((b) => b.key);
   }
@@ -468,7 +488,7 @@ window.App = window.App || {};
     return {
       badgesEarned: earnedBadgeKeys(state).length,
       badgesTotal: BADGES.length,
-      streak: state.streak.count,
+      streak: getStreakView(state).count, // what the home screen would show today, not the stale stored count
       bestStreak: state.stats.bestStreak,
       missions: state.stats.totalMissionsCompleted,
       grammarLevels: Array.isArray(done) ? done.length : 0,
@@ -499,6 +519,7 @@ window.App = window.App || {};
     addDays,
     implementedModuleKeys,
     markModuleComplete,
+    getStreakView,
     ensureToday,
     setTestDate,
     DATE_CHANGE_EVENT,

@@ -122,6 +122,7 @@ window.App = window.App || {};
           {view === "home" && (
             <DailyMissions
               state={state}
+              today={today}
               onChangeTier={changeTier}
               onOpenModule={openModule}
               onOpenBadges={() => setView("badges")}

@@ -31,6 +31,25 @@ window.App = window.App || {};
     );
   }
 
+  // The line under the streak: what happened, and what finishing today would do.
+  function streakMessage(view, allDone) {
+    const days = (n) => `${n} day${n === 1 ? "" : "s"}`;
+    switch (view.status) {
+      case "doneToday":
+        return allDone ? "Today's missions are done — see you tomorrow! 🎉" : null;
+      case "pending":
+        return "Finish today's missions to keep your streak going.";
+      case "saved": {
+        const n = view.freezesNeeded;
+        return `You missed ${days(n)}. Finishing today's missions will use ${n} freeze${n === 1 ? "" : "s"} to save your streak.`;
+      }
+      case "broken":
+        return "Finish today's missions to start a new streak.";
+      default:
+        return "Finish today's missions to start your streak.";
+    }
+  }
+
   function ModuleRow({ mod, done, onOpen }) {
     const a = MODULE_ACCENTS[mod.key] || MODULE_ACCENTS.listening;
     return (
@@ -64,12 +83,15 @@ window.App = window.App || {};
     );
   }
 
-  function DailyMissions({ state, onChangeTier, onOpenModule, onOpenBadges, onOpenBackup, dueCount, onOpenReview, freezeBanner, onDismissFreezeBanner }) {
+  function DailyMissions({ state, today, onChangeTier, onOpenModule, onOpenBadges, onOpenBackup, dueCount, onOpenReview, freezeBanner, onDismissFreezeBanner }) {
     const completedCount = Storage.implementedModuleKeys().filter((k) =>
       state.dailyProgress.completedModules.includes(k)
     ).length;
     const totalCount = Storage.implementedModuleKeys().length;
     const earnedBadgeCount = Storage.earnedBadgeKeys(state).length;
+    const streakView = Storage.getStreakView(state, today);
+    const allDone = completedCount === totalCount;
+    const streakNote = streakMessage(streakView, allDone);
 
     return (
       <div className="flex flex-col gap-4">
@@ -90,19 +112,32 @@ window.App = window.App || {};
         )}
 
         <PaperCard>
-          <div className="flex items-center justify-between mb-3">
-            <div>
+          <div className="flex items-start justify-between gap-3 mb-3">
+            <div className="min-w-0">
               <p className={`text-sm ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
                 Streak
               </p>
-              <p className={`text-2xl ${TYPE.display}`} style={{ color: INK.gold }}>
-                🔥 {state.streak.count} days
-              </p>
-              <p className={`text-xs mt-0.5 ${TYPE.caption}`} style={{ color: "#2F6B7A" }}>
+              {streakView.status === "broken" ? (
+                <>
+                  <p className={`text-2xl ${TYPE.display}`} style={{ color: INK.mutedInk }}>
+                    <span style={{ filter: "grayscale(1)", opacity: 0.6 }}>🔥</span> Streak ended
+                  </p>
+                  {state.stats.bestStreak > 0 && (
+                    <p className="text-sm font-bold" style={{ color: INK.mutedInk }}>
+                      🏆 Best streak: {state.stats.bestStreak} day{state.stats.bestStreak === 1 ? "" : "s"}
+                    </p>
+                  )}
+                </>
+              ) : (
+                <p className={`text-2xl ${TYPE.display}`} style={{ color: INK.gold }}>
+                  🔥 {streakView.count} day{streakView.count === 1 ? "" : "s"}
+                </p>
+              )}
+              <p className={`text-sm font-bold mt-0.5`} style={{ color: "#2F6B7A" }}>
                 🧊 {state.streakFreezes} freeze{state.streakFreezes === 1 ? "" : "s"} available
               </p>
             </div>
-            <div className="text-right">
+            <div className="text-right shrink-0">
               <p className={`text-sm ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
                 Today
               </p>
@@ -111,6 +146,14 @@ window.App = window.App || {};
               </p>
             </div>
           </div>
+          {streakNote && (
+            <p
+              className="text-sm font-bold leading-snug mb-3 rounded-xl px-3 py-2"
+              style={streakView.status === "saved" ? { backgroundColor: "#E3EDEF", color: "#1D4750" } : { backgroundColor: INK.goldTint, color: INK.ink }}
+            >
+              {streakNote}
+            </p>
+          )}
           <TierSelector tier={state.tier} onChangeTier={onChangeTier} />
         </PaperCard>
 
