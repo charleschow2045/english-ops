@@ -215,8 +215,9 @@ supporting activity alongside these, not part of the original numbered list.
   and the home card, so the home total always equals the sum of the
   "Level N of M" shown inside Grammar. No other module records which items
   were finished (only a lifetime session count with no total to compare with),
-  so they show "—" rather than an invented number; giving one a real count
-  needs per-item progress stored first (a data-model change).
+  so their cards have no progress line at all (`progressText` returns null)
+  rather than an invented number; giving one a real count needs per-item
+  progress stored first (a data-model change).
 - **Minimum font size on the home screen: 13px** — nothing on the home screen
   may be smaller (use `text-[13px]`, not `text-xs`, which is 12px). Other
   screens (Grammar, Hangman, Word Hunt, Writing, Vocabulary, Speaking,

@@ -55,13 +55,14 @@ window.App = window.App || {};
   // path levels in moduleProgress.grammar.doneLevels — counted against the
   // levels the current tier can see. No other module records which items were
   // finished (only how many sessions were completed, which has no total to
-  // compare with), so they show "—" instead of an invented number.
+  // compare with), so they return null and the card has no progress line,
+  // rather than an invented number.
   function progressText(key, state) {
     if (key === "grammar") {
       const { done, total } = window.App.GrammarLevels.progress(state.tier, state.moduleProgress.grammar.doneLevels);
-      return total > 0 ? `${done} / ${total} levels done` : "—";
+      return total > 0 ? `${done} / ${total} levels done` : null;
     }
-    return "—";
+    return null;
   }
 
   // `star` marks a module that is one of today's missions (used in All
