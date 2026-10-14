@@ -35,6 +35,43 @@ window.App = window.App || {};
     return shuffleArray(arr).slice(0, Math.min(count, arr.length));
   }
 
+  // Grammar path levels as a tier sees them. A level may carry a
+  // `tiers: [...]` allow-list (e.g. an expert-only stretch level); other tiers
+  // never see it. GrammarModule (level list, numbering, "Level N of M") and the
+  // home screen's Grammar progress both use these, so the two always agree.
+  // Content is read lazily because the content files load after this one.
+  const GrammarLevels = {
+    isVisible(level, tier) {
+      return !level.tiers || level.tiers.includes(tier);
+    },
+    visibleLevels(path, tier) {
+      return path.levels.filter((lv) => GrammarLevels.isVisible(lv, tier));
+    },
+    // Displayed number of levels[index]: how many visible levels up to and including it.
+    levelNumber(levels, index, tier) {
+      return levels.slice(0, index + 1).filter((lv) => GrammarLevels.isVisible(lv, tier)).length;
+    },
+    // Key stored in moduleProgress.grammar.doneLevels when a level is finished.
+    doneKey(pathKey, level) {
+      return `${pathKey}:${level.id}`;
+    },
+    // { done, total } over every path level this tier can see.
+    progress(tier, doneLevels) {
+      const paths = (window.App.Content && window.App.Content.GRAMMAR_PATHS) || [];
+      const done = new Set(Array.isArray(doneLevels) ? doneLevels : []);
+      let total = 0;
+      let finished = 0;
+      paths.forEach((p) => {
+        GrammarLevels.visibleLevels(p, tier).forEach((lv) => {
+          total += 1;
+          if (done.has(GrammarLevels.doneKey(p.key, lv))) finished += 1;
+        });
+      });
+      return { done: finished, total };
+    },
+  };
+
+  window.App.GrammarLevels = GrammarLevels;
   window.App.speak = speak;
   window.App.getEnglishVoices = getEnglishVoices;
   window.App.shuffleArray = shuffleArray;

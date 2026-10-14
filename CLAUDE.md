@@ -202,6 +202,26 @@ supporting activity alongside these, not part of the original numbered list.
   `dailyProgress.missions` so a later regrouping can't change today. The other
   modules stay playable and still count in the lifetime stats and badges; only
   the 3 missions complete the day. Tapping a mission jumps into that module
+- **Home layout & per-module progress line** — "All Activities" is a 2-column
+  grid from 640px up (1 column on phones; all 11 modules, equal-height cards);
+  a module that is one of today's missions carries a ⭐ after its name there.
+  Every module card has a third line, `progressText` in `DailyMissions.jsx`,
+  computed from existing saved data only (no storage change). Grammar shows
+  "done / total levels done": total = path levels the current tier can see,
+  done = those whose `<pathKey>:<levelId>` is in
+  `moduleProgress.grammar.doneLevels` (done keys for hidden levels, or for
+  content that no longer exists, are ignored). The visibility rules live in
+  `window.App.GrammarLevels` (`util.jsx`) and are used by both GrammarModule
+  and the home card, so the home total always equals the sum of the
+  "Level N of M" shown inside Grammar. No other module records which items
+  were finished (only a lifetime session count with no total to compare with),
+  so they show "—" rather than an invented number; giving one a real count
+  needs per-item progress stored first (a data-model change).
+- **Minimum font size on the home screen: 13px** — nothing on the home screen
+  may be smaller (use `text-[13px]`, not `text-xs`, which is 12px). Other
+  screens (Grammar, Hangman, Word Hunt, Writing, Vocabulary, Speaking,
+  VoicePicker, Passage, Listening, Badges, shared theme.jsx buttons) still use
+  `text-xs` in places and have not been raised yet.
 - **Grammar drills** — category picker (Mixed / Tenses / Prepositions), each
   with tier-scaled fill-in-the-blank exercises
 - **Progress/streak tracking** — consecutive days on which all 3 of that

@@ -11,7 +11,7 @@ window.App = window.App || {};
 (function () {
   const { useState, useMemo } = React;
   const { INK, TYPE, PaperCard, InkButton, PaperBackButton, PaperRefreshButton, PaperTierBadge, MODULE_ACCENTS } = window.App.UI;
-  const { sampleArray } = window.App;
+  const { sampleArray, GrammarLevels: G } = window.App;
   const { QuestionBlock, useShuffledQuestion } = window.App.QuizQuestion;
 
   const ACCENT = MODULE_ACCENTS.grammar;
@@ -140,14 +140,16 @@ window.App = window.App || {};
     // Items without `tiers` are unaffected and always included.
     const rawItems = isPS ? (level ? level.items : psLevels[0].items) : bank[tier] || bank.easy;
     const baseItems = isPS ? rawItems.filter((it) => !it.tiers || it.tiers.includes(tier)) : rawItems;
-    const doneKey = (i) => `${category}:${psLevels[i] ? psLevels[i].id : i}`;
+    const doneKey = (i) => (psLevels[i] ? G.doneKey(category, psLevels[i]) : `${category}:${i}`);
     // Levels this tier can see (a level with a `tiers` allow-list is hidden
     // for other tiers). Numbers shown to the child count only visible levels,
     // so an expert-only level 6 doesn't leave a gap (1-5, 7) at other tiers.
     // Array indices (sections, doneKey, levelIdx) still use the full list.
-    const isLevelVisible = (lv) => !lv.tiers || lv.tiers.includes(tier);
+    // The rules live in util.jsx (GrammarLevels) so the home screen's
+    // progress count uses exactly the same ones.
+    const isLevelVisible = (lv) => G.isVisible(lv, tier);
     const visibleLevelCount = psLevels.filter(isLevelVisible).length;
-    const levelNumber = (i) => psLevels.slice(0, i + 1).filter(isLevelVisible).length;
+    const levelNumber = (i) => G.levelNumber(psLevels, i, tier);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const items = useMemo(() => sampleArray(baseItems, SESSION_SIZE), [baseItems, runSeed]);
     const rawQ = items[index];

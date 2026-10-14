@@ -50,13 +50,29 @@ window.App = window.App || {};
     }
   }
 
-  function ModuleRow({ mod, done, isMission, onOpen }) {
+  // The progress line on a module card, worked out from what is already saved
+  // (nothing new is stored). Only Grammar keeps per-item progress — finished
+  // path levels in moduleProgress.grammar.doneLevels — counted against the
+  // levels the current tier can see. No other module records which items were
+  // finished (only how many sessions were completed, which has no total to
+  // compare with), so they show "—" instead of an invented number.
+  function progressText(key, state) {
+    if (key === "grammar") {
+      const { done, total } = window.App.GrammarLevels.progress(state.tier, state.moduleProgress.grammar.doneLevels);
+      return total > 0 ? `${done} / ${total} levels done` : "—";
+    }
+    return "—";
+  }
+
+  // `star` marks a module that is one of today's missions (used in All
+  // Activities, where it is not already obvious); `progress` is the third line.
+  function ModuleRow({ mod, done, isMission, onOpen, progress, star }) {
     const a = MODULE_ACCENTS[mod.key] || MODULE_ACCENTS.listening;
     return (
       <button
         onClick={mod.implemented ? onOpen : undefined}
         disabled={!mod.implemented}
-        className={`w-full flex items-center gap-3 rounded-2xl p-3 text-left transition-all ${
+        className={`w-full h-full flex items-center gap-3 rounded-2xl p-3 text-left transition-all ${
           mod.implemented ? "active:translate-y-[2px]" : "opacity-50"
         }`}
         style={{
@@ -74,10 +90,16 @@ window.App = window.App || {};
         <div className="min-w-0 flex-1">
           <p className={`text-base ${TYPE.heading}`} style={{ color: INK.ink }}>
             {mod.label}
+            {star && <span aria-label="Today's mission"> ⭐</span>}
           </p>
-          <p className={`text-xs ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
-            {!mod.implemented ? "Coming soon" : done ? "Done for today!" : isMission ? "⭐ Today's mission" : "Tap to start"}
+          <p className={`text-[13px] ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
+            {!mod.implemented ? "Coming soon" : done ? "Done for today!" : isMission ? (star ? "Today's mission" : "⭐ Today's mission") : "Tap to start"}
           </p>
+          {progress && (
+            <p className="text-[13px] font-bold leading-tight" style={{ color: INK.mutedInk }}>
+              {progress}
+            </p>
+          )}
         </div>
       </button>
     );
@@ -173,6 +195,7 @@ window.App = window.App || {};
                 mod={moduleByKey[key]}
                 done={daily.done.includes(key)}
                 isMission
+                progress={progressText(key, state)}
                 onOpen={() => onOpenModule(key)}
               />
             ))}
@@ -195,7 +218,7 @@ window.App = window.App || {};
             <p className={`text-base ${TYPE.heading}`} style={{ color: INK.ink }}>
               Badges
             </p>
-            <p className={`text-xs ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
+            <p className={`text-[13px] ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
               {earnedBadgeCount}/{Storage.BADGES.length} earned — tap to see them all
             </p>
           </div>
@@ -226,13 +249,16 @@ window.App = window.App || {};
         <p className={`text-xl -mb-1 ${TYPE.display}`} style={{ color: INK.ink }}>
           All Activities
         </p>
-        <div className="flex flex-col gap-3">
+        {/* One column on phones, two from tablet width (sm: 640px) up. */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {Storage.MODULES.map((mod) => (
             <ModuleRow
               key={mod.key}
               mod={mod}
               done={state.dailyProgress.date === today && state.dailyProgress.completedModules.includes(mod.key)}
               isMission={daily.missions.includes(mod.key)}
+              star={daily.missions.includes(mod.key)}
+              progress={progressText(mod.key, state)}
               onOpen={() => onOpenModule(mod.key)}
             />
           ))}
@@ -242,7 +268,7 @@ window.App = window.App || {};
         <div className="text-center pt-2">
           <button
             onClick={onOpenBackup}
-            className={`text-xs underline decoration-dotted ${TYPE.caption}`}
+            className={`text-[13px] underline decoration-dotted ${TYPE.caption}`}
             style={{ color: INK.mutedInk }}
           >
             💾 進度備份 / 還原(建議每星期備份一次)
