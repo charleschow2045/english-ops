@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>English Quest tests</title>
+  <script>
+    // Safety first: this page only ever runs in test mode. The app's own
+    // `?today=` switch (storage.jsx) moves it to the separate key
+    // "englishOps:test", so the real progress key "englishOps:v1" is never
+    // touched. Anything else in the URL is replaced by the one date the
+    // tests are written for. As a second guard, any write to the real key
+    // from this page is recorded (and refused) so the suite can fail on it.
+    window.__REAL_KEY = "englishOps:v1";
+    window.__TEST_DATE = "2026-10-14";
+    window.__realKeyWrites = [];
+    window.__testsOk = false;
+    (function () {
+      var q = new URLSearchParams(location.search);
+      if (q.get("today") !== window.__TEST_DATE) {
+        location.replace(location.pathname + "?today=" + window.__TEST_DATE);
+        return;
+      }
+      window.__testsOk = true;
+      try {
+        var proto = Storage.prototype;
+        var realSet = proto.setItem, realRemove = proto.removeItem, realClear = proto.clear;
+        proto.setItem = function (k, v) {
+          if (this === window.localStorage && k === window.__REAL_KEY) { window.__realKeyWrites.push("setItem"); return; }
+          return realSet.call(this, k, v);
+        };
+        proto.removeItem = function (k) {
+          if (this === window.localStorage && k === window.__REAL_KEY) { window.__realKeyWrites.push("removeItem"); return; }
+          return realRemove.call(this, k);
+        };
+        proto.clear = function () {
+          if (this === window.localStorage) { window.__realKeyWrites.push("clear"); return; }
+          return realClear.call(this);
+        };
+      } catch (e) {}
+    })();
+  </script>
+  <style>
+    body { font: 15px/1.45 system-ui, sans-serif; margin: 0; padding: 16px; background: #f6f1e4; color: #233142; }
+    h1 { font-size: 20px; margin: 0 0 4px; }
+    #summary { font-size: 18px; font-weight: 700; padding: 10px 14px; border-radius: 10px; margin: 10px 0 16px; background: #e8e2d0; }
+    #summary.pass { background: #cfe8d3; color: #1c5a2b; }
+    #summary.fail { background: #f2cfcf; color: #7a1d1d; }
+    h2 { font-size: 15px; margin: 18px 0 6px; text-transform: uppercase; letter-spacing: .04em; color: #55606d; }
+    ul { list-style: none; margin: 0; padding: 0; }
+    li { padding: 4px 8px; border-radius: 6px; margin-bottom: 3px; background: #fff; }
+    li.pass::before { content: "PASS  "; color: #1c7a35; font-weight: 700; }
+    li.fail { background: #fbe4e4; }
+    li.fail::before { content: "FAIL  "; color: #b3261e; font-weight: 700; }
+    pre { margin: 4px 0 2px; white-space: pre-wrap; word-break: break-word; font: 12px/1.4 ui-monospace, Consolas, monospace; }
+    .note { color: #55606d; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <h1>🧪 English Quest regression tests</h1>
+  <p class="note">Runs in test mode only (<code>?today=2026-10-14</code>, storage key <code>englishOps:test</code>). The real progress key is never written. See tests/README.md.</p>
+  <div id="summary">Running…</div>
+  <div id="results"></div>
+
+  <!-- Same libraries and loading as index.html (Babel fetches the .jsx files). Only what the tests need. -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel" src="../src/storage.jsx"></script>
+  <script type="text/babel" src="../src/mistakes.jsx"></script>
+  <script type="text/babel" src="../src/util.jsx"></script>
+  <script type="text/babel" src="../src/content/grammarContent.jsx"></script>
+  <script type="text/babel" src="../src/content/grammarPastSimpleContent.jsx"></script>
+  <script type="text/babel" src="../src/content/grammarTensePathsContent.jsx"></script>
+  <script type="text/babel" src="../src/content/grammarPrepositionPathContent.jsx"></script>
+  <script type="text/babel" src="../src/content/grammarPartsOfSpeechContent.jsx"></script>
+  <script type="text/babel" src="../src/content/grammarArticlesContent.jsx"></script>
+  <script type="text/babel" src="../src/content/grammarSentenceStructureContent.jsx"></script>
+  <script type="text/babel" src="../src/content/grammarPunctuationContent.jsx"></script>
+  <script type="text/babel" src="../src/content/grammarAdvancedContent.jsx"></script>
+
+  <script type="text/babel">
+  (function () {
+    if (!window.__testsOk) return; // the head script is redirecting to the test-mode URL
+
+    const S = window.App.Storage;
+    const M = window.App.Mistakes;
+    const G = window.App.GrammarLevels;
+    const TODAY = window.__TEST_DATE;
+    const REAL_KEY = window.__REAL_KEY;
+    const TEST_KEY = "englishOps:test";
+
+    // ---------- tiny test runner ----------
+    const results = []; // { group, name, ok, message }
+    let group = "";
+    const section = (name) => { group = name; };
+    const show = (v) => { try { return JSON.stringify(v); } catch (e) { return String(v); } };
+    function test(name, fn) {
+      try { fn(); results.push({ group, name, ok: true }); }
+      catch (e) { results.push({ group, name, ok: false, message: e && e.message ? e.message : String(e) }); }
+    }
+    // Every assertion reports expected vs actual when it fails.
+    function eq(actual, expected, what) {
+      if (actual !== expected) throw new Error((what ? what + ": " : "") + "expected " + show(expected) + " but got " + show(actual));
+    }
+    // Same value regardless of object key order (a restored state is built in a
+    // different key order than the original, which is not a difference).
+    const canon = (v) => {
+      if (Array.isArray(v)) return v.map(canon);
+      if (v && typeof v === "object") return Object.keys(v).sort().reduce((o, k) => ((o[k] = canon(v[k])), o), {});
+      return v;
+    };
+    function deepEq(actual, expected, what) {
+      const a = show(canon(actual)), e = show(canon(expected));
+      if (a !== e) throw new Error((what ? what + ": " : "") + "expected " + e + " but got " + a);
+    }
+    function truthy(cond, what, detail) {
+      if (!cond) throw new Error((what || "condition false") + (detail !== undefined ? " (" + show(detail) + ")" : ""));
+    }
+
+    // ---------- fixtures ----------
+    const MODULE_KEYS = S.MODULES.map((m) => m.key);
+    const addDays = S.addDays;
+
+    // A complete, valid saved state. `today` is the day the missions belong to.
+    function mkState(o) {
+      o = o || {};
+      const today = o.today || TODAY;
+      return {
+        tier: o.tier || "easy",
+        voicePref: { voiceURI: null, rate: 0.85 },
+        streak: o.streak || { count: 0, lastCompletedDate: null },
+        streakFreezes: o.freezes === undefined ? 1 : o.freezes,
+        lastFreezeUsedOn: o.lastFreezeUsedOn || null,
+        stats: o.stats || {
+          totalMissionsCompleted: 0,
+          bestStreak: 0,
+          freezesUsedTotal: 0,
+          moduleCompletions: Object.fromEntries(MODULE_KEYS.map((k) => [k, 0])),
+        },
+        dailyProgress: { date: today, completedModules: [], missions: S.pickMissions(today) },
+        moduleProgress: { grammar: { doneLevels: o.doneLevels || [] } },
+        mistakes: o.mistakes || M.emptyMistakes(),
+      };
+    }
+    // Completes the 3 missions of `day` one by one. Returns the last result
+    // (with the events of the call that finished the day) plus each step's.
+    function completeDay(state, day) {
+      const missions = S.pickMissions(day);
+      let res = { state };
+      const steps = [];
+      missions.forEach((k) => { res = S.markModuleComplete(res.state, k, day); steps.push(res); });
+      return { res, steps };
+    }
+
+    // ===================================================================
+    section("1. Daily missions (pickMissions, 20,000 days)");
+    {
+      const DAYS = 20000;
+      const START = "2026-10-14";
+      const groups = S.MISSION_GROUPS; // [A, B, C]
+      const days = [];
+      for (let i = 0; i < DAYS; i++) days.push(S.pickMissions(addDays(START, i)));
+
+      test("every day has exactly 3 distinct missions", () => {
+        const bad = days.findIndex((m) => !Array.isArray(m) || m.length !== 3 || new Set(m).size !== 3);
+        eq(bad, -1, "first bad day index");
+      });
+      test("every day has one mission from each of groups A, B and C", () => {
+        const bad = days.findIndex((m) => !(groups[0].includes(m[0]) && groups[1].includes(m[1]) && groups[2].includes(m[2])));
+        eq(bad, -1, "first bad day index");
+      });
+      test("no module appears on two days in a row", () => {
+        let bad = -1;
+        for (let i = 1; i < days.length && bad < 0; i++) if (days[i].some((k) => days[i - 1].includes(k))) bad = i;
+        eq(bad, -1, "first day repeating yesterday's module");
+      });
+      test("every module comes up at least once every 7 days (longest wait <= 7)", () => {
+        const longest = {};
+        const last = {};
+        days.forEach((m, i) => m.forEach((k) => {
+          if (k in last) longest[k] = Math.max(longest[k] || 0, i - last[k]);
+          last[k] = i;
+        }));
+        const keys = groups.flat();
+        keys.forEach((k) => truthy(k in last, "module never picked", k));
+        const worst = Math.max.apply(null, keys.map((k) => longest[k] || 0));
+        truthy(worst <= 7, "longest gap between two appearances is " + worst + " days, expected at most 7", longest);
+      });
+      test("A/C pairings: all 16 combinations occur", () => {
+        eq(new Set(days.map((m) => m[0] + "|" + m[2])).size, 16, "distinct A/C pairs");
+      });
+      test("48 different mission triples occur", () => {
+        eq(new Set(days.map((m) => m.join("|"))).size, 48, "distinct triples");
+      });
+      test("the same date always gives the same missions", () => {
+        deepEq(S.pickMissions("2026-10-14"), S.pickMissions("2026-10-14"));
+        deepEq(S.pickMissions(addDays("2026-10-14", 400)), days[400]);
+      });
+    }
+
+    // ===================================================================
+    section("2. Streak and streak freezes (markModuleComplete)");
+    {
+      const D = TODAY;
+      test("last counted yesterday: streak +1, no freeze spent", () => {
+        const s = mkState({ streak: { count: 3, lastCompletedDate: addDays(D, -1) }, freezes: 1 });
+        const { res } = completeDay(s, D);
+        eq(res.state.streak.count, 4, "streak count");
+        eq(res.state.streak.lastCompletedDate, D, "last counted date");
+        eq(res.state.streakFreezes, 1, "freezes left");
+        eq(res.dayCompleted, true, "dayCompleted");
+        eq(res.freezeUsed, false, "freezeUsed");
+      });
+      test("first ever day: streak starts at 1", () => {
+        const { res } = completeDay(mkState(), D);
+        eq(res.state.streak.count, 1, "streak count");
+        eq(res.state.stats.bestStreak, 1, "bestStreak");
+      });
+      test("missed 1 day with 1 freeze: freeze spent, streak +1", () => {
+        const s = mkState({ streak: { count: 3, lastCompletedDate: addDays(D, -2) }, freezes: 1 });
+        const { res } = completeDay(s, D);
+        eq(res.state.streak.count, 4, "streak count");
+        eq(res.state.streakFreezes, 0, "freezes left");
+        eq(res.freezesUsedNow, 1, "freezesUsedNow");
+        eq(res.state.stats.freezesUsedTotal, 1, "freezesUsedTotal");
+        eq(res.state.lastFreezeUsedOn, D, "lastFreezeUsedOn");
+      });
+      test("missed 2 days with only 1 freeze: streak restarts at 1, freeze NOT spent", () => {
+        const s = mkState({ streak: { count: 5, lastCompletedDate: addDays(D, -3) }, freezes: 1 });
+        const { res } = completeDay(s, D);
+        eq(res.state.streak.count, 1, "streak count");
+        eq(res.state.streakFreezes, 1, "freezes left");
+        eq(res.streakReset, true, "streakReset");
+        eq(res.state.stats.freezesUsedTotal, 0, "freezesUsedTotal");
+      });
+      test("missed 2 days with 2 freezes: both spent, streak +1", () => {
+        const s = mkState({ streak: { count: 5, lastCompletedDate: addDays(D, -3) }, freezes: 2 });
+        const { res } = completeDay(s, D);
+        eq(res.state.streak.count, 6, "streak count");
+        eq(res.state.streakFreezes, 0, "freezes left");
+        eq(res.freezesUsedNow, 2, "freezesUsedNow");
+        eq(res.state.stats.freezesUsedTotal, 2, "freezesUsedTotal");
+      });
+      test("missed 5 days with 2 freezes: streak restarts at 1, freezes kept", () => {
+        const s = mkState({ streak: { count: 9, lastCompletedDate: addDays(D, -6) }, freezes: 2 });
+        const { res } = completeDay(s, D);
+        eq(res.state.streak.count, 1, "streak count");
+        eq(res.state.streakFreezes, 2, "freezes left");
+        eq(res.state.stats.freezesUsedTotal, 0, "freezesUsedTotal");
+      });
+      test("reaching a 7-day streak earns a freeze", () => {
+        const s = mkState({ streak: { count: 6, lastCompletedDate: addDays(D, -1) }, freezes: 0 });
+        const { res } = completeDay(s, D);
+        eq(res.state.streak.count, 7, "streak count");
+        eq(res.state.streakFreezes, 1, "freezes after day 7");
+        eq(res.state.stats.bestStreak, 7, "bestStreak");
+      });
+      test("the freeze bonus never goes above the cap of 2", () => {
+        const s = mkState({ streak: { count: 6, lastCompletedDate: addDays(D, -1) }, freezes: 2 });
+        const { res } = completeDay(s, D);
+        eq(res.state.streak.count, 7, "streak count");
+        eq(res.state.streakFreezes, 2, "freezes after day 7");
+      });
+      test("a freeze is not earned on a non-milestone day", () => {
+        const s = mkState({ streak: { count: 7, lastCompletedDate: addDays(D, -1) }, freezes: 0 });
+        const { res } = completeDay(s, D);
+        eq(res.state.streak.count, 8, "streak count");
+        eq(res.state.streakFreezes, 0, "freezes");
+      });
+      test("playing only non-mission modules does not complete the day", () => {
+        const s0 = mkState({ streak: { count: 3, lastCompletedDate: addDays(D, -1) }, freezes: 1 });
+        const missions = S.pickMissions(D);
+        const others = MODULE_KEYS.filter((k) => !missions.includes(k));
+        eq(others.length, MODULE_KEYS.length - 3, "non-mission modules");
+        let res = { state: s0 };
+        others.forEach((k) => { res = S.markModuleComplete(res.state, k, D); eq(res.dayCompleted, false, "dayCompleted after " + k); });
+        eq(res.state.streak.count, 3, "streak count");
+        eq(res.state.streak.lastCompletedDate, addDays(D, -1), "last counted date");
+        eq(S.getDaily(res.state, D).done.length, 0, "missions done");
+        truthy(res.state.stats.totalMissionsCompleted === others.length, "extra modules still count in lifetime stats", res.state.stats.totalMissionsCompleted);
+      });
+      test("2 of 3 missions done: day not complete", () => {
+        const missions = S.pickMissions(D);
+        let res = S.markModuleComplete(mkState({ streak: { count: 3, lastCompletedDate: addDays(D, -1) } }), missions[0], D);
+        res = S.markModuleComplete(res.state, missions[1], D);
+        eq(res.dayCompleted, false, "dayCompleted");
+        eq(res.state.streak.count, 3, "streak count");
+      });
+      test("finishing the same day again does not count twice", () => {
+        const s = mkState({ streak: { count: 3, lastCompletedDate: addDays(D, -1) }, freezes: 1 });
+        const first = completeDay(s, D).res;
+        eq(first.state.streak.count, 4, "after the day");
+        const total = first.state.stats.totalMissionsCompleted;
+        let again = first;
+        S.pickMissions(D).forEach((k) => { again = S.markModuleComplete(again.state, k, D); eq(again.dayCompleted, false, "dayCompleted on repeat " + k); });
+        eq(again.state.streak.count, 4, "streak count after repeats");
+        eq(again.state.stats.totalMissionsCompleted, total, "totalMissionsCompleted after repeats");
+        const extra = MODULE_KEYS.find((k) => !S.pickMissions(D).includes(k));
+        const withExtra = S.markModuleComplete(again.state, extra, D);
+        eq(withExtra.state.streak.count, 4, "streak count after an extra module");
+      });
+      test("device date moved backwards: the day is not counted again", () => {
+        const s = mkState({ streak: { count: 5, lastCompletedDate: D }, freezes: 1 });
+        const earlier = addDays(D, -2);
+        const { res } = completeDay(s, earlier);
+        eq(res.state.streak.count, 5, "streak count");
+        eq(res.state.streak.lastCompletedDate, D, "last counted date");
+        eq(res.state.streakFreezes, 1, "freezes");
+        eq(res.dayCompleted, false, "dayCompleted");
+      });
+      test("a day completed across several calendar days keeps counting one at a time", () => {
+        let state = mkState({ today: addDays(D, -4) });
+        const counts = [];
+        for (let i = -4; i <= 0; i++) { state = completeDay(state, addDays(D, i)).res.state; counts.push(state.streak.count); }
+        deepEq(counts, [1, 2, 3, 4, 5], "streak after each of 5 consecutive days");
+      });
+    }
+
+    // ===================================================================
+    section("3. Streak display (getStreakView)");
+    {
+      const D = TODAY;
+      test("none: no streak yet", () => {
+        deepEq(S.getStreakView(mkState(), D), { count: 0, status: "none", freezesNeeded: 0 });
+      });
+      test("doneToday: last counted today", () => {
+        deepEq(S.getStreakView(mkState({ streak: { count: 4, lastCompletedDate: D } }), D), { count: 4, status: "doneToday", freezesNeeded: 0 });
+      });
+      test("pending: counted through yesterday", () => {
+        deepEq(S.getStreakView(mkState({ streak: { count: 4, lastCompletedDate: addDays(D, -1) } }), D), { count: 4, status: "pending", freezesNeeded: 0 });
+      });
+      test("saved: 2 days missed and 2 freezes would cover them", () => {
+        deepEq(S.getStreakView(mkState({ streak: { count: 4, lastCompletedDate: addDays(D, -3) }, freezes: 2 }), D), { count: 4, status: "saved", freezesNeeded: 2 });
+      });
+      test("broken: 2 days missed, only 1 freeze", () => {
+        deepEq(S.getStreakView(mkState({ streak: { count: 4, lastCompletedDate: addDays(D, -3) }, freezes: 1 }), D), { count: 0, status: "broken", freezesNeeded: 2 });
+      });
+      test("viewing never changes the saved state", () => {
+        const s = mkState({ streak: { count: 4, lastCompletedDate: addDays(D, -9) }, freezes: 1 });
+        const before = show(s);
+        S.getStreakView(s, D);
+        eq(show(s), before, "state after getStreakView");
+      });
+    }
+
+    // ===================================================================
+    section("4. Older saves without a missions field");
+    {
+      test("ensureToday fills in today's 3 missions when the field is missing", () => {
+        const old = mkState();
+        delete old.dailyProgress.missions;
+        const fixed = S.ensureToday(old, TODAY);
+        deepEq(fixed.dailyProgress.missions, S.pickMissions(TODAY), "missions");
+        eq(fixed.dailyProgress.missions.length, 3, "count");
+        eq(fixed.dailyProgress.date, TODAY, "date");
+      });
+      test("progress already made today survives the fill-in", () => {
+        const old = mkState();
+        delete old.dailyProgress.missions;
+        old.dailyProgress.completedModules = [S.pickMissions(TODAY)[0]];
+        deepEq(S.ensureToday(old, TODAY).dailyProgress.completedModules, [S.pickMissions(TODAY)[0]], "completedModules");
+      });
+      test("a malformed missions list is replaced, a valid one is kept", () => {
+        const bad = mkState();
+        bad.dailyProgress.missions = ["reading", "reading", "nope"];
+        deepEq(S.ensureToday(bad, TODAY).dailyProgress.missions, S.pickMissions(TODAY), "missions after repair");
+        const good = mkState();
+        eq(S.ensureToday(good, TODAY), good, "unchanged state is returned as is");
+      });
+      test("a save from an earlier day rolls over to a fresh checklist", () => {
+        const old = mkState({ today: addDays(TODAY, -3) });
+        old.dailyProgress.completedModules = ["reading"];
+        const fixed = S.ensureToday(old, TODAY);
+        eq(fixed.dailyProgress.date, TODAY, "date");
+        deepEq(fixed.dailyProgress.completedModules, [], "completedModules");
+        deepEq(fixed.dailyProgress.missions, S.pickMissions(TODAY), "missions");
+      });
+      test("an old backup file with no missions field imports with 3 missions", () => {
+        const old = mkState();
+        delete old.dailyProgress.missions;
+        const text = JSON.stringify({ app: "english-ops", version: 1, exportedAt: "2026-09-01T10:00:00.000Z", data: { [S.STORAGE_KEY]: old } });
+        const r = S.parseBackup(text);
+        eq(r.ok, true, "parse ok");
+        deepEq(r.state.dailyProgress.missions, S.pickMissions(TODAY), "missions");
+      });
+    }
+
+    // ===================================================================
+    section("5. Backup and restore (buildBackup -> parseBackup)");
+    {
+      // A state with something in every part a backup must carry.
+      const paths = window.App.Content.GRAMMAR_PATHS;
+      const doneLevels = paths.slice(0, 3).flatMap((p) => p.levels.slice(0, 2).map((lv) => p.key + ":" + lv.id));
+      let withMistakes = mkState({
+        tier: "hard",
+        streak: { count: 5, lastCompletedDate: addDays(TODAY, -1) },
+        freezes: 2,
+        lastFreezeUsedOn: "2026-10-01",
+        doneLevels,
+        stats: {
+          totalMissionsCompleted: 41,
+          bestStreak: 9,
+          freezesUsedTotal: 3,
+          moduleCompletions: Object.fromEntries(MODULE_KEYS.map((k, i) => [k, i + 2])),
+        },
+      });
+      withMistakes = M.recordWrong(withMistakes, "grammar:ps1-3", addDays(TODAY, -2));
+      withMistakes = M.recordWrong(withMistakes, "reading:read-easy-3-q2", addDays(TODAY, -1));
+      withMistakes = M.recordReviewAnswer(withMistakes, "grammar:ps1-3", true, TODAY);
+
+      const text = JSON.stringify(S.buildBackup(withMistakes));
+      const r = S.parseBackup(text);
+
+      test("the backup file has the expected shape", () => {
+        const f = JSON.parse(text);
+        eq(f.app, "english-ops", "app");
+        eq(f.version, 1, "version");
+        truthy(typeof f.exportedAt === "string" && f.exportedAt.length > 10, "exportedAt is a date string", f.exportedAt);
+        truthy(S.STORAGE_KEY in f.data, "payload is keyed by the storage key", Object.keys(f.data));
+        eq(S.STORAGE_KEY, TEST_KEY, "this run is using the test key");
+      });
+      test("restore succeeds", () => eq(r.ok, true, "parseBackup ok (reason " + r.reason + ")"));
+      test("streak survives", () => deepEq(r.state.streak, withMistakes.streak));
+      test("freezes survive", () => { eq(r.state.streakFreezes, 2, "streakFreezes"); eq(r.state.lastFreezeUsedOn, "2026-10-01", "lastFreezeUsedOn"); });
+      test("statistics survive", () => deepEq(r.state.stats, withMistakes.stats));
+      test("tier survives", () => eq(r.state.tier, "hard", "tier"));
+      test("Grammar levels done survive", () => deepEq(r.state.moduleProgress.grammar.doneLevels, doneLevels));
+      test("mistakes notebook survives", () => {
+        deepEq(r.state.mistakes, withMistakes.mistakes);
+        eq(Object.keys(r.state.mistakes.entries).length, 2, "entries");
+      });
+      test("today's checklist survives", () => deepEq(r.state.dailyProgress, withMistakes.dailyProgress));
+      test("the restored state is complete: it equals the original, field for field", () => {
+        deepEq(r.state, withMistakes);
+      });
+      test("a file that is not JSON is rejected", () => deepEq(S.parseBackup("{ this is not json"), { ok: false, reason: "not_json" }));
+      test("a file from another app is rejected", () => eq(S.parseBackup(JSON.stringify({ app: "beetle-care", version: 1, data: {} })).reason, "wrong_app", "reason"));
+      test("a file from a newer version is rejected", () => {
+        const f = JSON.parse(text); f.version = 99;
+        eq(S.parseBackup(JSON.stringify(f)).reason, "too_new", "reason");
+      });
+      test("a file with an invalid date is rejected", () => {
+        ["2026-13-45", "2026-02-30", "yesterday", ""].forEach((bad) => {
+          const f = JSON.parse(text); f.data[S.STORAGE_KEY].dailyProgress.date = bad;
+          const x = S.parseBackup(JSON.stringify(f));
+          eq(x.ok, false, "ok for date " + show(bad));
+          eq(x.reason, "invalid", "reason for date " + show(bad));
+        });
+      });
+      test("an invalid last-counted date or a negative streak is rejected", () => {
+        const f = JSON.parse(text); f.data[S.STORAGE_KEY].streak.lastCompletedDate = "2026-99-99";
+        eq(S.parseBackup(JSON.stringify(f)).reason, "invalid", "bad lastCompletedDate");
+        const g = JSON.parse(text); g.data[S.STORAGE_KEY].streak.count = -3;
+        eq(S.parseBackup(JSON.stringify(g)).reason, "invalid", "negative streak");
+      });
+      test("a payload that is not an object is rejected", () => {
+        const f = JSON.parse(text); f.data[S.STORAGE_KEY] = "oops";
+        eq(S.parseBackup(JSON.stringify(f)).reason, "invalid", "reason");
+        eq(S.parseBackup(JSON.stringify({ app: "english-ops", version: 1, data: [] })).reason, "invalid", "data is an array");
+      });
+      test("an oversized file is rejected", () => {
+        const big = text + " ".repeat(S.MAX_BACKUP_BYTES);
+        const x = S.parseBackup(big);
+        eq(x.ok, false, "ok");
+        eq(x.reason, "too_big", "reason");
+      });
+      test("parseBackup never throws, whatever it is given", () => {
+        [undefined, null, 42, {}, [], "null", "[]", '"x"', "{}", '{"app":"english-ops"}'].forEach((junk) => {
+          let x;
+          try { x = S.parseBackup(junk); } catch (e) { throw new Error("threw on " + show(junk) + ": " + e.message); }
+          eq(x.ok, false, "ok for " + show(junk));
+        });
+      });
+      test("nonsense numbers in a backup are clamped, not trusted", () => {
+        const f = JSON.parse(text);
+        f.data[S.STORAGE_KEY].streakFreezes = 99;
+        const x = S.parseBackup(JSON.stringify(f));
+        eq(x.ok, true, "ok");
+        eq(x.state.streakFreezes, 2, "freezes clamped to the cap");
+      });
+      test("saving then loading through the test key round-trips", () => {
+        const prev = localStorage.getItem(TEST_KEY);
+        try {
+          S.saveState(r.state);
+          deepEq(S.loadState(), r.state, "loaded state");
+        } finally {
+          if (prev === null) localStorage.removeItem(TEST_KEY); else localStorage.setItem(TEST_KEY, prev);
+        }
+      });
+    }
+
+    // ===================================================================
+    section("6. Grammar levels (GrammarLevels)");
+    {
+      const paths = window.App.Content.GRAMMAR_PATHS;
+      const EXPECTED = { easy: 76, medium: 76, hard: 76, expert: 77 };
+      Object.keys(EXPECTED).forEach((tier) => {
+        test(tier + ": GrammarLevels.progress total is " + EXPECTED[tier], () => {
+          const p = G.progress(tier, []);
+          eq(p.total, EXPECTED[tier], "total");
+          eq(p.done, 0, "done");
+        });
+        test(tier + ": visible levels of each path add up to the same total", () => {
+          const perPath = paths.map((p) => G.visibleLevels(p, tier).length);
+          eq(perPath.reduce((a, b) => a + b, 0), G.progress(tier, []).total, "sum of " + show(perPath));
+        });
+      });
+      test("there are 11 paths", () => eq(paths.length, 11, "GRAMMAR_PATHS length"));
+      test("the extra expert level is the only difference between tiers", () => {
+        eq(G.progress("expert", []).total - G.progress("easy", []).total, 1, "expert minus easy");
+        eq(G.progress("hard", []).total, G.progress("medium", []).total, "hard vs medium");
+      });
+      test("done count only includes levels this tier can see", () => {
+        const all = paths.flatMap((p) => p.levels.map((lv) => G.doneKey(p.key, lv)));
+        eq(G.progress("easy", all).done, 76, "easy, everything done");
+        eq(G.progress("expert", all).done, 77, "expert, everything done");
+        // the expert-only level, finished while playing at expert, is not counted at easy
+        const gated = paths.flatMap((p) => p.levels.filter((lv) => lv.tiers).map((lv) => G.doneKey(p.key, lv)));
+        truthy(gated.length >= 1, "there is at least one tier-gated level", gated);
+        eq(G.progress("easy", gated).done, 0, "easy ignores gated keys");
+        eq(G.progress("expert", gated).done, gated.length, "expert counts gated keys");
+      });
+      test("unknown or garbage done keys are ignored", () => {
+        const p = G.progress("easy", ["zzz:nothing", "", 42, null, undefined, {}]);
+        eq(p.done, 0, "done");
+        eq(G.progress("easy", undefined).done, 0, "done for undefined list");
+      });
+      test("level numbers are continuous 1..N for each path and tier", () => {
+        ["easy", "medium", "hard", "expert"].forEach((tier) => {
+          paths.forEach((p) => {
+            const nums = p.levels.map((lv, i) => (G.isVisible(lv, tier) ? G.levelNumber(p.levels, i, tier) : null)).filter((n) => n !== null);
+            deepEq(nums, nums.map((_, i) => i + 1), p.key + " at " + tier);
+          });
+        });
+      });
+    }
+
+    // ===================================================================
+    section("7. Safety: the real progress key was never touched");
+    test("this page is in test mode, on the test key", () => {
+      eq(S.TEST_MODE, true, "TEST_MODE");
+      eq(S.STORAGE_KEY, TEST_KEY, "STORAGE_KEY");
+      eq(S.todayStr(), TODAY, "todayStr()");
+    });
+    test("nothing wrote to the real key englishOps:v1", () => {
+      deepEq(window.__realKeyWrites, [], "attempted writes to " + REAL_KEY);
+    });
+
+    // ---------- tidy up and report ----------
+    // The suite only touches localStorage in the round-trip test above, and that
+    // test puts back whatever the test key held before (or removes it), so there
+    // is nothing left to clean up here.
+    const passed = results.filter((r) => r.ok).length;
+    const failed = results.length - passed;
+    const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+    let html = "";
+    let cur = null;
+    results.forEach((r) => {
+      if (r.group !== cur) { if (cur !== null) html += "</ul>"; html += "<h2>" + esc(r.group) + "</h2><ul>"; cur = r.group; }
+      html += '<li class="' + (r.ok ? "pass" : "fail") + '">' + esc(r.name) + (r.ok ? "" : "<pre>" + esc(r.message) + "</pre>") + "</li>";
+    });
+    html += "</ul>";
+    document.getElementById("results").innerHTML = html;
+    const sum = document.getElementById("summary");
+    sum.className = failed === 0 ? "pass" : "fail";
+    sum.textContent = failed === 0 ? "✅ All " + results.length + " tests passed" : "❌ " + failed + " of " + results.length + " tests FAILED (" + passed + " passed)";
+    document.title = (failed === 0 ? "PASS " : "FAIL ") + passed + "/" + results.length + " - English Quest tests";
+    window.__TEST_RESULT = { total: results.length, passed, failed, failures: results.filter((r) => !r.ok).map((r) => ({ group: r.group, name: r.name, message: r.message })) };
+    // A machine-readable copy for scripted runs (headless browsers).
+    const pre = document.createElement("pre");
+    pre.id = "test-result-json";
+    pre.hidden = true;
+    pre.textContent = "TEST_RESULT:" + JSON.stringify(window.__TEST_RESULT);
+    document.body.appendChild(pre);
+  })();
+  </script>
+</body>
+</html>

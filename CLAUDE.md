@@ -462,6 +462,25 @@ feature used elsewhere.
 }
 ```
 
+## Regression tests (`tests/run.html`)
+- Run: serve the repo and open `/tests/run.html` (also live at
+  `https://charleschow2045.github.io/english-ops/tests/run.html`). It needs a
+  static server, not `file://` (Babel fetches the `.jsx` files). It runs on
+  load, lists every check with PASS/FAIL (expected vs actual for failures) and
+  sets the tab title to `PASS n/n` or `FAIL ...`. Details in `tests/README.md`.
+- Covers `pickMissions` (20,000 days), streak/freeze rules, `getStreakView`,
+  old saves without `missions`, backup build/parse round trip and rejections,
+  and `GrammarLevels` (76 levels easy/medium/hard, 77 expert). Run it after
+  touching `storage.jsx`, `mistakes.jsx`, `util.jsx` or Grammar content; when
+  Grammar levels are added or removed, change the 76/77 expectation on purpose.
+- **Must never touch the real key `englishOps:v1`** (on the live site that is
+  the child's real progress). The page only runs with `?today=2026-10-14` (it
+  redirects there if the URL differs, before any app code loads), so the app is
+  in test mode on `englishOps:test`; it also blocks and records any write to
+  the real key and fails if there was one. New tests must use pure functions
+  or the test key and put back whatever they overwrite. They load the real
+  source files — never copy app logic into the tests.
+
 ## Build status
 - [x] Project scaffold — theme, storage, Daily Missions home screen, hub-and-spoke nav
 - [x] Module 1 — Listening (10 passages/tier, 40 total; expanded from 3. A session draws 5 at random (`sessionSize={5}` passed from Root.jsx to ListeningModule; "Do it again" draws a fresh 5; omit the prop to play the whole pool). Passages grow from ~25 words (easy, direct facts, sequence, simple inference) to ~45 words (expert: implication, author's point, attitude); medium and above add inference questions. Option lengths balanced by script: mean gap 0.50 chars, max 4.5, including the 7 older items that were rebalanced)
