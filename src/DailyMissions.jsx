@@ -272,7 +272,7 @@ window.App = window.App || {};
             className={`text-[13px] underline decoration-dotted ${TYPE.caption}`}
             style={{ color: INK.mutedInk }}
           >
-            💾 進度備份 / 還原(建議每星期備份一次)
+            💾 Backup / Restore progress (back up once a week)
           </button>
         </div>
       </div>

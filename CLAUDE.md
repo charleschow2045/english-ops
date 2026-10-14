@@ -645,8 +645,8 @@ feature used elsewhere.
       exportedAt, data: { "englishOps:v1": <state> } }`, file name
       `english-ops-backup-YYYY-MM-DD.json` (local date). Entry point: a small
       low-key link at the very bottom of the home screen (a "backup" view in
-      Root, like Badges), parent-facing so the copy is Traditional Chinese;
-      it carries the "建議每星期備份一次" reminder and an iPad add-to-home-
+      Root, like Badges). The backup SCREEN is parent-facing, so its copy is
+      Traditional Chinese (unchanged); the home link to it is English ("Backup / Restore progress (back up once a week)"). The screen carries a "建議每星期備份一次" reminder and an iPad add-to-home-
       screen tip (which also warns that the home-screen app and Safari
       normally keep separate storage, so back up in Safari BEFORE adding to
       the home screen and restore afterwards). Import: `Storage.parseBackup`
