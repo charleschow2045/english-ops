@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex" />
+  <title>Style A · Indigo Night — English Quest preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { sans: ["Nunito", "system-ui", "sans-serif"], head: ['"Plus Jakarta Sans"', "Nunito", "sans-serif"] } } } };
+  </script>
+  <style>
+    :root { --night1: #15133f; --night2: #29287f; --night3: #4636ad; --accent: #6c5ce7; --accent2: #a78bfa; --ink: #1d1b4b; --muted: #5d5a86; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { margin: 0; font-family: Nunito, system-ui, sans-serif; color: var(--ink); background: linear-gradient(180deg, #ece6ff 0%, #f6e9fb 55%, #fde8f1 100%); min-height: 100vh; overflow-x: hidden; }
+    .pv-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 8px 16px; background: #0d0c2b; color: #e9e6ff; font-size: 13px; font-weight: 700; }
+    .pv-bar a { color: inherit; }
+    .pv-name { opacity: .8; }
+    .pv-links { margin-left: auto; display: flex; gap: 6px; }
+    .pv-chip { padding: 4px 10px; border-radius: 999px; border: 1px solid #5b57b0; text-decoration: none; }
+    .pv-chip.on { background: #fff; color: #1d1b4b !important; border-color: #fff; }
+
+    .hero { position: relative; color: #fff; padding: 20px 16px 84px; border-radius: 0 0 36px 36px; background:
+        radial-gradient(1.5px 1.5px at 12% 22%, #fff 99%, transparent), radial-gradient(1px 1px at 28% 60%, #fff 99%, transparent),
+        radial-gradient(2px 2px at 47% 18%, #ffe9a8 99%, transparent), radial-gradient(1px 1px at 63% 48%, #fff 99%, transparent),
+        radial-gradient(1.5px 1.5px at 78% 24%, #fff 99%, transparent), radial-gradient(1px 1px at 90% 66%, #ffe9a8 99%, transparent),
+        radial-gradient(1px 1px at 8% 76%, #fff 99%, transparent), radial-gradient(1.5px 1.5px at 56% 78%, #fff 99%, transparent),
+        radial-gradient(120% 90% at 85% 0%, rgba(140, 110, 255, .45), transparent 60%),
+        linear-gradient(165deg, var(--night1), var(--night2) 55%, var(--night3)); }
+    .wrap { max-width: 760px; margin: 0 auto; }
+    .pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-weight: 800; font-size: 14px; background: rgba(255, 255, 255, .14); border: 1px solid rgba(255, 255, 255, .22); white-space: nowrap; }
+    .h { font-family: "Plus Jakarta Sans", Nunito, sans-serif; font-weight: 800; letter-spacing: -0.01em; }
+
+    .level { position: relative; margin: -64px auto 0; max-width: 728px; width: calc(100% - 32px); background: #fff; border-radius: 28px; padding: 20px 18px 18px; box-shadow: 0 18px 40px -16px rgba(40, 30, 130, .45), 0 2px 6px rgba(40, 30, 130, .08); }
+    .bar { height: 14px; border-radius: 999px; background: #ece8fb; overflow: hidden; }
+    .bar > i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+    .dots { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; text-align: center; }
+    .dot { width: 30px; height: 30px; border-radius: 50%; margin: 0 auto; display: grid; place-items: center; font-size: 14px; font-weight: 800; background: #ece8fb; color: #8a85b8; border: 2px solid #ece8fb; }
+    .dot.reached { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; border-color: transparent; }
+    .dot.now { box-shadow: 0 0 0 4px rgba(108, 92, 231, .22); }
+    .dlabel { font-size: 13px; font-weight: 700; color: var(--muted); margin-top: 6px; line-height: 1.15; min-height: 1.15em; }
+    .dlabel.cur { color: var(--ink); }
+
+    .card { background: #fff; border-radius: 22px; box-shadow: 0 10px 24px -14px rgba(60, 40, 150, .35), 0 1px 3px rgba(60, 40, 150, .06); }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 9px 14px; border-radius: 999px; font-weight: 800; font-size: 14px; background: var(--accent); color: #fff; white-space: nowrap; box-shadow: 0 6px 12px -6px rgba(108, 92, 231, .8); }
+    .btn.done { background: #e3f6ea; color: #17703a; box-shadow: none; }
+    .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .mod { padding: 14px 14px 14px; display: flex; flex-direction: column; gap: 10px; }
+    .tile { width: 46px; height: 46px; border-radius: 16px; display: grid; place-items: center; font-size: 24px; flex-shrink: 0; }
+    .sub { font-size: 13px; font-weight: 700; color: var(--muted); line-height: 1.25; }
+    .nav { position: fixed; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom)); transform: translateX(-50%); width: min(420px, calc(100% - 24px)); display: grid; grid-template-columns: repeat(4, 1fr); padding: 6px; border-radius: 26px; background: rgba(21, 19, 63, .94); box-shadow: 0 14px 30px -10px rgba(21, 19, 63, .7); }
+    .nav div { display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 6px 2px; border-radius: 20px; font-size: 13px; font-weight: 700; color: #b9b5ea; }
+    .nav div span { font-size: 20px; line-height: 1.1; }
+    .nav .on { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; }
+  </style>
+</head>
+<body>
+  <div id="bar"></div>
+  <div id="app"></div>
+  <script src="data.js"></script>
+  <script>
+    (function () {
+      const P = window.PV, s = P.state;
+      document.getElementById("bar").innerHTML = P.previewBar("Style A · Indigo Night");
+
+      const dots = P.LEVELS.map((name, i) => {
+        const reached = i <= P.levelIndex, now = i === P.levelIndex, next = i === P.levelIndex + 1;
+        return `<div><div class="dot ${reached ? "reached" : ""} ${now ? "now" : ""}">${reached ? "★" : i + 1}</div>
+          <div class="dlabel ${now ? "cur" : ""} ${now || next ? "" : "hidden sm:block"}">${P.esc(name)}</div></div>`;
+      }).join("");
+
+      const missions = P.missionKeys.map((k) => {
+        const m = P.byKey[k], done = P.isDone(k);
+        return `<div class="card flex items-center gap-3 p-3" style="${done ? "opacity:.78" : ""}">
+          <div class="tile" style="background:${P.tint(m.hue)};width:52px;height:52px;border-radius:50%;font-size:26px">${done ? "✅" : m.emoji}</div>
+          <div class="min-w-0 flex-1"><div class="h text-[17px] leading-tight">${P.esc(m.label)}</div>
+            <div class="sub mt-0.5">${P.esc(P.MISSION_TEXT[k])}</div></div>
+          <span class="btn ${done ? "done" : ""}">${done ? "Done ✓" : "Start ›"}</span></div>`;
+      }).join("");
+
+      const mods = P.MODULES.map((m) => {
+        const mission = P.isMission(m.key), done = P.isDone(m.key);
+        const status = done ? "Done today ✓" : mission ? "Today's mission" : "Tap to start";
+        return `<div class="card mod"><div class="tile" style="background:${P.tint(m.hue)}">${m.emoji}</div>
+          <div><div class="h text-[16px] leading-tight">${P.esc(m.label)}${mission ? " ⭐" : ""}</div>
+          <div class="sub mt-1" style="${done ? "color:#17703a" : ""}">${status}</div>
+          ${m.key === "grammar" ? `<div class="sub" style="color:var(--accent)">${P.grammarProgress}</div>` : ""}</div></div>`;
+      }).join("");
+
+      document.getElementById("app").innerHTML = `
+        <header class="hero"><div class="wrap">
+          <div class="flex items-start justify-between gap-3">
+            <div><div class="h text-[26px] leading-tight">🧭 English Quest</div>
+              <div class="text-[14px] font-bold opacity-80">${P.dateText}</div></div>
+          </div>
+          <div class="flex flex-wrap gap-2 mt-3"><span class="pill">🔥 ${s.streak} day${s.streak === 1 ? "" : "s"}</span><span class="pill">🧊 ${s.freezes} freeze${s.freezes === 1 ? "" : "s"}</span></div>
+        </div></header>
+
+        <section class="level">
+          <div class="flex items-center justify-between gap-3">
+            <div><div class="text-[13px] font-extrabold" style="color:var(--muted)">YOUR LEVEL</div>
+              <div class="h text-[28px] leading-tight">${P.LEVELS[P.levelIndex]}</div></div>
+            <div class="text-right text-[14px] font-bold" style="color:var(--muted)">Next level<div class="h text-[17px]" style="color:var(--accent)">${P.LEVELS[P.levelIndex + 1]} ›</div></div>
+          </div>
+          <div class="bar my-3"><i style="width:${P.progressPct}%"></i></div>
+          <div class="text-[15px] font-extrabold mb-4">${s.total} / ${P.GOAL} missions completed</div>
+          <div class="dots">${dots}</div>
+        </section>
+
+        <main class="wrap px-4" style="padding-bottom:116px">
+          <div class="flex items-baseline justify-between mt-6 mb-3"><h2 class="h text-[21px]">Today's Missions</h2><span class="text-[14px] font-extrabold" style="color:var(--muted)">${P.doneCount}/3 done</span></div>
+          <div class="flex flex-col gap-3">${missions}</div>
+          <h2 class="h text-[21px] mt-7 mb-3">All Activities</h2>
+          <div class="grid2">${mods}</div>
+        </main>
+
+        <nav class="nav" aria-label="Preview navigation (not interactive)">
+          <div class="on"><span>🏠</span>Home</div><div><span>🧩</span>Activities</div><div><span>🏅</span>Badges</div><div><span>📒</span>Notebook</div>
+        </nav>`;
+    })();
+  </script>
+</body>
+</html>

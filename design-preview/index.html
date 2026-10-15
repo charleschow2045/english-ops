@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex" />
+  <title>English Quest · style previews</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { sans: ["Nunito", "system-ui", "sans-serif"], head: ["Poppins", "Nunito", "sans-serif"] } } } };
+  </script>
+  <style>
+    body { margin: 0; font-family: Nunito, system-ui, sans-serif; background: #f4f1fa; color: #2c2750; overflow-x: hidden; }
+    .h { font-family: Poppins, Nunito, sans-serif; font-weight: 700; }
+    a.opt { display: block; padding: 16px 18px; border-radius: 20px; background: #fff; border: 1.5px solid #e1dbf3; text-decoration: none; color: inherit; box-shadow: 0 8px 18px -14px rgba(60, 40, 150, .5); }
+    a.opt:active { transform: translateY(1px); }
+    .sw { display: inline-block; width: 36px; height: 36px; border-radius: 12px; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+  <main class="max-w-[760px] mx-auto px-4 py-8">
+    <h1 class="h text-[26px] leading-tight">🎨 English Quest — style previews</h1>
+    <p class="text-[15px] font-bold mt-2" style="color:#6a6590">Three looks for the home screen, drawn with the same fake data. These are static mock-ups; the real app is not changed. Each page has a switch for a fresh start or a day with 2 of 3 missions done.</p>
+
+    <div class="flex flex-col gap-3 mt-6">
+      <a class="opt flex items-center gap-4" href="style-a.html">
+        <span class="sw" style="background:linear-gradient(135deg,#15133f,#4636ad)"></span>
+        <span><span class="h text-[18px] block">Style A · Indigo Night</span><span class="text-[14px] font-bold" style="color:#6a6590">Deep indigo starry header with a big level card, pale lilac-to-pink page and white rounded cards.</span></span>
+      </a>
+      <a class="opt flex items-center gap-4" href="style-b.html">
+        <span class="sw" style="background:linear-gradient(135deg,#e4dcff,#ffdff0)"></span>
+        <span><span class="h text-[18px] block">Style B · Soft Dawn</span><span class="text-[14px] font-bold" style="color:#6a6590">All-light lavender gradient with frosted-glass cards and a light level card.</span></span>
+      </a>
+      <a class="opt flex items-center gap-4" href="style-c.html">
+        <span class="sw" style="background:linear-gradient(135deg,#0f5b66,#ff6b4a)"></span>
+        <span><span class="h text-[18px] block">Style C · Modern Explorer</span><span class="text-[14px] font-bold" style="color:#6a6590">Keeps the explorer idea: a teal passport card with level stamps, rounded cards and coral buttons, no parchment.</span></span>
+      </a>
+    </div>
+  </main>
+</body>
+</html>
