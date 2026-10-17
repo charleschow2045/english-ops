@@ -178,7 +178,7 @@ window.App = window.App || {};
           <InkButton accent={ACCENT} className="w-full" onClick={onComplete}>
             Back to Missions
           </InkButton>
-          <button onClick={handleRefresh} className="mt-3 text-xs font-bold underline decoration-dotted" style={{ color: INK.mutedInk }}>
+          <button onClick={handleRefresh} className="mt-3 text-[13px] font-bold underline decoration-dotted" style={{ color: INK.mutedInk }}>
             🔄 Do it again with new sentences
           </button>
         </PaperCard>
@@ -246,7 +246,7 @@ window.App = window.App || {};
                 💛 Not quite — want to try again?
               </p>
               {heard && (
-                <p className="text-xs font-bold mb-3" style={{ color: INK.mutedInk }}>
+                <p className="text-[13px] font-bold mb-3" style={{ color: INK.mutedInk }}>
                   I heard: "{heard}"
                 </p>
               )}
@@ -280,7 +280,7 @@ window.App = window.App || {};
           {status === "idle" && (
             <button
               onClick={() => setStatus("correct")}
-              className="mt-3 text-xs font-bold underline decoration-dotted w-full text-center"
+              className="mt-3 text-[13px] font-bold underline decoration-dotted w-full text-center"
               style={{ color: INK.mutedInk }}
             >
               Mic trouble? Tap here if you said it out loud

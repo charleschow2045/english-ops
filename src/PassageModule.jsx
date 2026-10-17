@@ -88,7 +88,7 @@ window.App = window.App || {};
                 Back to Missions
               </InkButton>
             </div>
-            <button onClick={handleRefresh} className="mt-3 text-xs font-bold underline decoration-dotted" style={{ color: INK.mutedInk }}>
+            <button onClick={handleRefresh} className="mt-3 text-[13px] font-bold underline decoration-dotted" style={{ color: INK.mutedInk }}>
               🔄 Do it again with new questions
             </button>
           </PaperCard>
@@ -103,7 +103,7 @@ window.App = window.App || {};
               Back to Missions
             </Button>
           </div>
-          <button onClick={handleRefresh} className="mt-3 text-xs font-bold text-stone-400 underline decoration-dotted">
+          <button onClick={handleRefresh} className="mt-3 text-[13px] font-bold text-stone-400 underline decoration-dotted">
             🔄 Do it again with new questions
           </button>
         </Card>
@@ -146,7 +146,7 @@ window.App = window.App || {};
 
             {q.tag && (
               <span
-                className={`inline-block text-xs px-2.5 py-1 rounded-full mb-2 ${TYPE.caption}`}
+                className={`inline-block text-[13px] px-2.5 py-1 rounded-full mb-2 ${TYPE.caption}`}
                 style={{ backgroundColor: accent.tint, color: accent.solid, border: `1px solid ${accent.tintBorder}` }}
               >
                 {q.tag}

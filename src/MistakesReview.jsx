@@ -15,7 +15,7 @@ window.App = window.App || {};
   const { INK, TYPE, PaperCard, InkButton, PaperBackButton } = window.App.UI;
   const { QuestionBlock, useShuffledQuestion } = window.App.QuizQuestion;
 
-  const ACCENT = { solid: INK.stamp, dark: INK.stampDark, tint: "#F3E1DF", tintBorder: "#E7C9C4", on: INK.paper };
+  const ACCENT = { solid: INK.stamp, dark: INK.stampDark, tint: INK.stampTint, tintBorder: INK.stampTintBorder, on: "#ffffff" };
 
   function moduleLabel(key) {
     const m = Storage.MODULES.find((x) => x.key === key);

@@ -69,81 +69,118 @@ window.App = window.App || {};
   }
 
   // -------------------------------------------------------------------
-  // NEW "探險護照" (Explorer's Passport) system — a staged visual redesign.
-  // LEGACY (COLORS/Button/Card/BackButton/RefreshButton/TierBadge above)
-  // is left completely unchanged so the 8 modules not yet migrated keep
-  // rendering exactly as before with zero risk. Only DailyMissions.jsx,
-  // BadgesScreen.jsx, and Reading (via PassageModule's optional `accent`
-  // prop) use these so far — the 3 sample screens the user asked to
-  // review before wider rollout. Root.jsx's page background/header were
-  // switched to this palette globally already, since that's page chrome
-  // behind every screen, not a per-module component (mirrors the same
-  // choice made in the sibling chinese-ops redesign).
+  // NEW system — now the "style C" look (modern explorer): clean off-white
+  // page, white rounded cards, deep teal + coral, Poppins headings, Nunito
+  // text. It started life as the "探險護照" (explorer's passport) kraft-paper
+  // system and the names (INK, PaperCard, InkButton, Stamp ...) were kept so
+  // no screen had to change its imports; only the values changed. The visual
+  // spec is design-preview/style-c.html.
+  // LEGACY (COLORS/Button/Card/BackButton/RefreshButton/TierBadge above) is
+  // untouched. At the time of the style C switch, nothing renders it: every
+  // module is on this system (PassageModule only uses legacy in a fallback
+  // branch for callers that pass no `accent`, and Root always passes one).
   const INK = {
-    paper: "#EFE6D3", // 牛皮紙米色 — page background
-    paperCard: "#F8F2E4", // slightly lighter kraft tone for cards sitting on the page
-    ink: "#233142", // 墨藍 — primary text
-    mutedInk: "#726A57", // derived — warm muted caption/meta text, not a flat gray
-    stamp: "#A83A3A", // 護照印章紅 — primary accent (main buttons, highlights)
-    stampDark: "#7A2929",
-    gold: "#B8923A", // 黃銅金 — badges/achievements/streak
-    goldDark: "#8A6C28",
-    goldTint: "#F3EAD1",
-    goldTintBorder: "#E4D19C",
+    paper: "#f1f6f5", // page background
+    paperCard: "#ffffff", // card surface
+    ink: "#12353d", // primary text
+    mutedInk: "#4f6b72", // secondary text (5.2:1 on the page, 5.7:1 on white)
+    // Primary action. Darker than the preview's #ff6b4a because white text on
+    // that coral is only 2.8:1; this keeps the coral look at 4.7:1 with white.
+    stamp: "#d23f1c",
+    stampDark: "#a42f12", // the 4px "thickness" under a pressed-style button
+    stampTint: "#fff1ec",
+    stampTintBorder: "#ffd2c4",
+    stampText: "#b63a1a", // coral-family text on a light surface
+    coral: "#ff6b4a", // decorative coral only (never behind or as text)
+    teal: "#0f5b66", // deep teal
+    teal2: "#1b8a94",
+    tealTint: "#e6f4f6",
+    tealTintBorder: "#bfe0e4",
+    tealText: "#0d5560",
+    // gold = text-safe amber (streak numbers, badge labels); sun = the bright
+    // gold #ffc857 for fills such as progress bars and highlights.
+    gold: "#8a5f00",
+    goldDark: "#6b4a00",
+    goldTint: "#fff4d6",
+    goldTintBorder: "#f3dc9a",
+    sun: "#ffc857",
+    line: "#dbe8e6", // hairline borders on cards
+    lineDark: "#c3d7d4", // the 3px edge under secondary buttons
+    disabled: "#e6efee", // locked / greyed surfaces
+    success: "#17703a",
+    successTint: "#e1f4e8",
   };
 
-  // Every module keeps its own distinct color (per explicit instruction
-  // not to collapse them into one look), but each is now a tonal variant
-  // within one of two accent families instead of an arbitrary Tailwind hue
-  // picked ad hoc per module — grouped per the user's spec:
-  //   - mapBlue family (核心語文技能 — the "core skills" reading the map):
-  //     listening, speaking, storytelling, reading, comprehension, writing
-  //   - forestGreen family (探索/操練/遊戲 — side-quest exploration & drills):
-  //     grammar, wordhunt, vocabulary, knowledge, hangman
-  // `on` is the text/icon color to place on top of `solid` — paper (light)
-  // works for every tone here since both families stay fairly dark.
+  // hsl -> "#rrggbb" and a WCAG contrast helper, so each module colour can be
+  // derived from one hue and still keep white text readable on its `solid`.
+  function hslHex(h, s, l) {
+    s /= 100;
+    l /= 100;
+    const k = (n) => (n + h / 30) % 12;
+    const a = s * Math.min(l, 1 - l);
+    const f = (n) => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+    const x = (v) => Math.round(v * 255).toString(16).padStart(2, "0");
+    return `#${x(f(0))}${x(f(8))}${x(f(4))}`;
+  }
+  function lum(hex) {
+    const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)));
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+  }
+  const contrastWithWhite = (hex) => 1.05 / (lum(hex) + 0.05);
+
+  // One hue per module (the same hues as the style C preview). tint/tintBorder
+  // are soft pastels for tiles and borders; solid/dark are for buttons and
+  // text, with `solid` lowered in lightness until white on it is >= 4.5:1.
+  function accentFromHue(hue) {
+    let l = 42;
+    while (l > 20 && contrastWithWhite(hslHex(hue, 55, l)) < 4.5) l -= 1;
+    return {
+      solid: hslHex(hue, 55, l),
+      dark: hslHex(hue, 58, Math.max(l - 12, 14)),
+      tint: hslHex(hue, 85, 93),
+      tintBorder: hslHex(hue, 60, 84),
+      on: "#ffffff",
+      hue,
+    };
+  }
   const MODULE_ACCENTS = {
-    listening: { solid: "#2F6B7A", dark: "#1D4750", tint: "#E3EDEF", tintBorder: "#C3D9DD", on: INK.paper, family: "mapBlue" },
-    speaking: { solid: "#3A7D8C", dark: "#24525C", tint: "#E5EEF0", tintBorder: "#C6DBDE", on: INK.paper, family: "mapBlue" },
-    storytelling: { solid: "#35677A", dark: "#223F4C", tint: "#E3ECEE", tintBorder: "#C4D7DA", on: INK.paper, family: "mapBlue" },
-    reading: { solid: "#2A5F6E", dark: "#1A3E48", tint: "#E1EAEC", tintBorder: "#C1D4D7", on: INK.paper, family: "mapBlue" },
-    comprehension: { solid: "#245566", dark: "#163944", tint: "#DFE8EA", tintBorder: "#BED2D5", on: INK.paper, family: "mapBlue" },
-    writing: { solid: "#1F4A58", dark: "#142F38", tint: "#DDE6E8", tintBorder: "#BBCFD2", on: INK.paper, family: "mapBlue" },
-    grammar: { solid: "#4F8259", dark: "#36573B", tint: "#E9EEE5", tintBorder: "#CFDCC7", on: INK.paper, family: "forestGreen" },
-    wordhunt: { solid: "#4A7A56", dark: "#315240", tint: "#E8EDE4", tintBorder: "#CCDAC3", on: INK.paper, family: "forestGreen" },
-    vocabulary: { solid: "#2E5238", dark: "#1D3524", tint: "#E2E8DE", tintBorder: "#C0D0B7", on: INK.paper, family: "forestGreen" },
-    knowledge: { solid: "#3F6B4A", dark: "#294736", tint: "#E6ECE3", tintBorder: "#C9D8C0", on: INK.paper, family: "forestGreen" },
-    hangman: { solid: "#375D40", dark: "#23402A", tint: "#E4EAE1", tintBorder: "#C5D4BC", on: INK.paper, family: "forestGreen" },
+    listening: accentFromHue(205),
+    speaking: accentFromHue(345),
+    storytelling: accentFromHue(265),
+    reading: accentFromHue(150),
+    comprehension: accentFromHue(25),
+    writing: accentFromHue(45),
+    grammar: accentFromHue(175),
+    wordhunt: accentFromHue(320),
+    vocabulary: accentFromHue(230),
+    knowledge: accentFromHue(285),
+    hangman: accentFromHue(10),
   };
 
-  // A minimal 4-level type scale: pair the font family + weight here, let
-  // each call site pick its own text-size utility for context.
-  //   display  — big titles: app title, page/module headers
-  //   heading  — card section titles, item titles, module names
-  //   body     — main content text (kept on the existing clear sans font)
-  //   caption  — meta labels, level tags, small print
+  // Type scale: font family + weight only; each call site picks its own size.
+  //   display  — big titles
+  //   heading  — card titles, item titles, module names
+  //   body     — main text
+  //   caption  — small labels (sentence case, no letter-spacing tricks)
+  // Poppins/Nunito are Tailwind families `heading` and `ui` (index.html).
   const TYPE = {
-    display: "font-stamp font-bold tracking-tight",
-    heading: "font-stamp font-bold",
-    body: "font-sans",
-    caption: "font-sans font-bold uppercase tracking-wide",
+    display: "font-heading font-extrabold tracking-tight",
+    heading: "font-heading font-bold",
+    body: "font-ui",
+    caption: "font-ui font-bold",
   };
 
-  // Content card: warm kraft-paper tint (not stark white), thin tinted
-  // border, soft multi-layer shadow (a tight contact shadow + a diffuse
-  // ambient one + a faint inner top highlight) instead of the legacy
-  // single flat hard-offset shadow. `accent` (a MODULE_ACCENTS entry)
-  // tints the border toward that module's color when given.
+  // White rounded content card with a hairline border and a soft shadow.
+  // `accent` (a MODULE_ACCENTS entry) tints the border toward that module.
   function PaperCard({ children, className = "", accent, style = {} }) {
-    const borderColor = accent ? accent.tintBorder : "#E4D9BE";
+    const borderColor = accent ? accent.tintBorder : INK.line;
     return (
       <div
-        className={`relative rounded-3xl p-4 ${className}`}
+        className={`relative rounded-[20px] p-4 ${className}`}
         style={{
           backgroundColor: INK.paperCard,
           border: `1.5px solid ${borderColor}`,
-          boxShadow:
-            "0 1px 2px rgba(35,49,66,0.06), 0 10px 24px -10px rgba(35,49,66,0.20), inset 0 1px 0 rgba(255,255,255,0.5)",
+          boxShadow: "0 8px 18px -14px rgba(15,91,102,0.5)",
           ...style,
         }}
       >
@@ -152,26 +189,22 @@ window.App = window.App || {};
     );
   }
 
-  // Primary-action button: keeps the chunky "press-down" affordance the
-  // app already uses for CTAs, but the resting shadow is now layered
-  // (inner top highlight + a solid offset "thickness" layer in the
-  // accent's own dark shade + a soft diffuse drop shadow) rather than one
-  // flat color block, so it reads as a raised stamped object instead of a
-  // flat hard-edged rectangle. `accent` is a MODULE_ACCENTS entry, or an
-  // { solid, dark, on } shape — defaults to the passport-stamp red.
+  // Primary-action button: rounded, with a solid 4px "thickness" under it that
+  // presses down. `accent` is a MODULE_ACCENTS entry, or { solid, dark, on };
+  // by default it is the coral action colour.
   function InkButton({ children, onClick, accent, className = "", disabled = false, type = "button" }) {
-    const a = accent || { solid: INK.stamp, dark: INK.stampDark, on: INK.paper };
+    const a = accent || { solid: INK.stamp, dark: INK.stampDark, on: "#ffffff" };
     return (
       <button
         type={type}
         onClick={onClick}
         disabled={disabled}
-        className={`rounded-2xl font-extrabold px-5 py-3 text-lg font-sans transition-all duration-100
+        className={`rounded-[14px] font-extrabold px-5 py-3 text-lg font-ui transition-all duration-100
           active:translate-y-[3px] disabled:opacity-50 disabled:pointer-events-none ${className}`}
         style={{
           backgroundColor: a.solid,
           color: a.on,
-          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.22), 0 4px 0 ${a.dark}, 0 12px 20px -8px rgba(35,49,66,0.4)`,
+          boxShadow: `0 4px 0 ${a.dark}`,
         }}
       >
         {children}
@@ -183,12 +216,12 @@ window.App = window.App || {};
     return (
       <button
         onClick={onClick}
-        className={`flex items-center gap-1 rounded-2xl px-4 py-2 text-sm transition-all active:translate-y-[2px] ${TYPE.caption}`}
+        className={`flex items-center gap-1 rounded-[14px] px-4 py-2 text-sm transition-all active:translate-y-[2px] ${TYPE.caption}`}
         style={{
           backgroundColor: INK.paperCard,
           color: INK.ink,
-          border: `1.5px solid #E4D9BE`,
-          boxShadow: "0 3px 0 #D9CBA6",
+          border: `1.5px solid ${INK.line}`,
+          boxShadow: `0 3px 0 ${INK.lineDark}`,
         }}
       >
         {children}
@@ -200,12 +233,12 @@ window.App = window.App || {};
     return (
       <button
         onClick={onClick}
-        className={`flex items-center gap-1 rounded-2xl px-3 py-2 text-xs sm:text-sm transition-all active:translate-y-[2px] ${TYPE.caption}`}
+        className={`flex items-center gap-1 rounded-[14px] px-3 py-2 text-[13px] sm:text-sm transition-all active:translate-y-[2px] ${TYPE.caption}`}
         style={{
           backgroundColor: INK.paperCard,
-          color: INK.stamp,
-          border: `1.5px solid #E7C9C4`,
-          boxShadow: "0 3px 0 #DCB6B0",
+          color: INK.stampText,
+          border: `1.5px solid ${INK.stampTintBorder}`,
+          boxShadow: `0 3px 0 ${INK.stampTintBorder}`,
         }}
       >
         🔄 {label}
@@ -217,18 +250,17 @@ window.App = window.App || {};
     const label = ((window.App.Storage && window.App.Storage.TIERS.find((t) => t.key === tier)) || {}).label || tier;
     return (
       <span
-        className={`inline-block text-xs px-2.5 py-1 rounded-full ${TYPE.caption}`}
-        style={{ backgroundColor: INK.goldTint, color: INK.goldDark, border: `1px solid ${INK.goldTintBorder}` }}
+        className={`inline-block text-[13px] px-2.5 py-1 rounded-full ${TYPE.caption}`}
+        style={{ backgroundColor: INK.tealTint, color: INK.tealText, border: `1px solid ${INK.tealTintBorder}` }}
       >
         {label} level
       </span>
     );
   }
 
-  // Passport-stamp badge: an oval "ink stamp" look for achievements/streak
-  // — thick colored ring, a slight rotation, and a dashed inner border to
-  // read as something physically stamped rather than a plain rounded icon.
-  // `earned` false shows a greyed-out, unrotated "not stamped yet" state.
+  // Achievement stamp: a round gold-ringed badge, slightly rotated when
+  // earned; `earned` false shows a greyed-out, unrotated "not stamped yet"
+  // state with a lock.
   function Stamp({ emoji, earned = true, rotate = -6, size = 56 }) {
     return (
       <div
@@ -237,12 +269,10 @@ window.App = window.App || {};
           width: size,
           height: size,
           transform: earned ? `rotate(${rotate}deg)` : "none",
-          backgroundColor: earned ? INK.goldTint : "#E9E2D0",
-          border: `3px solid ${earned ? INK.gold : "#C9BFA4"}`,
-          boxShadow: earned
-            ? `inset 0 0 0 2px ${INK.paperCard}, inset 0 0 0 4px ${INK.gold}66, 0 3px 8px rgba(35,49,66,0.25)`
-            : "none",
-          opacity: earned ? 1 : 0.6,
+          backgroundColor: earned ? INK.goldTint : INK.disabled,
+          border: `3px solid ${earned ? INK.sun : INK.lineDark}`,
+          boxShadow: earned ? `0 0 0 4px ${INK.sun}47, 0 3px 8px rgba(15,91,102,0.18)` : "none",
+          opacity: earned ? 1 : 0.7,
         }}
       >
         <span className="text-2xl" style={{ filter: earned ? "none" : "grayscale(1)" }}>
@@ -260,7 +290,7 @@ window.App = window.App || {};
     BackButton,
     RefreshButton,
     TierBadge,
-    // new "探險護照" system
+    // new system (style C)
     INK,
     MODULE_ACCENTS,
     TYPE,

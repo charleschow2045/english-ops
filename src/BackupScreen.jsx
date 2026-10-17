@@ -42,14 +42,14 @@ window.App = window.App || {};
       ["程度", (s) => TIER_LABEL[s.tier] || s.tier],
     ];
     return (
-      <div className="rounded-xl overflow-hidden text-sm" style={{ border: "1.5px solid #E4D9BE" }}>
+      <div className="rounded-xl overflow-hidden text-sm" style={{ border: `1.5px solid ${INK.line}` }}>
         <div className={`grid grid-cols-3 gap-2 px-3 py-2 ${TYPE.caption}`} style={{ backgroundColor: INK.goldTint, color: INK.mutedInk }}>
           <span />
           <span>備份檔</span>
           <span>而家</span>
         </div>
         {rows.map(([label, fmt]) => (
-          <div key={label} className="grid grid-cols-3 gap-2 px-3 py-2" style={{ borderTop: "1px solid #E4D9BE", color: INK.ink }}>
+          <div key={label} className="grid grid-cols-3 gap-2 px-3 py-2" style={{ borderTop: `1px solid ${INK.line}`, color: INK.ink }}>
             <span className={TYPE.caption} style={{ color: INK.mutedInk }}>
               {label}
             </span>
@@ -129,7 +129,7 @@ window.App = window.App || {};
           <InkButton className="w-full" onClick={confirmRestore}>
             確認覆蓋
           </InkButton>
-          <InkButton accent={{ solid: INK.paperCard, dark: "#D9CBA6", on: INK.ink }} className="w-full" onClick={() => setPending(null)}>
+          <InkButton accent={{ solid: INK.paperCard, dark: INK.lineDark, on: INK.ink }} className="w-full" onClick={() => setPending(null)}>
             取消
           </InkButton>
         </div>
@@ -165,7 +165,7 @@ window.App = window.App || {};
             backgroundColor: INK.goldTint,
             color: INK.ink,
             border: `1.5px solid ${INK.goldTintBorder}`,
-            boxShadow: `0 4px 0 ${INK.goldDark}, 0 12px 20px -8px rgba(35,49,66,0.3)`,
+            boxShadow: `0 4px 0 ${INK.goldDark}, 0 12px 20px -8px rgba(15,91,102,0.3)`,
           }}
         >
           ⬆️ 匯入備份

@@ -23,72 +23,48 @@ Builder, History & Science (English practice through real facts/stories from
 subjects the child enjoys), and Hangman. Includes daily missions and
 progress tracking across four difficulty tiers.
 
-## UI redesign: "探險護照" (Explorer's Passport) — staged, in progress
-A visual-only redesign requested to replace the bright flat-Tailwind-palette
-look with a warmer "explorer's passport / field notebook" aesthetic — kraft
-paper, ink, a passport-stamp red accent, brass-gold badges, and two module
-color families. Explicitly visual-only: no content, data structure, or
-functional/logic changes. Follows the exact staged-rollout pattern already
-used in the sibling `chinese-ops` project (`src/theme.jsx` there has the
-same "LEGACY vs NEW system" comment header — read it first if extending
-this further, the two are meant to stay structurally parallel):
-- **`src/theme.jsx`** now carries TWO parallel systems. `COLORS`/`Button`/
-  `Card`/`BackButton`/`RefreshButton`/`TierBadge` are the untouched LEGACY
-  system — every module not yet migrated keeps using these with zero risk.
-  `INK`/`MODULE_ACCENTS`/`TYPE`/`PaperCard`/`InkButton`/`PaperBackButton`/
-  `PaperRefreshButton`/`PaperTierBadge`/`Stamp` are the NEW system.
-- **Palette**: `INK.paper` #EFE6D3 (page bg), `INK.ink` #233142 (text),
-  `INK.stamp` #A83A3A (primary accent — CTAs/highlights), `INK.gold`
-  #B8923A (badges/achievements/streak only). Every module keeps its own
-  distinct colour (not collapsed into one look) but each is now a tonal
-  variant within one of two families instead of an arbitrary Tailwind hue:
-  `mapBlue` (#2F6B7A family — listening, speaking, storytelling, reading,
-  comprehension, writing — the core "reading the map" language skills) and
-  `forestGreen` (#3F6B4A family — grammar, wordhunt, vocabulary, knowledge,
-  hangman — practice/game/exploration modules). This split for the 5
-  modules beyond the user's original 2 named groups (Listening/Reading/
-  Comprehension → mapBlue, History&Science/WordHunt/Hangman → forestGreen)
-  was my own judgement call, flagged to the user as adjustable.
-- **Fonts**: "Special Elite" (typewriter/stamp feel, loaded in index.html,
-  Tailwind key `font-stamp`) for headings/display text via `TYPE.display`/
-  `TYPE.heading`; body text stays on the existing Baloo 2 per instruction
-  to keep it "clear" — `TYPE.body`/`TYPE.caption`.
-- **Cards/buttons**: `PaperCard` — kraft-tinted bg, thin tinted border,
-  layered soft shadow (contact + diffuse ambient + inset top highlight)
-  instead of the legacy flat hard-offset shadow. `InkButton` — keeps the
-  chunky press-down feel but with a layered shadow (inset highlight + solid
-  dark "thickness" layer + diffuse drop shadow).
-- **`Stamp`**: passport-stamp badge look for achievements — oval, thick
-  gold ring, slight rotation, double-inset border to read as "stamped"
-  rather than a plain rounded icon; greyed out + a 🔒 when not yet earned.
-- **Root.jsx**: page background/header switched to the new palette
-  *globally* already (this is page chrome behind every screen, not a
-  per-module component — same choice chinese-ops made), so even
-  unmigrated modules now sit on the new kraft background even though their
-  own cards/buttons still render in the old legacy style.
-- **Rollout status — complete.** After the 3 sample screens (Home, Badges,
-  Reading) were approved, the system was extended to every remaining
-  module: `GrammarModule.jsx`, `HangmanModule.jsx`, `ListeningModule.jsx`,
-  `SpeakingModule.jsx`, `VocabularyModule.jsx`, `WordHuntModule.jsx`, and
-  `WritingModule.jsx` were each rewritten onto `PaperCard`/`InkButton`/
-  `INK`/`TYPE` with their own `MODULE_ACCENTS` entry, and Storytelling/
-  Comprehension/Knowledge now pass `accent={MODULE_ACCENTS.<key>}` into
-  the same shared `PassageModule.jsx`/`QuestionBlock` that Reading already
-  used (no further changes needed to those two shared files themselves —
-  their existing `accent`-present/absent branch just now always takes the
-  `accent` path since every caller supplies one). `VoicePicker.jsx`
-  (shared by Listening/Speaking) also gained an optional `accent` prop.
-  `renderBlankSentence` (the fill-in-the-blank placeholder inside
-  `QuestionBlock`) now tints to the passed `accent` too, fixing a missed
-  spot where it stayed hardcoded indigo through the first rollout pass.
-  The legacy `COLORS`/`Button`/`Card`/`BackButton`/`RefreshButton`/
-  `TierBadge` exports in `theme.jsx` are no longer referenced by any
-  module — left in place rather than deleted, since removing them wasn't
-  requested and they're harmless dead code, not a maintenance risk.
-  VocabularyModule's old per-part-of-speech rainbow badge colour was
-  dropped in favour of a single consistent module accent colour, matching
-  every other migrated module — a deliberate simplification, not an
-  oversight.
+## Visual style: "style C" (modern explorer)
+Visual-only restyle of the whole app (no content, data or logic changes). The
+spec is `design-preview/style-c.html` (mock-ups of three candidate styles live
+in `design-preview/`; they are static and not linked from the app). The system
+began as the kraft-paper "探險護照" (explorer's passport) look; its names
+(`INK`, `PaperCard`, `InkButton`, `Stamp`...) were kept so no screen changed
+its imports, only the values.
+- **Tokens live in `src/theme.jsx`** — use them, never hard-code colours
+  (`grep "#[0-9A-Fa-f]\{6\}" src/` should only hit theme.jsx, TestModeBanner
+  and `#ffffff`). `INK`: page `paper` #f1f6f5, card `paperCard` #ffffff, text
+  `ink` #12353d / `mutedInk` #4f6b72, primary action `stamp` #d23f1c (+
+  `stampDark`, `stampTint`, `stampTintBorder`, `stampText`), `teal` #0f5b66 /
+  `teal2` + tints, text-safe gold `gold`/`goldDark`/`goldTint` for streak and
+  badge text, bright gold `sun` #ffc857 for fills only (progress bars,
+  highlights — it is too light to be text), `line`/`lineDark` hairlines,
+  `disabled`, `success`. `coral` #ff6b4a is decorative only: white text on it is
+  2.8:1, which is why buttons use `stamp` (4.7:1).
+- **`MODULE_ACCENTS`**: one hue per module (same hues as the preview) turned
+  into `solid`/`dark`/`tint`/`tintBorder`/`on` by `accentFromHue`, which
+  darkens `solid` until white text on it is >= 4.5:1. Add a module = add a hue.
+- **Fonts**: Poppins (Tailwind `font-heading`) for titles, Nunito (`font-ui`)
+  for text, loaded in index.html. `TYPE.display`/`heading` = Poppins
+  800/700, `TYPE.body` = Nunito, `TYPE.caption` = Nunito 700 in normal case
+  (no uppercase). Root wraps the app in `font-ui`; `<body>` and the Tailwind
+  `sans`/`stamp` families are unchanged (Baloo 2 / Special Elite are no longer
+  used by any live screen).
+- **Components**: `PaperCard` = white card, radius 20, hairline border, soft
+  teal shadow (`accent` tints the border). `InkButton` = rounded 14, 4px solid
+  bottom shadow, coral by default or a module `accent`. `PaperBackButton`,
+  `PaperRefreshButton`, `PaperTierBadge`, `Stamp` follow the same look.
+- **Home screen** (`DailyMissions.jsx`): status card (date, streak/freeze
+  pills, today's count, tier selector), Today's Missions as wide cards with a
+  Start › / Done ✓ pill, Badges and Mistake Notebook rows, All Activities as a
+  2-column grid. No level card and no bottom navigation yet (planned, not
+  decided).
+- **Text size**: nothing in `src/` should be smaller than 13px (use
+  `text-[13px]`, not `text-xs`).
+- **Legacy components** (`COLORS`/`Button`/`Card`/`BackButton`/`RefreshButton`/
+  `TierBadge` in theme.jsx) are untouched and are no longer rendered by any live
+  screen: only `PassageModule`'s fallback branch for callers that pass no
+  `accent` uses them, and `Root.jsx` always passes one. **No module is left on
+  the old look** — the old note about "unmigrated modules" no longer applies.
 
 ## Gamification: badges & streak freeze
 Added after researching what makes Duolingo/Prodigy/Khan Academy Kids

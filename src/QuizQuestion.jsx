@@ -80,7 +80,7 @@ window.App = window.App || {};
                     showCorrect
                       ? { backgroundColor: accent.solid, color: accent.on, border: `2px solid ${accent.dark}` }
                       : showWrong
-                      ? { backgroundColor: INK.goldTint, color: "#7A2929", border: "2px solid #E7C9C4" }
+                      ? { backgroundColor: INK.goldTint, color: INK.stampDark, border: `2px solid ${INK.stampTintBorder}` }
                       : { backgroundColor: INK.paperCard, color: INK.ink, border: `2px solid ${accent.tintBorder}` }
                   }
                 >
@@ -91,7 +91,7 @@ window.App = window.App || {};
           </div>
           {locked && (
             <div className="mt-3">
-              <p className="text-lg font-extrabold" style={{ color: correct ? accent.solid : "#A83A3A" }}>
+              <p className="text-lg font-extrabold" style={{ color: correct ? accent.solid : INK.stampText }}>
                 {correct ? "✅ Correct! Nice work!" : "💛 Not quite — here's the right answer:"}
               </p>
               <p className="mt-1 text-base font-bold" style={{ color: INK.mutedInk }}>

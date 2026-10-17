@@ -10,7 +10,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Special+Elite&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Special+Elite&family=Nunito:wght@500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet" />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -23,6 +23,10 @@
             // typewriter/document face for headings and passport-stamp
             // badges, per user's spec; body text stays on Baloo 2.
             stamp: ['"Special Elite"', "serif"],
+            // Style C ("modern explorer"): Poppins for headings, Nunito for
+            // interface text. Added alongside, not instead of, sans/stamp.
+            heading: ["Poppins", "Nunito", "sans-serif"],
+            ui: ["Nunito", "system-ui", "sans-serif"],
           },
         },
       },
@@ -33,7 +37,7 @@
     body { font-family: "Baloo 2", ui-rounded, system-ui, sans-serif; }
   </style>
 </head>
-<body style="background-color: #EFE6D3">
+<body style="background-color: #f1f6f5">
   <div id="root"></div>
 
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>

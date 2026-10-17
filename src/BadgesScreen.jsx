@@ -13,9 +13,9 @@ window.App = window.App || {};
       <div
         className="flex items-center gap-3 rounded-2xl p-3 transition-all"
         style={{
-          backgroundColor: earned ? INK.paperCard : "#EDE6D5",
-          border: `1.5px solid ${earned ? INK.goldTintBorder : "#DED2AF"}`,
-          boxShadow: earned ? "0 1px 2px rgba(35,49,66,0.05), 0 6px 14px -8px rgba(35,49,66,0.18)" : "none",
+          backgroundColor: earned ? INK.paperCard : INK.disabled,
+          border: `1.5px solid ${earned ? INK.goldTintBorder : INK.line}`,
+          boxShadow: earned ? "0 8px 18px -14px rgba(15,91,102,0.5)" : "none",
         }}
       >
         <Stamp emoji={badge.emoji} earned={earned} rotate={earned ? (badge.key.length % 2 === 0 ? -6 : 5) : 0} />
@@ -23,7 +23,7 @@ window.App = window.App || {};
           <p className={`text-base ${TYPE.heading}`} style={{ color: earned ? INK.ink : INK.mutedInk }}>
             {badge.label}
           </p>
-          <p className={`text-xs ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
+          <p className={`text-[13px] ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
             {badge.description}
           </p>
         </div>

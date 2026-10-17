@@ -3,6 +3,7 @@ window.App = window.App || {};
 
 (function () {
   const { useState, useEffect, useRef } = React;
+  const { INK, TYPE } = window.App.UI;
   const {
     Storage,
     DailyMissions,
@@ -101,12 +102,12 @@ window.App = window.App || {};
     return (
       <>
       <TestModeBanner />
-      <div className="min-h-screen relative overflow-hidden" style={{ backgroundColor: "#EFE6D3", color: "#233142" }}>
+      <div className="min-h-screen relative overflow-hidden font-ui" style={{ backgroundColor: INK.paper, color: INK.ink }}>
         <div className="pointer-events-none absolute inset-0 overflow-hidden select-none">
-          <div className="absolute -top-16 -left-16 w-72 h-72 rounded-full opacity-[0.14] blur-3xl" style={{ backgroundColor: "#B8923A" }} />
-          <div className="absolute top-24 -right-20 w-80 h-80 rounded-full opacity-[0.14] blur-3xl" style={{ backgroundColor: "#3F6B4A" }} />
-          <div className="absolute bottom-0 left-1/4 w-72 h-72 rounded-full opacity-[0.12] blur-3xl" style={{ backgroundColor: "#A83A3A" }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full opacity-[0.14] blur-3xl" style={{ backgroundColor: "#2F6B7A" }} />
+          <div className="absolute -top-16 -left-16 w-72 h-72 rounded-full opacity-[0.14] blur-3xl" style={{ backgroundColor: INK.sun }} />
+          <div className="absolute top-24 -right-20 w-80 h-80 rounded-full opacity-[0.14] blur-3xl" style={{ backgroundColor: INK.teal2 }} />
+          <div className="absolute bottom-0 left-1/4 w-72 h-72 rounded-full opacity-[0.12] blur-3xl" style={{ backgroundColor: INK.coral }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full opacity-[0.14] blur-3xl" style={{ backgroundColor: INK.teal }} />
           <span className="absolute top-16 right-8 text-4xl opacity-[0.16]">🧭</span>
           <span className="absolute top-48 left-6 text-3xl opacity-[0.16]">🗺️</span>
           <span className="absolute bottom-24 right-12 text-4xl opacity-[0.16]">✒️</span>
@@ -115,7 +116,7 @@ window.App = window.App || {};
 
         <div className="relative px-4 pb-10">
         <header className="pt-6 pb-4">
-          <h1 className="text-3xl font-stamp font-bold tracking-tight" style={{ color: "#A83A3A" }}>🧭 English Quest</h1>
+          <h1 className={`text-3xl ${TYPE.display}`} style={{ color: INK.ink }}>🧭 English Quest</h1>
         </header>
 
         <main>

@@ -87,7 +87,7 @@ window.App = window.App || {};
             <InkButton accent={ACCENT} className="w-full" onClick={onComplete}>
               Back to Missions
             </InkButton>
-            <button onClick={handleRefresh} className="mt-3 text-xs font-bold underline decoration-dotted" style={{ color: INK.mutedInk }}>
+            <button onClick={handleRefresh} className="mt-3 text-[13px] font-bold underline decoration-dotted" style={{ color: INK.mutedInk }}>
               🔄 Do it again with new passages
             </button>
           </PaperCard>
@@ -136,7 +136,7 @@ window.App = window.App || {};
                     showCorrect
                       ? { backgroundColor: ACCENT.solid, color: ACCENT.on, border: `2px solid ${ACCENT.dark}` }
                       : showWrong
-                      ? { backgroundColor: INK.goldTint, color: "#7A2929", border: "2px solid #E7C9C4" }
+                      ? { backgroundColor: INK.goldTint, color: INK.stampDark, border: `2px solid ${INK.stampTintBorder}` }
                       : { backgroundColor: INK.paperCard, color: INK.ink, border: `2px solid ${ACCENT.tintBorder}` }
                   }
                 >
@@ -148,7 +148,7 @@ window.App = window.App || {};
 
           {locked && (
             <div className="mt-3">
-              <p className="font-extrabold" style={{ color: isCorrect ? ACCENT.solid : "#A83A3A" }}>
+              <p className="font-extrabold" style={{ color: isCorrect ? ACCENT.solid : INK.stampText }}>
                 {isCorrect ? "✅ Correct! Great listening!" : "💛 Not quite — here's the right answer:"}
               </p>
               <p className="mt-1 text-sm font-bold" style={{ color: INK.mutedInk }}>

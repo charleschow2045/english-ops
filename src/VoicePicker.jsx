@@ -38,9 +38,9 @@ window.App = window.App || {};
     if (accent) {
       return (
         <div className="mb-4">
-          <p className="text-xs font-extrabold mb-1.5" style={{ color: INK.mutedInk }}>🔊 Voice</p>
+          <p className="text-[13px] font-extrabold mb-1.5" style={{ color: INK.mutedInk }}>🔊 Voice</p>
           {shortlist.length === 0 ? (
-            <p className="text-xs font-bold" style={{ color: INK.mutedInk }}>Using your device's default voice</p>
+            <p className="text-[13px] font-bold" style={{ color: INK.mutedInk }}>Using your device's default voice</p>
           ) : (
             <div className="flex gap-2 overflow-x-auto pb-1">
               {shortlist.map((v) => {
@@ -52,7 +52,7 @@ window.App = window.App || {};
                       onChange({ voiceURI: v.voiceURI });
                       window.App.speak("Hi! This is my voice.", { voiceURI: v.voiceURI, rate: voicePref.rate });
                     }}
-                    className="shrink-0 rounded-xl font-bold px-3 py-1.5 text-xs whitespace-nowrap transition-all"
+                    className="shrink-0 rounded-xl font-bold px-3 py-1.5 text-[13px] whitespace-nowrap transition-all"
                     style={
                       active
                         ? { backgroundColor: accent.solid, color: accent.on, border: `2px solid ${accent.dark}` }
@@ -66,7 +66,7 @@ window.App = window.App || {};
             </div>
           )}
 
-          <p className="text-xs font-extrabold mb-1.5 mt-3" style={{ color: INK.mutedInk }}>⏱️ Speed</p>
+          <p className="text-[13px] font-extrabold mb-1.5 mt-3" style={{ color: INK.mutedInk }}>⏱️ Speed</p>
           <div className="flex gap-2">
             {rates.map((r) => {
               const active = voicePref.rate === r.rate;
@@ -74,7 +74,7 @@ window.App = window.App || {};
                 <button
                   key={r.label}
                   onClick={() => onChange({ rate: r.rate })}
-                  className="flex-1 rounded-xl font-bold py-1.5 text-xs transition-all"
+                  className="flex-1 rounded-xl font-bold py-1.5 text-[13px] transition-all"
                   style={
                     active
                       ? { backgroundColor: accent.solid, color: accent.on, border: `2px solid ${accent.dark}` }
@@ -92,9 +92,9 @@ window.App = window.App || {};
 
     return (
       <div className="mb-4">
-        <p className="text-xs font-extrabold text-stone-400 mb-1.5">🔊 Voice</p>
+        <p className="text-[13px] font-extrabold text-stone-400 mb-1.5">🔊 Voice</p>
         {shortlist.length === 0 ? (
-          <p className="text-xs text-stone-400 font-bold">Using your device's default voice</p>
+          <p className="text-[13px] text-stone-400 font-bold">Using your device's default voice</p>
         ) : (
           <div className="flex gap-2 overflow-x-auto pb-1">
             {shortlist.map((v) => {
@@ -106,7 +106,7 @@ window.App = window.App || {};
                     onChange({ voiceURI: v.voiceURI });
                     window.App.speak("Hi! This is my voice.", { voiceURI: v.voiceURI, rate: voicePref.rate });
                   }}
-                  className={`shrink-0 rounded-xl border-4 font-bold px-3 py-1.5 text-xs whitespace-nowrap transition-all
+                  className={`shrink-0 rounded-xl border-4 font-bold px-3 py-1.5 text-[13px] whitespace-nowrap transition-all
                     ${active ? "bg-sky-400 border-sky-600 text-sky-950" : "bg-white border-stone-200 text-stone-500"}`}
                 >
                   {cleanVoiceName(v.name)}
@@ -116,7 +116,7 @@ window.App = window.App || {};
           </div>
         )}
 
-        <p className="text-xs font-extrabold text-stone-400 mb-1.5 mt-3">⏱️ Speed</p>
+        <p className="text-[13px] font-extrabold text-stone-400 mb-1.5 mt-3">⏱️ Speed</p>
         <div className="flex gap-2">
           {rates.map((r) => {
             const active = voicePref.rate === r.rate;
@@ -124,7 +124,7 @@ window.App = window.App || {};
               <button
                 key={r.label}
                 onClick={() => onChange({ rate: r.rate })}
-                className={`flex-1 rounded-xl border-4 font-bold py-1.5 text-xs transition-all
+                className={`flex-1 rounded-xl border-4 font-bold py-1.5 text-[13px] transition-all
                   ${active ? "bg-sky-400 border-sky-600 text-sky-950" : "bg-white border-stone-200 text-stone-500"}`}
               >
                 {r.label}

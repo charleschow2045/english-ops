@@ -110,7 +110,7 @@ window.App = window.App || {};
 
           <button
             onClick={() => setShowHints((v) => !v)}
-            className="text-xs font-extrabold underline decoration-dotted mb-3"
+            className="text-[13px] font-extrabold underline decoration-dotted mb-3"
             style={{ color: INK.goldDark }}
           >
             {showHints ? "Hide writing tips" : "💡 Need help? Tap for writing tips"}
@@ -119,17 +119,17 @@ window.App = window.App || {};
           {showHints && (
             <div className="mb-4 rounded-2xl p-3 flex flex-col gap-3" style={{ backgroundColor: INK.goldTint, border: `1.5px solid ${INK.goldTintBorder}` }}>
               <div>
-                <p className="text-xs font-extrabold mb-1" style={{ color: INK.goldDark }}>
+                <p className="text-[13px] font-extrabold mb-1" style={{ color: INK.goldDark }}>
                   📝 How to structure your writing:
                 </p>
-                <ul className="list-disc list-inside text-sm font-bold flex flex-col gap-1" style={{ color: "#6B5420" }}>
+                <ul className="list-disc list-inside text-sm font-bold flex flex-col gap-1" style={{ color: INK.goldDark }}>
                   {hints.structure.map((line, i) => (
                     <li key={i}>{line}</li>
                   ))}
                 </ul>
               </div>
               <div>
-                <p className="text-xs font-extrabold mb-1.5" style={{ color: INK.goldDark }}>
+                <p className="text-[13px] font-extrabold mb-1.5" style={{ color: INK.goldDark }}>
                   ✨ Try starting with (tap to use):
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -137,7 +137,7 @@ window.App = window.App || {};
                     <button
                       key={i}
                       onClick={() => useStarter(starter)}
-                      className="rounded-lg px-2 py-1 font-bold text-xs"
+                      className="rounded-lg px-2 py-1 font-bold text-[13px]"
                       style={{ backgroundColor: INK.paperCard, color: INK.goldDark, border: `2px solid ${INK.goldTintBorder}` }}
                     >
                       {starter}
@@ -146,10 +146,10 @@ window.App = window.App || {};
                 </div>
               </div>
               <div>
-                <p className="text-xs font-extrabold mb-1" style={{ color: INK.goldDark }}>
+                <p className="text-[13px] font-extrabold mb-1" style={{ color: INK.goldDark }}>
                   🎨 Make it more vivid:
                 </p>
-                <ul className="list-disc list-inside text-sm font-bold flex flex-col gap-1" style={{ color: "#6B5420" }}>
+                <ul className="list-disc list-inside text-sm font-bold flex flex-col gap-1" style={{ color: INK.goldDark }}>
                   {craftTips.map((line, i) => (
                     <li key={i}>{line}</li>
                   ))}
@@ -193,14 +193,14 @@ window.App = window.App || {};
 
               <button
                 onClick={() => setShowModel((v) => !v)}
-                className="text-xs font-extrabold underline decoration-dotted mt-1 text-left"
+                className="text-[13px] font-extrabold underline decoration-dotted mt-1 text-left"
                 style={{ color: INK.goldDark }}
               >
                 {showModel ? "Hide example writing" : "📖 See an example of strong writing for this topic"}
               </button>
               {showModel && (
                 <div className="rounded-2xl p-3" style={{ backgroundColor: INK.goldTint, border: `1.5px solid ${INK.goldTintBorder}` }}>
-                  <p className="text-sm font-bold leading-relaxed" style={{ color: "#6B5420" }}>
+                  <p className="text-sm font-bold leading-relaxed" style={{ color: INK.goldDark }}>
                     {modelEssay}
                   </p>
                 </div>

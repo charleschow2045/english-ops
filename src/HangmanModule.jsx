@@ -36,7 +36,7 @@ window.App = window.App || {};
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
         <div
           className="rounded-3xl p-6 w-full max-w-sm"
-          style={{ backgroundColor: INK.paperCard, border: `1.5px solid ${ACCENT.tintBorder}`, boxShadow: "0 12px 30px -8px rgba(35,49,66,0.35)" }}
+          style={{ backgroundColor: INK.paperCard, border: `1.5px solid ${ACCENT.tintBorder}`, boxShadow: "0 12px 30px -8px rgba(15,91,102,0.35)" }}
           onClick={(e) => e.stopPropagation()}
         >
           <h2 className={`text-2xl mb-3 ${TYPE.heading}`} style={{ color: INK.ink }}>
@@ -121,7 +121,7 @@ window.App = window.App || {};
           <InkButton accent={ACCENT} className="w-full" onClick={onComplete}>
             Back to Missions
           </InkButton>
-          <button onClick={handleNewWord} className="mt-3 text-xs font-bold underline decoration-dotted" style={{ color: INK.mutedInk }}>
+          <button onClick={handleNewWord} className="mt-3 text-[13px] font-bold underline decoration-dotted" style={{ color: INK.mutedInk }}>
             🔄 Try another word
           </button>
         </PaperCard>
@@ -137,7 +137,7 @@ window.App = window.App || {};
           <div className="flex gap-2">
             <button
               onClick={() => setShowHelp(true)}
-              className={`rounded-2xl px-3 py-2 text-xs sm:text-sm transition-all active:translate-y-[2px] ${TYPE.caption}`}
+              className={`rounded-2xl px-3 py-2 text-[13px] sm:text-sm transition-all active:translate-y-[2px] ${TYPE.caption}`}
               style={{ backgroundColor: INK.paperCard, color: ACCENT.solid, border: `1.5px solid ${ACCENT.tintBorder}`, boxShadow: `0 3px 0 ${ACCENT.tintBorder}` }}
             >
               ❓ How to Play
@@ -164,7 +164,7 @@ window.App = window.App || {};
             </p>
           </div>
 
-          <p className={`text-center text-xs mb-2 ${TYPE.caption}`} style={{ color: ACCENT.solid }}>
+          <p className={`text-center text-[13px] mb-2 ${TYPE.caption}`} style={{ color: ACCENT.solid }}>
             🏷️ Category: {category}
           </p>
 
@@ -192,7 +192,7 @@ window.App = window.App || {};
                           ? { backgroundColor: INK.paperCard, color: INK.ink, border: `2px solid ${ACCENT.tintBorder}` }
                           : isCorrect
                           ? { backgroundColor: ACCENT.solid, color: ACCENT.on, border: `2px solid ${ACCENT.dark}` }
-                          : { backgroundColor: "#E9E2D0", color: "#A79C82", border: "2px solid #DED2AF" }
+                          : { backgroundColor: INK.disabled, color: INK.mutedInk, border: `2px solid ${INK.lineDark}` }
                       }
                     >
                       {letter}
@@ -213,7 +213,7 @@ window.App = window.App || {};
           </button>
         </PaperCard>
 
-        <button onClick={onComplete} className="text-xs font-bold underline decoration-dotted text-center" style={{ color: INK.mutedInk }}>
+        <button onClick={onComplete} className="text-[13px] font-bold underline decoration-dotted text-center" style={{ color: INK.mutedInk }}>
           I'm done for today ✅
         </button>
       </div>

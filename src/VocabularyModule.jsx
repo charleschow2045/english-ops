@@ -25,7 +25,7 @@ window.App = window.App || {};
         <span className="text-sm font-extrabold" style={{ color: ACCENT.solid }}>
           {item.word}
         </span>
-        <span className="text-xs font-bold" style={{ color: INK.mutedInk }}>
+        <span className="text-[13px] font-bold" style={{ color: INK.mutedInk }}>
           {" "}
           · {item.zh}
         </span>
@@ -74,7 +74,7 @@ window.App = window.App || {};
           <InkButton accent={ACCENT} className="w-full" onClick={onComplete}>
             Back to Missions
           </InkButton>
-          <button onClick={handleRefresh} className="mt-3 text-xs font-bold underline decoration-dotted" style={{ color: INK.mutedInk }}>
+          <button onClick={handleRefresh} className="mt-3 text-[13px] font-bold underline decoration-dotted" style={{ color: INK.mutedInk }}>
             🔄 Study a new set of 10
           </button>
         </PaperCard>
@@ -98,7 +98,7 @@ window.App = window.App || {};
         <PaperCard accent={ACCENT}>
           <div className="flex items-center justify-center gap-2 mb-2">
             <span
-              className="text-xs font-extrabold px-2 py-1 rounded-full uppercase"
+              className="text-[13px] font-extrabold px-2 py-1 rounded-full uppercase"
               style={{ backgroundColor: ACCENT.tint, color: ACCENT.solid }}
             >
               {item.pos}
@@ -126,14 +126,14 @@ window.App = window.App || {};
                   {item.zh}
                 </p>
               </div>
-              <div className="rounded-xl p-3" style={{ backgroundColor: INK.paperCard, border: "1.5px solid #E4D9BE" }}>
-                <p className="text-xs font-extrabold mb-1" style={{ color: INK.mutedInk }}>
+              <div className="rounded-xl p-3" style={{ backgroundColor: INK.paperCard, border: `1.5px solid ${INK.line}` }}>
+                <p className="text-[13px] font-extrabold mb-1" style={{ color: INK.mutedInk }}>
                   Meaning:
                 </p>
                 <p className="text-sm font-bold mb-2" style={{ color: INK.ink }}>
                   {item.definition}
                 </p>
-                <p className="text-xs font-extrabold mb-1" style={{ color: INK.mutedInk }}>
+                <p className="text-[13px] font-extrabold mb-1" style={{ color: INK.mutedInk }}>
                   Example:
                 </p>
                 <p className="text-sm font-bold italic" style={{ color: INK.ink }}>
@@ -145,7 +145,7 @@ window.App = window.App || {};
                 <div className="flex flex-col gap-2">
                   {item.synonyms && (
                     <div>
-                      <p className="text-xs font-extrabold mb-1" style={{ color: INK.mutedInk }}>
+                      <p className="text-[13px] font-extrabold mb-1" style={{ color: INK.mutedInk }}>
                         🔁 Similar words (tap to hear):
                       </p>
                       <div className="flex flex-wrap gap-2">
@@ -157,7 +157,7 @@ window.App = window.App || {};
                   )}
                   {item.antonyms && (
                     <div>
-                      <p className="text-xs font-extrabold mb-1" style={{ color: INK.mutedInk }}>
+                      <p className="text-[13px] font-extrabold mb-1" style={{ color: INK.mutedInk }}>
                         ↔️ Opposite words (tap to hear):
                       </p>
                       <div className="flex flex-wrap gap-2">

@@ -35,7 +35,7 @@ window.App = window.App || {};
     const learn = level.learn;
     return (
       <PaperCard accent={ACCENT}>
-        <p className={`text-xs mb-1 ${TYPE.caption}`} style={{ color: ACCENT.solid }}>
+        <p className={`text-[13px] mb-1 ${TYPE.caption}`} style={{ color: ACCENT.solid }}>
           📖 Learn first · Level {levelNumber}
         </p>
         <h2 className={`text-xl mb-2 leading-snug ${TYPE.heading}`} style={{ color: INK.ink }}>
@@ -46,7 +46,7 @@ window.App = window.App || {};
         </p>
 
         <div className="rounded-2xl overflow-hidden mb-3" style={{ border: `1.5px solid ${ACCENT.tintBorder}` }}>
-          <div className="grid grid-cols-2 text-xs font-extrabold px-3 py-2" style={{ backgroundColor: ACCENT.tint, color: ACCENT.solid }}>
+          <div className="grid grid-cols-2 text-[13px] font-extrabold px-3 py-2" style={{ backgroundColor: ACCENT.tint, color: ACCENT.solid }}>
             <span>{learn.headers[0]}</span>
             <span>{learn.headers[1]}</span>
           </div>
@@ -72,7 +72,7 @@ window.App = window.App || {};
 
         {learn.mistake && (
           <div className="rounded-2xl p-3 mb-4" style={{ backgroundColor: INK.goldTint, border: `1.5px solid ${INK.goldTintBorder}` }}>
-            <p className="text-sm font-bold" style={{ color: "#6B5420" }}>
+            <p className="text-sm font-bold" style={{ color: INK.goldDark }}>
               ⚠️ Watch out: {learn.mistake}
             </p>
           </div>
@@ -173,7 +173,7 @@ window.App = window.App || {};
                 style={{
                   backgroundColor: INK.paperCard,
                   border: `1.5px solid ${ACCENT.tintBorder}`,
-                  boxShadow: "0 1px 2px rgba(35,49,66,0.05), 0 6px 14px -8px rgba(35,49,66,0.18)",
+                  boxShadow: "0 8px 18px -14px rgba(15,91,102,0.5)",
                 }}
               >
                 <span className="text-3xl">{c.emoji}</span>
@@ -181,7 +181,7 @@ window.App = window.App || {};
                   <p className={`text-base ${TYPE.heading}`} style={{ color: INK.ink }}>
                     {c.label}
                   </p>
-                  <p className={`text-xs ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
+                  <p className={`text-[13px] ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
                     {c.blurb}
                   </p>
                 </div>
@@ -219,7 +219,7 @@ window.App = window.App || {};
               return (
               <div key={lv.id}>
                 {path.sections && path.sections[i] && (
-                  <p className={`text-xs mb-2 mt-1 ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
+                  <p className={`text-[13px] mb-2 mt-1 ${TYPE.caption}`} style={{ color: INK.mutedInk }}>
                     {path.sections[i]}
                   </p>
                 )}
@@ -229,7 +229,7 @@ window.App = window.App || {};
                   style={{
                     backgroundColor: INK.paperCard,
                     border: `1.5px solid ${ACCENT.tintBorder}`,
-                    boxShadow: "0 1px 2px rgba(35,49,66,0.05), 0 6px 14px -8px rgba(35,49,66,0.18)",
+                    boxShadow: "0 8px 18px -14px rgba(15,91,102,0.5)",
                   }}
                 >
                   <span
@@ -245,7 +245,7 @@ window.App = window.App || {};
                     <p className={`text-base leading-tight ${TYPE.heading}`} style={{ color: INK.ink }}>
                       {lv.emoji} {lv.title}
                     </p>
-                    <p className="text-xs font-bold" style={{ color: INK.mutedInk }}>
+                    <p className="text-[13px] font-bold" style={{ color: INK.mutedInk }}>
                       {lv.blurb}
                     </p>
                   </div>
@@ -329,11 +329,11 @@ window.App = window.App || {};
             Back to Missions
           </InkButton>
           {isPS && (
-            <button onClick={() => setLevelIdx(null)} className="mt-3 block w-full text-xs font-bold underline decoration-dotted" style={{ color: INK.mutedInk }}>
+            <button onClick={() => setLevelIdx(null)} className="mt-3 block w-full text-[13px] font-bold underline decoration-dotted" style={{ color: INK.mutedInk }}>
               📋 All levels
             </button>
           )}
-          <button onClick={handleRefresh} className="mt-3 text-xs font-bold underline decoration-dotted" style={{ color: INK.mutedInk }}>
+          <button onClick={handleRefresh} className="mt-3 text-[13px] font-bold underline decoration-dotted" style={{ color: INK.mutedInk }}>
             🔄 Try again with new questions
           </button>
         </PaperCard>
@@ -350,7 +350,7 @@ window.App = window.App || {};
             {isPS && (
               <button
                 onClick={() => setStarted(false)}
-                className={`rounded-2xl px-3 py-2 text-xs sm:text-sm transition-all active:translate-y-[2px] ${TYPE.caption}`}
+                className={`rounded-2xl px-3 py-2 text-[13px] sm:text-sm transition-all active:translate-y-[2px] ${TYPE.caption}`}
                 style={{ backgroundColor: INK.paperCard, color: ACCENT.solid, border: `1.5px solid ${ACCENT.tintBorder}`, boxShadow: `0 3px 0 ${ACCENT.tintBorder}` }}
               >
                 📖 Rule
@@ -362,7 +362,7 @@ window.App = window.App || {};
         <div className="text-center">
           {isPS ? (
             <span
-              className={`inline-block text-xs px-2.5 py-1 rounded-full ${TYPE.caption}`}
+              className={`inline-block text-[13px] px-2.5 py-1 rounded-full ${TYPE.caption}`}
               style={{ backgroundColor: ACCENT.tint, color: ACCENT.solid, border: `1px solid ${ACCENT.tintBorder}` }}
             >
               Level {levelNumber(levelIdx)} of {visibleLevelCount}
