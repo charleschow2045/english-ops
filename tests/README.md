@@ -13,7 +13,8 @@ No install, no Node. It loads the real `src/storage.jsx`, `mistakes.jsx`, `util.
 5. **Backup and restore** — `buildBackup` then `parseBackup` keeps streak, freezes, statistics, tier, Grammar levels, mistakes notebook and today's checklist exactly; broken JSON, other apps' files, newer versions, invalid dates, bad shapes and files over 2 MB are refused; `parseBackup` never throws.
 6. **Grammar levels** — `GrammarLevels.progress` totals are 76 for easy/medium/hard and 77 for expert, and the visible levels of the 11 paths add up to the same totals; done keys for hidden or unknown levels are ignored; level numbers are continuous. If you add or remove Grammar levels, update these two numbers on purpose.
 7. **Explorer levels** — `getLevel` (`util.jsx`): the 6-level table (Explorer 0, Scout 15, Ranger 45, Navigator 90, Captain 150, Legend 240), every boundary and the value just before it, progress and remaining counts, the top level (full bar, "Max level"), odd inputs, and that a backup keeps the level.
-8. **Safety** — the page is in test mode on `englishOps:test`, and nothing tried to write the real key.
+8. **Level-up detection** — `levelUpBetween(prev, next)` (`util.jsx`): every threshold crossing (14→15, 44→45, 89→90, 149→150, 239→240), non-crossings (same total, within a level, top level, going down), big jumps (one level-up to the final level), junk inputs, the real counter via `markModuleComplete` (a repeat of the same module the same day is not a level-up), and that `pendingLevelUp` is read once and never stored.
+9. **Safety** — the page is in test mode on `englishOps:test`, and nothing tried to write the real key.
 
 ## Why the URL needs `?today=2026-10-14`
 

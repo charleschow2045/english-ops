@@ -609,7 +609,68 @@
     }
 
     // ===================================================================
-    section("8. Safety: the real progress key was never touched");
+    section("8. Level-up detection (levelUpBetween, pendingLevelUp)");
+    {
+      const U = window.App.levelUpBetween;
+      const names = (r) => (r === null ? null : [r.from.name, r.to.name]);
+      [[14, 15, ["Explorer", "Scout"]], [44, 45, ["Scout", "Ranger"]], [89, 90, ["Ranger", "Navigator"]], [149, 150, ["Navigator", "Captain"]], [239, 240, ["Captain", "Legend"]]].forEach(([a, b, exp]) => {
+        test(a + " -> " + b + " is a level-up to " + exp[1], () => deepEq(names(U(a, b)), exp, "levelUpBetween(" + a + "," + b + ")"));
+      });
+      [[0, 1], [15, 16], [16, 17], [44, 44], [239, 239], [240, 241], [241, 242], [1000, 1001]].forEach(([a, b]) => {
+        test(a + " -> " + b + " is not a level-up", () => eq(U(a, b), null, "levelUpBetween(" + a + "," + b + ")"));
+      });
+      test("the same total, or a lower one, is never a level-up", () => {
+        eq(U(15, 15), null, "same at a boundary"); eq(U(0, 0), null, "same at 0");
+        eq(U(45, 44), null, "going down over a boundary"); eq(U(300, 5), null, "going far down");
+      });
+      test("a big jump is one level-up to the final level", () => {
+        const r = U(10, 100);
+        deepEq(names(r), ["Explorer", "Navigator"], "10 -> 100");
+        eq(r.to.index, 3, "to.index"); eq(r.from.index, 0, "from.index");
+        deepEq(names(U(0, 1000)), ["Explorer", "Legend"], "0 -> 1000");
+      });
+      test("negative or non-number totals count as 0", () => {
+        [undefined, null, NaN, -5, "15", {}, [], Infinity].forEach((junk) => {
+          let r;
+          try { r = U(junk, junk); } catch (e) { throw new Error("threw on " + show(junk) + ": " + e.message); }
+          eq(r, null, "same junk both sides " + show(junk));
+        });
+        eq(U(-10, 14), null, "negative to 14 stays Explorer");
+        deepEq(names(U(-10, 15)), ["Explorer", "Scout"], "negative to 15");
+        deepEq(names(U(undefined, 15)), ["Explorer", "Scout"], "undefined to 15");
+        eq(U(NaN, 5), null, "NaN to 5");
+        eq(U(15, "abc"), null, "15 to junk (counts as 0)");
+      });
+      test("the real counter drives it: 14 -> finishing one module crosses into Scout, a repeat the same day does not", () => {
+        const s0 = mkState({ stats: { totalMissionsCompleted: 14, bestStreak: 0, freezesUsedTotal: 0, moduleCompletions: Object.fromEntries(MODULE_KEYS.map((k) => [k, 0])) } });
+        const r1 = S.markModuleComplete(s0, "grammar", TODAY);
+        deepEq(names(U(s0.stats.totalMissionsCompleted, r1.state.stats.totalMissionsCompleted)), ["Explorer", "Scout"], "first completion");
+        const r2 = S.markModuleComplete(r1.state, "grammar", TODAY);
+        eq(U(r1.state.stats.totalMissionsCompleted, r2.state.stats.totalMissionsCompleted), null, "repeat of the same module the same day");
+        const r3 = S.markModuleComplete(r2.state, "hangman", TODAY);
+        eq(U(r2.state.stats.totalMissionsCompleted, r3.state.stats.totalMissionsCompleted), null, "15 -> 16 stays Scout");
+      });
+      test("pendingLevelUp is read once: the second read finds nothing", () => {
+        const A = window.App;
+        A.takePendingLevelUp(); // start clean
+        eq(A.takePendingLevelUp(), null, "nothing pending at the start");
+        const lu = U(14, 15);
+        A.setPendingLevelUp(lu);
+        eq(A.takePendingLevelUp(), lu, "first read returns it");
+        eq(A.takePendingLevelUp(), null, "second read is empty");
+        A.setPendingLevelUp(null);
+        eq(A.takePendingLevelUp(), null, "setting null leaves nothing");
+      });
+      test("pendingLevelUp lives in memory only: nothing about it is in localStorage", () => {
+        window.App.setPendingLevelUp(U(14, 15));
+        const all = Object.keys(localStorage).map((k) => k + "=" + localStorage.getItem(k)).join("\n");
+        truthy(!/pending|levelUp|level-up/i.test(all), "no storage entry mentions it");
+        window.App.takePendingLevelUp();
+      });
+    }
+
+    // ===================================================================
+    section("9. Safety: the real progress key was never touched");
     test("this page is in test mode, on the test key", () => {
       eq(S.TEST_MODE, true, "TEST_MODE");
       eq(S.STORAGE_KEY, TEST_KEY, "STORAGE_KEY");

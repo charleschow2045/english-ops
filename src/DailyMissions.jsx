@@ -6,6 +6,7 @@
 window.App = window.App || {};
 
 (function () {
+  const { useState, useEffect, useRef } = React;
   const { Storage } = window.App;
   const { INK, MODULE_ACCENTS, TYPE, PaperCard } = window.App.UI;
 
@@ -249,6 +250,110 @@ window.App = window.App || {};
     );
   }
 
+  // Level-up celebration: a full-screen dim-teal overlay with a card — the new
+  // stamp pops in, a few sparkles twinkle, "Level up!", the new name and a
+  // Continue button. Closes on Continue, a tap on the dim area, or Esc; focus
+  // starts on Continue and stays in the dialog. The motion is plain CSS and is
+  // switched off entirely under prefers-reduced-motion (static card only).
+  function LevelUpDialog({ levelUp, onClose }) {
+    const btnRef = useRef(null);
+    const to = levelUp.to;
+    const article = /^[AEIOU]/i.test(to.name) ? "an" : "a";
+    const sparkles = [
+      { left: "8%", top: "14%", delay: "0s", size: 22 },
+      { left: "88%", top: "10%", delay: "0.35s", size: 18 },
+      { left: "14%", top: "62%", delay: "0.7s", size: 16 },
+      { left: "90%", top: "58%", delay: "0.15s", size: 24 },
+      { left: "50%", top: "4%", delay: "0.5s", size: 16 },
+      { left: "72%", top: "86%", delay: "0.9s", size: 18 },
+    ];
+
+    useEffect(() => {
+      if (btnRef.current) btnRef.current.focus();
+      const onKey = (e) => {
+        if (e.key === "Escape") {
+          e.preventDefault();
+          onClose();
+        } else if (e.key === "Tab") {
+          // Continue is the only control: keep focus on it.
+          e.preventDefault();
+          if (btnRef.current) btnRef.current.focus();
+        }
+      };
+      document.addEventListener("keydown", onKey);
+      const prevOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.removeEventListener("keydown", onKey);
+        document.body.style.overflow = prevOverflow;
+      };
+    }, []);
+
+    return (
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 lvlup-overlay"
+        style={{ backgroundColor: `${INK.tealDark}e0` }}
+        onClick={onClose}
+      >
+        <style>{`
+          @media (prefers-reduced-motion: no-preference) {
+            .lvlup-overlay { animation: lvlup-fade 0.25s ease-out both; }
+            .lvlup-card { animation: lvlup-rise 0.35s ease-out both; }
+            .lvlup-stamp { animation: lvlup-pop 0.7s cubic-bezier(0.2, 1.4, 0.4, 1) 0.15s both; }
+            .lvlup-spark { animation: lvlup-twinkle 1.6s ease-in-out infinite; }
+          }
+          @keyframes lvlup-fade { from { opacity: 0; } to { opacity: 1; } }
+          @keyframes lvlup-rise { from { opacity: 0; transform: translateY(16px) scale(0.97); } to { opacity: 1; transform: none; } }
+          @keyframes lvlup-pop { 0% { transform: scale(0.2) rotate(-24deg); opacity: 0; } 70% { transform: scale(1.18) rotate(-4deg); opacity: 1; } 100% { transform: scale(1) rotate(-6deg); opacity: 1; } }
+          @keyframes lvlup-twinkle { 0%, 100% { opacity: 0.25; transform: scale(0.7); } 50% { opacity: 1; transform: scale(1.15); } }
+        `}</style>
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="lvlup-title"
+          aria-describedby="lvlup-text"
+          className="lvlup-card relative w-full max-w-sm rounded-[28px] p-6 text-center overflow-hidden"
+          style={{ backgroundColor: INK.paperCard, boxShadow: "0 24px 48px -16px rgba(0,0,0,0.5)" }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {sparkles.map((s, i) => (
+            <span
+              key={i}
+              aria-hidden="true"
+              className="lvlup-spark absolute pointer-events-none"
+              style={{ left: s.left, top: s.top, fontSize: s.size, animationDelay: s.delay, opacity: 0.8 }}
+            >
+              ✨
+            </span>
+          ))}
+          <div
+            className="lvlup-stamp relative mx-auto w-[112px] h-[112px] rounded-full flex items-center justify-center text-[60px]"
+            style={{ backgroundColor: INK.goldTint, border: `4px solid ${INK.sun}`, boxShadow: `0 0 0 6px ${INK.sun}47`, transform: "rotate(-6deg)" }}
+          >
+            {to.stamp}
+          </div>
+          <p id="lvlup-title" className={`relative text-[26px] mt-5 ${TYPE.display}`} style={{ color: INK.stampText }}>
+            Level up!
+          </p>
+          <p className={`relative text-[34px] leading-tight ${TYPE.display}`} style={{ color: INK.ink }}>
+            {to.name}
+          </p>
+          <p id="lvlup-text" className="relative text-base font-bold mt-1" style={{ color: INK.mutedInk }}>
+            You are now {article} {to.name}!
+          </p>
+          <button
+            ref={btnRef}
+            onClick={onClose}
+            className="relative w-full mt-5 rounded-[14px] font-extrabold px-5 py-3 text-lg font-ui transition-all duration-100 active:translate-y-[3px]"
+            style={{ backgroundColor: INK.stamp, color: "#ffffff", boxShadow: `0 4px 0 ${INK.stampDark}` }}
+          >
+            Continue
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   function DailyMissions({ state, today, onChangeTier, onOpenModule, onOpenBadges, onOpenBackup, dueCount, onOpenReview, freezeBanner, onDismissFreezeBanner }) {
     const daily = Storage.getDaily(state, today);
     const moduleByKey = Object.fromEntries(Storage.MODULES.map((m) => [m.key, m]));
@@ -259,8 +364,18 @@ window.App = window.App || {};
     const allDone = completedCount === totalCount;
     const streakNote = streakMessage(streakView, allDone);
 
+    // A level-up left by the module that was just finished (Root.jsx). It is
+    // taken here exactly once on mount and cleared at once, so it is shown a
+    // single time and never again after a reload, a restore or a first load.
+    const [levelUp, setLevelUp] = useState(null);
+    useEffect(() => {
+      const pending = window.App.takePendingLevelUp();
+      if (pending) setLevelUp(pending);
+    }, []);
+
     return (
       <div className="flex flex-col gap-4">
+        {levelUp && <LevelUpDialog levelUp={levelUp} onClose={() => setLevelUp(null)} />}
         {freezeBanner > 0 && (
           <div
             className="rounded-[20px] p-3 flex items-center justify-between gap-2"

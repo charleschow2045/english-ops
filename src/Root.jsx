@@ -94,6 +94,10 @@ window.App = window.App || {};
       setState((s) => {
         const { state: nextState, freezesUsedNow } = Storage.markModuleComplete(s, key);
         pendingFreezeRef.current = freezesUsedNow; // idempotent, so safe if React runs the updater twice
+        // Level-up for the home screen to celebrate: only when this completion
+        // raised the mission count across a level boundary (a repeat of the same
+        // module the same day adds nothing, so it never counts). Memory only.
+        window.App.setPendingLevelUp(window.App.levelUpBetween(s.stats.totalMissionsCompleted, nextState.stats.totalMissionsCompleted));
         return nextState;
       });
       setView("home");

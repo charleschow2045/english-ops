@@ -110,8 +110,35 @@ window.App = window.App || {};
     };
   }
 
+  // Did going from one mission total to another cross into a higher level?
+  // Returns null (same level, or a lower total) or { from, to }, the getLevel()
+  // results for the old and new total. Skipping several levels at once (a big
+  // jump) is one level-up whose `to` is the final level. Bad totals count as 0.
+  function levelUpBetween(prevTotal, nextTotal) {
+    const from = getLevel(prevTotal);
+    const to = getLevel(nextTotal);
+    return to.index > from.index ? { from, to } : null;
+  }
+
+  // The level-up that the home screen should celebrate next. Held in memory
+  // only (never saved), set when a module is finished and read exactly once by
+  // the home screen, so a reload, a backup restore or a first load can never
+  // replay it.
+  let pendingLevelUp = null;
+  function setPendingLevelUp(levelUp) {
+    pendingLevelUp = levelUp || null;
+  }
+  function takePendingLevelUp() {
+    const p = pendingLevelUp;
+    pendingLevelUp = null;
+    return p;
+  }
+
   window.App.LEVELS = LEVELS;
   window.App.getLevel = getLevel;
+  window.App.levelUpBetween = levelUpBetween;
+  window.App.setPendingLevelUp = setPendingLevelUp;
+  window.App.takePendingLevelUp = takePendingLevelUp;
   window.App.GrammarLevels = GrammarLevels;
   window.App.speak = speak;
   window.App.getEnglishVoices = getEnglishVoices;

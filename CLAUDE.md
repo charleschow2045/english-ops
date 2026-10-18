@@ -456,6 +456,30 @@ feature used elsewhere.
   `LevelCard` in `DailyMissions.jsx`. Tests: section 7 of `tests/run.html`.
   Changing a threshold means changing the table and those tests together.
 
+## Level-up celebration
+- When finishing a module takes the child into a higher level, the home screen
+  shows a celebration dialog once: a full-screen dim-teal overlay, a card with
+  the new stamp (pops in, sparkles twinkle), "Level up!", the new name, "You are
+  now a Scout!" and a coral Continue button. It closes on Continue, a tap on the
+  dim area, or Esc; it has `role="dialog"` / `aria-modal`, focus starts on
+  Continue and stays there, and the animations are plain CSS that switch off
+  under `prefers-reduced-motion`. The component is `LevelUpDialog` in
+  `src/DailyMissions.jsx` (colours from theme tokens, no sound, no libraries).
+- **Detection point**: `completeModule` in `src/Root.jsx`, inside the
+  `setState` updater, compares `totalMissionsCompleted` before and after
+  `Storage.markModuleComplete` (which is unchanged) with the pure
+  `window.App.levelUpBetween(prev, next)` (`util.jsx`): `null`, or `{ from, to }`
+  (`getLevel` results) when `to.index > from.index`. A repeat of the same module
+  the same day adds nothing, so it never counts; skipping several levels shows
+  only the final one.
+- **Hand-over**: `window.App.setPendingLevelUp(x)` / `takePendingLevelUp()`
+  hold the value in a module variable in memory only — never localStorage, no
+  schema or key change. `DailyMissions` calls `takePendingLevelUp()` once on
+  mount (it clears at once), so one level-up is shown once. Only `completeModule`
+  sets it, so a reload, a first load, a backup restore or switching the test
+  date can never trigger it.
+- Tests: section 8 of `tests/run.html`.
+
 ## Regression tests (`tests/run.html`)
 - Run: serve the repo and open `/tests/run.html` (also live at
   `https://charleschow2045.github.io/english-ops/tests/run.html`). It needs a
