@@ -71,6 +71,47 @@ window.App = window.App || {};
     },
   };
 
+  // Explorer level, worked out from the lifetime mission count that is already
+  // saved (stats.totalMissionsCompleted: +1 each time a module is finished for
+  // the day). Nothing about the level is stored, so existing saves and backups
+  // get their level straight away and the level can never drift out of sync.
+  // Pure: total in, level info out.
+  const LEVELS = [
+    { name: "Explorer", stamp: "🧭", min: 0 },
+    { name: "Scout", stamp: "🔭", min: 15 },
+    { name: "Ranger", stamp: "🥾", min: 45 },
+    { name: "Navigator", stamp: "🗺️", min: 90 },
+    { name: "Captain", stamp: "⚓", min: 150 },
+    { name: "Legend", stamp: "👑", min: 240 },
+  ];
+
+  // Returns { index, number, name, stamp, min, nextMin, nextName, progress,
+  // remaining, isMax }. `progress` is 0..1 within the current level (1 at the
+  // top level); `remaining` is missions still needed for the next level (0 at
+  // the top, where nextMin and nextName are null). Anything that is not a
+  // non-negative number counts as 0; fractions are rounded down.
+  function getLevel(total) {
+    const n = typeof total === "number" && Number.isFinite(total) && total > 0 ? Math.floor(total) : 0;
+    let index = 0;
+    for (let i = 0; i < LEVELS.length; i++) if (n >= LEVELS[i].min) index = i;
+    const cur = LEVELS[index];
+    const next = LEVELS[index + 1] || null;
+    return {
+      index,
+      number: index + 1,
+      name: cur.name,
+      stamp: cur.stamp,
+      min: cur.min,
+      nextMin: next ? next.min : null,
+      nextName: next ? next.name : null,
+      progress: next ? (n - cur.min) / (next.min - cur.min) : 1,
+      remaining: next ? next.min - n : 0,
+      isMax: !next,
+    };
+  }
+
+  window.App.LEVELS = LEVELS;
+  window.App.getLevel = getLevel;
   window.App.GrammarLevels = GrammarLevels;
   window.App.speak = speak;
   window.App.getEnglishVoices = getEnglishVoices;

@@ -12,7 +12,8 @@ No install, no Node. It loads the real `src/storage.jsx`, `mistakes.jsx`, `util.
 4. **Older saves** — a save with no `missions` field (or a malformed one, or from an earlier day) gets today's 3 missions from `ensureToday`; an old backup file imports the same way.
 5. **Backup and restore** — `buildBackup` then `parseBackup` keeps streak, freezes, statistics, tier, Grammar levels, mistakes notebook and today's checklist exactly; broken JSON, other apps' files, newer versions, invalid dates, bad shapes and files over 2 MB are refused; `parseBackup` never throws.
 6. **Grammar levels** — `GrammarLevels.progress` totals are 76 for easy/medium/hard and 77 for expert, and the visible levels of the 11 paths add up to the same totals; done keys for hidden or unknown levels are ignored; level numbers are continuous. If you add or remove Grammar levels, update these two numbers on purpose.
-7. **Safety** — the page is in test mode on `englishOps:test`, and nothing tried to write the real key.
+7. **Explorer levels** — `getLevel` (`util.jsx`): the 6-level table (Explorer 0, Scout 15, Ranger 45, Navigator 90, Captain 150, Legend 240), every boundary and the value just before it, progress and remaining counts, the top level (full bar, "Max level"), odd inputs, and that a backup keeps the level.
+8. **Safety** — the page is in test mode on `englishOps:test`, and nothing tried to write the real key.
 
 ## Why the URL needs `?today=2026-10-14`
 

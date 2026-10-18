@@ -201,6 +201,54 @@ window.App = window.App || {};
     );
   }
 
+  // Explorer level card: a deep-teal "passport" with the level's stamp, its
+  // name, a progress bar toward the next level and one line saying how far
+  // away it is. Display only (not tappable). The level comes from the saved
+  // mission count via getLevel (util.jsx); nothing about it is stored.
+  function LevelCard({ total }) {
+    const lv = window.App.getLevel(total);
+    const pct = Math.round(lv.progress * 100);
+    const line = lv.isMax ? "Max level" : `${lv.remaining} more mission${lv.remaining === 1 ? "" : "s"} to ${lv.nextName}`;
+    return (
+      <section
+        className="relative overflow-hidden rounded-[28px] p-[18px]"
+        style={{
+          color: "#ffffff",
+          background: `radial-gradient(90% 120% at 100% 0%, ${INK.sun}47, transparent 55%), linear-gradient(145deg, ${INK.tealDark}, ${INK.teal})`,
+          boxShadow: "0 18px 34px -18px rgba(15,91,102,0.8)",
+        }}
+        aria-label={`Level ${lv.number}, ${lv.name}`}
+      >
+        <div className="absolute inset-2 rounded-[22px] pointer-events-none" style={{ border: "1.5px dashed rgba(255,255,255,0.28)" }} />
+        <div className="relative flex items-center gap-4">
+          <div
+            className="w-[68px] h-[68px] rounded-full flex items-center justify-center text-[34px] shrink-0"
+            style={{ backgroundColor: "#ffffff", border: `3px solid ${INK.sun}`, boxShadow: `0 0 0 4px ${INK.sun}47`, transform: "rotate(-6deg)" }}
+          >
+            {lv.stamp}
+          </div>
+          <div className="min-w-0">
+            <p className="text-[13px] font-extrabold" style={{ color: INK.sun }}>
+              Level {lv.number}
+            </p>
+            <p className={`text-[28px] leading-tight ${TYPE.display}`}>{lv.name}</p>
+          </div>
+        </div>
+        <div
+          className="relative h-3.5 rounded-full overflow-hidden mt-4"
+          style={{ backgroundColor: "rgba(255,255,255,0.22)" }}
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={pct}
+        >
+          <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: INK.sun }} />
+        </div>
+        <p className="relative text-[15px] font-extrabold mt-2.5">{line}</p>
+      </section>
+    );
+  }
+
   function DailyMissions({ state, today, onChangeTier, onOpenModule, onOpenBadges, onOpenBackup, dueCount, onOpenReview, freezeBanner, onDismissFreezeBanner }) {
     const daily = Storage.getDaily(state, today);
     const moduleByKey = Object.fromEntries(Storage.MODULES.map((m) => [m.key, m]));
@@ -278,6 +326,8 @@ window.App = window.App || {};
             <TierSelector tier={state.tier} onChangeTier={onChangeTier} />
           </div>
         </PaperCard>
+
+        <LevelCard total={state.stats.totalMissionsCompleted} />
 
         <div>
           <p className={`text-xl ${TYPE.display}`} style={{ color: INK.ink }}>

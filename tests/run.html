@@ -536,7 +536,80 @@
     }
 
     // ===================================================================
-    section("7. Safety: the real progress key was never touched");
+    section("7. Explorer levels (getLevel)");
+    {
+      const L = window.App.getLevel;
+      const TABLE = [["Explorer", "🧭", 0], ["Scout", "🔭", 15], ["Ranger", "🥾", 45], ["Navigator", "🗺️", 90], ["Captain", "⚓", 150], ["Legend", "👑", 240]];
+      test("the level table is Explorer 0, Scout 15, Ranger 45, Navigator 90, Captain 150, Legend 240", () => {
+        deepEq(window.App.LEVELS.map((l) => [l.name, l.stamp, l.min]), TABLE, "LEVELS");
+      });
+      // [total, expected level name]; each boundary and the value just before it
+      [[0, "Explorer"], [14, "Explorer"], [15, "Scout"], [44, "Scout"], [45, "Ranger"], [89, "Ranger"], [90, "Navigator"],
+       [149, "Navigator"], [150, "Captain"], [239, "Captain"], [240, "Legend"], [241, "Legend"], [1000, "Legend"]].forEach(([n, name]) => {
+        test("total " + n + " is " + name, () => eq(L(n).name, name, "level for " + n));
+      });
+      test("level number and stamp go with the level", () => {
+        eq(L(0).number, 1, "number at 0"); eq(L(0).stamp, "🧭", "stamp at 0");
+        eq(L(45).number, 3, "number at 45"); eq(L(45).stamp, "🥾", "stamp at 45");
+        eq(L(240).number, 6, "number at 240"); eq(L(240).stamp, "👑", "stamp at 240");
+      });
+      test("progress and remaining at the start of a level", () => {
+        deepEq([L(0).progress, L(0).remaining, L(0).nextName, L(0).nextMin], [0, 15, "Scout", 15], "total 0");
+        deepEq([L(15).progress, L(15).remaining, L(15).nextName], [0, 30, "Ranger"], "total 15");
+      });
+      test("progress and remaining just before a level-up", () => {
+        eq(L(14).remaining, 1, "remaining at 14"); eq(L(14).progress, 14 / 15, "progress at 14");
+        eq(L(239).remaining, 1, "remaining at 239"); eq(L(239).progress, 89 / 90, "progress at 239");
+      });
+      test("progress and remaining in the middle of a level", () => {
+        eq(L(30).progress, 0.5, "progress at 30"); eq(L(30).remaining, 15, "remaining at 30");
+        eq(L(120).progress, 30 / 60, "progress at 120"); eq(L(120).remaining, 30, "remaining at 120");
+      });
+      test("the top level has no next level: full bar, nothing remaining", () => {
+        [240, 241, 1000, 1e9].forEach((n) => {
+          const x = L(n);
+          deepEq([x.isMax, x.progress, x.remaining, x.nextMin, x.nextName], [true, 1, 0, null, null], "total " + n);
+        });
+        eq(L(239).isMax, false, "Captain is not max");
+      });
+      test("level, progress and remaining never go the wrong way as the total grows 0..400", () => {
+        let prevIndex = 0;
+        for (let n = 0; n <= 400; n++) {
+          const x = L(n);
+          truthy(x.index >= prevIndex, "level went down at " + n);
+          truthy(x.progress >= 0 && x.progress <= 1, "progress out of range at " + n, x.progress);
+          truthy(x.remaining >= 0, "remaining negative at " + n);
+          if (!x.isMax) eq(n + x.remaining, x.nextMin, "total + remaining reaches the next level at " + n);
+          prevIndex = x.index;
+        }
+      });
+      test("odd totals count as 0 or are rounded down, and never throw", () => {
+        [undefined, null, NaN, -5, "12", {}, [], Infinity, -Infinity].forEach((junk) => {
+          let x;
+          try { x = L(junk); } catch (e) { throw new Error("threw on " + show(junk) + ": " + e.message); }
+          eq(x.name, "Explorer", "level for " + show(junk));
+        });
+        eq(L(14.9).name, "Explorer", "14.9 rounds down"); eq(L(15.2).name, "Scout", "15.2 rounds down to 15");
+      });
+      test("a backup keeps the level: same total before and after buildBackup -> parseBackup", () => {
+        const st = mkState({ stats: { totalMissionsCompleted: 100, bestStreak: 4, freezesUsedTotal: 0, moduleCompletions: Object.fromEntries(MODULE_KEYS.map((k) => [k, 1])) } });
+        const back = S.parseBackup(JSON.stringify(S.buildBackup(st)));
+        eq(back.ok, true, "parse ok");
+        deepEq(L(back.state.stats.totalMissionsCompleted), L(st.stats.totalMissionsCompleted), "level info");
+        eq(L(100).name, "Navigator", "100 missions is Navigator");
+      });
+      test("finishing a module raises the total by one, so the level follows the real counter", () => {
+        const s0 = mkState({ stats: { totalMissionsCompleted: 14, bestStreak: 0, freezesUsedTotal: 0, moduleCompletions: Object.fromEntries(MODULE_KEYS.map((k) => [k, 0])) } });
+        eq(L(s0.stats.totalMissionsCompleted).name, "Explorer", "before");
+        const s1 = S.markModuleComplete(s0, "grammar", TODAY).state;
+        eq(s1.stats.totalMissionsCompleted, 15, "total after one completion");
+        eq(L(s1.stats.totalMissionsCompleted).name, "Scout", "after");
+        eq(S.markModuleComplete(s1, "grammar", TODAY).state.stats.totalMissionsCompleted, 15, "the same module again the same day is not counted twice");
+      });
+    }
+
+    // ===================================================================
+    section("8. Safety: the real progress key was never touched");
     test("this page is in test mode, on the test key", () => {
       eq(S.TEST_MODE, true, "TEST_MODE");
       eq(S.STORAGE_KEY, TEST_KEY, "STORAGE_KEY");

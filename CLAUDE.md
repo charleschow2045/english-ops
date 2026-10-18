@@ -438,6 +438,24 @@ feature used elsewhere.
 }
 ```
 
+## Explorer level card (home screen)
+- Shows the child's level on the home screen (deep-teal card between the
+  status card and Today's Missions): stamp emoji, "Level N", the name, a bar in
+  `INK.sun` toward the next level, and "X more missions to <next>" (or
+  "Max level" at the top). Display only, not tappable; no animation.
+- **Data**: `state.stats.totalMissionsCompleted`, the existing lifetime
+  counter (`markModuleComplete` adds 1 each time a module is finished for the
+  day: once per module per day, any module). Nothing about the level is stored
+  — no schema change, no new key — so existing saves and backups get their
+  level immediately and backup/restore is unaffected.
+- **Table** (`window.App.LEVELS`): Explorer 🧭 0, Scout 🔭 15, Ranger 🥾 45,
+  Navigator 🗺️ 90, Captain ⚓ 150, Legend 👑 240.
+- **`window.App.getLevel(total)`** in `src/util.jsx` (pure): returns `{ index,
+  number, name, stamp, min, nextMin, nextName, progress (0..1), remaining,
+  isMax }`; bad input counts as 0, fractions round down. The card is
+  `LevelCard` in `DailyMissions.jsx`. Tests: section 7 of `tests/run.html`.
+  Changing a threshold means changing the table and those tests together.
+
 ## Regression tests (`tests/run.html`)
 - Run: serve the repo and open `/tests/run.html` (also live at
   `https://charleschow2045.github.io/english-ops/tests/run.html`). It needs a

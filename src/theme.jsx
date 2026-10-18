@@ -93,6 +93,7 @@ window.App = window.App || {};
     stampText: "#b63a1a", // coral-family text on a light surface
     coral: "#ff6b4a", // decorative coral only (never behind or as text)
     teal: "#0f5b66", // deep teal
+    tealDark: "#0c4a55", // darker end of teal gradients (white text on it >= 7:1)
     teal2: "#1b8a94",
     tealTint: "#e6f4f6",
     tealTintBorder: "#bfe0e4",
