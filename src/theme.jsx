@@ -193,20 +193,24 @@ window.App = window.App || {};
   // Primary-action button: rounded, with a solid 4px "thickness" under it that
   // presses down. `accent` is a MODULE_ACCENTS entry, or { solid, dark, on };
   // by default it is the coral action colour.
-  function InkButton({ children, onClick, accent, className = "", disabled = false, type = "button" }) {
+  // `disabledLook="flat"` is opt-in (default unchanged): a disabled button then
+  // becomes a flat light grey with muted text instead of the accent colour at
+  // half opacity. Buttons that do not pass it look exactly as before.
+  function InkButton({ children, onClick, accent, className = "", disabled = false, type = "button", disabledLook }) {
     const a = accent || { solid: INK.stamp, dark: INK.stampDark, on: "#ffffff" };
+    const flat = disabled && disabledLook === "flat";
     return (
       <button
         type={type}
         onClick={onClick}
         disabled={disabled}
         className={`rounded-[14px] font-extrabold px-5 py-3 text-lg font-ui transition-all duration-100
-          active:translate-y-[3px] disabled:opacity-50 disabled:pointer-events-none ${className}`}
-        style={{
-          backgroundColor: a.solid,
-          color: a.on,
-          boxShadow: `0 4px 0 ${a.dark}`,
-        }}
+          active:translate-y-[3px] ${flat ? "" : "disabled:opacity-50"} disabled:pointer-events-none ${className}`}
+        style={
+          flat
+            ? { backgroundColor: INK.disabled, color: INK.mutedInk, boxShadow: `inset 0 0 0 1.5px ${INK.lineDark}` }
+            : { backgroundColor: a.solid, color: a.on, boxShadow: `0 4px 0 ${a.dark}` }
+        }
       >
         {children}
       </button>

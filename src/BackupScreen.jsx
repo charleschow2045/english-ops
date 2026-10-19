@@ -165,7 +165,7 @@ window.App = window.App || {};
             backgroundColor: INK.goldTint,
             color: INK.ink,
             border: `1.5px solid ${INK.goldTintBorder}`,
-            boxShadow: `0 4px 0 ${INK.goldDark}, 0 12px 20px -8px rgba(15,91,102,0.3)`,
+            boxShadow: `0 3px 0 ${INK.goldTintBorder}`,
           }}
         >
           ⬆️ 匯入備份

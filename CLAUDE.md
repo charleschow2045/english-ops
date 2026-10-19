@@ -53,6 +53,10 @@ its imports, only the values.
   teal shadow (`accent` tints the border). `InkButton` = rounded 14, 4px solid
   bottom shadow, coral by default or a module `accent`. `PaperBackButton`,
   `PaperRefreshButton`, `PaperTierBadge`, `Stamp` follow the same look.
+  `InkButton` also takes an opt-in `disabledLook="flat"` (a flat `INK.disabled`
+  grey with `mutedInk` text, 4.9:1) used by Writing's "Check My Writing"; without it
+  a disabled button is still the accent colour at half opacity (Word Hunt,
+  Speaking, short-answer "Check My Answer").
 - **Home screen** (`DailyMissions.jsx`): status card (date, streak/freeze
   pills, today's count, tier selector), Today's Missions as wide cards with a
   Start › / Done ✓ pill, Badges and Mistake Notebook rows, All Activities as a

@@ -171,7 +171,7 @@ window.App = window.App || {};
           />
 
           {!submitted ? (
-            <InkButton accent={ACCENT} className="w-full mt-4" onClick={handleSubmit} disabled={text.trim().length < 3}>
+            <InkButton accent={ACCENT} className="w-full mt-4" onClick={handleSubmit} disabled={text.trim().length < 3} disabledLook="flat">
               Check My Writing ✏️
             </InkButton>
           ) : (
