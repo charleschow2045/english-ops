@@ -7,6 +7,13 @@ window.App = window.App || {};
 
 (function () {
   const { useState, useEffect, useRef } = React;
+
+  // Was the last input a tap/click (true) or a key press (false)? Lets the level-up
+  // dialog show a focus ring only for keyboard users, whatever the browser decides
+  // about :focus-visible for focus moved by script. Plain listeners, nothing stored.
+  let lastInputWasPointer = false;
+  document.addEventListener("pointerdown", () => { lastInputWasPointer = true; }, true);
+  document.addEventListener("keydown", () => { lastInputWasPointer = false; }, true);
   const { Storage } = window.App;
   const { INK, MODULE_ACCENTS, TYPE, PaperCard } = window.App.UI;
 
@@ -257,6 +264,8 @@ window.App = window.App || {};
   // switched off entirely under prefers-reduced-motion (static card only).
   function LevelUpDialog({ levelUp, onClose }) {
     const btnRef = useRef(null);
+    // Keyboard focus ring: on only if the last input was the keyboard (and from then on after any key press).
+    const [kb, setKb] = useState(!lastInputWasPointer);
     const to = levelUp.to;
     const article = /^[AEIOU]/i.test(to.name) ? "an" : "a";
     const sparkles = [
@@ -270,7 +279,9 @@ window.App = window.App || {};
 
     useEffect(() => {
       if (btnRef.current) btnRef.current.focus();
+      const onPointer = () => setKb(false);
       const onKey = (e) => {
+        if (e.key !== "Escape") setKb(true);
         if (e.key === "Escape") {
           e.preventDefault();
           onClose();
@@ -281,10 +292,12 @@ window.App = window.App || {};
         }
       };
       document.addEventListener("keydown", onKey);
+      document.addEventListener("pointerdown", onPointer);
       const prevOverflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
       return () => {
         document.removeEventListener("keydown", onKey);
+        document.removeEventListener("pointerdown", onPointer);
         document.body.style.overflow = prevOverflow;
       };
     }, []);
@@ -306,6 +319,9 @@ window.App = window.App || {};
           @keyframes lvlup-rise { from { opacity: 0; transform: translateY(16px) scale(0.97); } to { opacity: 1; transform: none; } }
           @keyframes lvlup-pop { 0% { transform: scale(0.2) rotate(-24deg); opacity: 0; } 70% { transform: scale(1.18) rotate(-4deg); opacity: 1; } 100% { transform: scale(1) rotate(-6deg); opacity: 1; } }
           @keyframes lvlup-twinkle { 0%, 100% { opacity: 0.25; transform: scale(0.7); } 50% { opacity: 1; transform: scale(1.15); } }
+          /* Focus ring only for keyboard focus (Tab): :focus-visible, and only once the keyboard was the last input; a tap or click shows none. */
+          .lvlup-btn:focus { outline: none; }
+          .lvlup-btn[data-kb="true"]:focus-visible { outline: 3px solid ${INK.teal}; outline-offset: 3px; }
         `}</style>
         <div
           role="dialog"
@@ -343,8 +359,9 @@ window.App = window.App || {};
           </p>
           <button
             ref={btnRef}
+            data-kb={kb ? "true" : "false"}
             onClick={onClose}
-            className="relative w-full mt-5 rounded-[14px] font-extrabold px-5 py-3 text-lg font-ui transition-all duration-100 active:translate-y-[3px]"
+            className="lvlup-btn relative w-full mt-5 rounded-[14px] font-extrabold px-5 py-3 text-lg font-ui transition-all duration-100 active:translate-y-[3px]"
             style={{ backgroundColor: INK.stamp, color: "#ffffff", boxShadow: `0 4px 0 ${INK.stampDark}` }}
           >
             Continue

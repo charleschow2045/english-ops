@@ -463,8 +463,11 @@ feature used elsewhere.
   now a Scout!" and a coral Continue button. It closes on Continue, a tap on the
   dim area, or Esc; it has `role="dialog"` / `aria-modal`, focus starts on
   Continue and stays there, and the animations are plain CSS that switch off
-  under `prefers-reduced-motion`. The component is `LevelUpDialog` in
-  `src/DailyMissions.jsx` (colours from theme tokens, no sound, no libraries).
+  under `prefers-reduced-motion`. The Continue button shows a teal focus ring
+  (`:focus-visible`, token colour) only for keyboard use: a tap or click shows none
+  (`lastInputWasPointer` + `data-kb` in the component, so it does not depend on
+  how a browser treats focus moved by script). The component is `LevelUpDialog`
+  in `src/DailyMissions.jsx` (colours from theme tokens, no sound, no libraries).
 - **Detection point**: `completeModule` in `src/Root.jsx`, inside the
   `setState` updater, compares `totalMissionsCompleted` before and after
   `Storage.markModuleComplete` (which is unchanged) with the pure
