@@ -214,6 +214,28 @@ window.App = window.App || {};
     },
   };
 
+  // Hangman: choose the next word from `bank` ([{ category, word }]) without
+  // repeating one of `recentWords` (strings). If excluding them leaves nothing
+  // (a bank that is too small), every word is allowed again. `rng` returns a
+  // number in [0, 1) (Math.random by default) so tests can fix the result.
+  function pickHangmanWord(bank, recentWords, rng) {
+    const rand = typeof rng === "function" ? rng : Math.random;
+    const recent = new Set(Array.isArray(recentWords) ? recentWords : []);
+    const fresh = bank.filter((e) => !recent.has(e.word));
+    const pool = fresh.length > 0 ? fresh : bank;
+    return pool[Math.min(pool.length - 1, Math.floor(rand() * pool.length))];
+  }
+
+  // The recent-words list after `word` was shown: newest last, at most
+  // min(8, bankSize - 1) kept (so at least one word is always left to pick).
+  function updateRecentWords(recentWords, word, bankSize) {
+    const keep = Math.max(0, Math.min(8, bankSize - 1));
+    const next = (Array.isArray(recentWords) ? recentWords : []).filter((w) => w !== word).concat(word);
+    return keep === 0 ? [] : next.slice(-keep);
+  }
+
+  window.App.pickHangmanWord = pickHangmanWord;
+  window.App.updateRecentWords = updateRecentWords;
   window.App.ParentReport = ParentReport;
   window.App.LEVELS = LEVELS;
   window.App.getLevel = getLevel;

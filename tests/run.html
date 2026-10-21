@@ -77,6 +77,7 @@
   <script type="text/babel" src="../src/content/grammarSentenceStructureContent.jsx"></script>
   <script type="text/babel" src="../src/content/grammarPunctuationContent.jsx"></script>
   <script type="text/babel" src="../src/content/grammarAdvancedContent.jsx"></script>
+  <script type="text/babel" src="../src/content/hangmanContent.jsx"></script>
 
   <script type="text/babel">
   (function () {
@@ -893,7 +894,186 @@
     }
 
     // ===================================================================
-    section("10. Safety: the real progress key was never touched");
+    section("10. Hangman word bank and word picking");
+    {
+      const bank = window.App.Content.HANGMAN_WORDS;
+      const tiers = ["easy", "medium", "hard", "expert"];
+      const RANGE = { easy: [3, 4], medium: [4, 7], hard: [6, 8], expert: [7, 12] };
+      const pick = window.App.pickHangmanWord;
+      const upd = window.App.updateRecentWords;
+      // The 61 words that were in the bank before it was enlarged: [tier, category, word]. All must still be there, unchanged.
+      const ORIGINAL = [
+        ["easy", "Insects", "ANT"],
+        ["easy", "Insects", "BEE"],
+        ["easy", "Animals", "CAT"],
+        ["easy", "Animals", "DOG"],
+        ["easy", "Animals", "PIG"],
+        ["easy", "Animals", "FOX"],
+        ["easy", "Colours", "RED"],
+        ["easy", "Colours", "BLUE"],
+        ["easy", "Fruits", "PEAR"],
+        ["easy", "Fruits", "PLUM"],
+        ["easy", "Weather", "RAIN"],
+        ["easy", "Weather", "SNOW"],
+        ["easy", "Body Parts", "ARM"],
+        ["easy", "Body Parts", "EAR"],
+        ["easy", "School", "DESK"],
+        ["easy", "School", "BOOK"],
+        ["medium", "Insects", "MOTH"],
+        ["medium", "Insects", "WASP"],
+        ["medium", "Animals", "TIGER"],
+        ["medium", "Animals", "RABBIT"],
+        ["medium", "Sports", "TENNIS"],
+        ["medium", "Sports", "SOCCER"],
+        ["medium", "Fruits", "ORANGE"],
+        ["medium", "Fruits", "BANANA"],
+        ["medium", "Ocean", "WHALE"],
+        ["medium", "Ocean", "CORAL"],
+        ["medium", "Space", "COMET"],
+        ["medium", "Space", "PLANET"],
+        ["medium", "Jobs", "DOCTOR"],
+        ["medium", "Jobs", "TEACHER"],
+        ["medium", "Transport", "BICYCLE"],
+        ["hard", "Insects", "BEETLE"],
+        ["hard", "Insects", "CRICKET"],
+        ["hard", "Animals", "DOLPHIN"],
+        ["hard", "Animals", "LEOPARD"],
+        ["hard", "Science", "MAGNET"],
+        ["hard", "Science", "OXYGEN"],
+        ["hard", "Geography", "MOUNTAIN"],
+        ["hard", "Geography", "VOLCANO"],
+        ["hard", "History", "ANCIENT"],
+        ["hard", "History", "EMPEROR"],
+        ["hard", "Space", "ASTEROID"],
+        ["hard", "Space", "GALAXY"],
+        ["hard", "Ocean", "PLANKTON"],
+        ["hard", "Jobs", "ENGINEER"],
+        ["hard", "Sports", "MARATHON"],
+        ["expert", "Insects", "DRAGONFLY"],
+        ["expert", "Science", "CHEMISTRY"],
+        ["expert", "Science", "GRAVITY"],
+        ["expert", "Geography", "CONTINENT"],
+        ["expert", "History", "CIVILIZATION"],
+        ["expert", "History", "REVOLUTION"],
+        ["expert", "Space", "TELESCOPE"],
+        ["expert", "Space", "ASTRONOMY"],
+        ["expert", "Animals", "CROCODILE"],
+        ["expert", "Nature", "ECOSYSTEM"],
+        ["expert", "Ocean", "SUBMARINE"],
+        ["expert", "Jobs", "ARCHITECT"],
+        ["expert", "Language", "VOCABULARY"],
+        ["expert", "Language", "GRAMMAR"],
+        ["expert", "Technology", "COMPUTER"],
+      ];
+      tiers.forEach((t) => {
+        test(t + ": at least 40 words", () => truthy(bank[t].length >= 40, t + " has " + bank[t].length + " words, expected 40 or more"));
+        test(t + ": every word is capital letters A-Z only", () => {
+          const bad = bank[t].filter((e) => !/^[A-Z]+$/.test(e.word)).map((e) => e.word);
+          deepEq(bad, [], "words that are not A-Z only in " + t);
+        });
+        test(t + ": no word is repeated inside the tier", () => {
+          const seen = {}; const dup = [];
+          bank[t].forEach((e) => { if (seen[e.word]) dup.push(e.word); seen[e.word] = true; });
+          deepEq(dup, [], "repeated words in " + t);
+        });
+        test(t + ": every category is a specific capitalised string", () => {
+          const vague = ["Things", "Words", "Stuff", "Objects", "Items", "Misc", "Other", "Random", "General"];
+          const bad = bank[t].filter((e) => typeof e.category !== "string" || e.category.trim() === "" || !/^[A-Z]/.test(e.category) || vague.indexOf(e.category) >= 0).map((e) => e.word + ":" + show(e.category));
+          deepEq(bad, [], "words with a missing, lower-case or vague category in " + t);
+        });
+        test(t + ": word lengths are within " + RANGE[t][0] + "-" + RANGE[t][1], () => {
+          const bad = bank[t].filter((e) => e.word.length < RANGE[t][0] || e.word.length > RANGE[t][1]).map((e) => e.word + "(" + e.word.length + ")");
+          deepEq(bad, [], "words outside the length range in " + t);
+        });
+        test(t + ": lengths are spread out (every length used 3+ times, none dominates)", () => {
+          const counts = {};
+          bank[t].forEach((e) => { counts[e.word.length] = (counts[e.word.length] || 0) + 1; });
+          for (let n = RANGE[t][0]; n <= RANGE[t][1]; n++) truthy((counts[n] || 0) >= 3, "only " + (counts[n] || 0) + " words of length " + n + " in " + t, counts);
+          const max = Math.max.apply(null, Object.values(counts));
+          const limit = t === "easy" ? 0.6 : 0.4;
+          truthy(max / bank[t].length <= limit, "one length holds " + max + " of " + bank[t].length + " words in " + t, counts);
+        });
+      });
+      test("no word is repeated across tiers", () => {
+        const seen = {}; const dup = [];
+        tiers.forEach((t) => bank[t].forEach((e) => { if (seen[e.word]) dup.push(e.word + " (" + seen[e.word] + " and " + t + ")"); else seen[e.word] = t; }));
+        deepEq(dup, [], "words that appear in two tiers");
+      });
+      test("all 61 original words are still there, in the same tier with the same category", () => {
+        eq(ORIGINAL.length, 61, "original words listed");
+        const missing = ORIGINAL.filter(([t, c, w]) => !bank[t].some((e) => e.word === w && e.category === c)).map((r) => r.join("/"));
+        deepEq(missing, [], "original words missing or changed");
+      });
+
+      // ---- pickHangmanWord ----
+      const B10 = Array.from({ length: 10 }, (_, i) => ({ category: "C", word: "W" + String.fromCharCode(65 + i) }));
+      test("pickHangmanWord never returns a recent word while others are available", () => {
+        const recent = B10.slice(0, 8).map((e) => e.word);
+        for (let i = 0; i < 100; i++) {
+          const r = i / 100;
+          const w = pick(B10, recent, () => r).word;
+          truthy(recent.indexOf(w) < 0, "returned a recent word", { rng: r, word: w });
+        }
+        // and with the real bank
+        const rec2 = bank.easy.slice(0, 8).map((e) => e.word);
+        for (let i = 0; i < 100; i++) truthy(rec2.indexOf(pick(bank.easy, rec2, () => i / 100).word) < 0, "real bank returned a recent word at rng " + i / 100);
+      });
+      test("pickHangmanWord with a bank too small to exclude falls back to all words, without an error", () => {
+        const small = B10.slice(0, 3);
+        const all = small.map((e) => e.word);
+        const r = pick(small, all, () => 0.5);
+        truthy(all.indexOf(r.word) >= 0, "returned a word from the bank", r);
+        eq(pick(small.slice(0, 1), [small[0].word], () => 0.7).word, small[0].word, "one-word bank");
+      });
+      test("pickHangmanWord gives the same result for the same rng", () => {
+        eq(pick(B10, [], () => 0).word, "WA", "rng 0 picks the first");
+        eq(pick(B10, [], () => 0.55).word, "WF", "rng 0.55 picks index 5");
+        eq(pick(B10, [], () => 0.999).word, "WJ", "rng just under 1 picks the last");
+        eq(pick(B10, [], () => 1).word, "WJ", "rng 1 is clamped to the last");
+        eq(pick(B10, ["WA"], () => 0).word, "WB", "rng 0 with WA recent skips to WB");
+      });
+      test("pickHangmanWord with no recent words is a plain pick from the bank", () => {
+        for (let i = 0; i < 50; i++) {
+          const r = i / 50;
+          eq(pick(B10, [], () => r).word, B10[Math.floor(r * 10)].word, "rng " + r);
+        }
+        const a = pick(B10, undefined).word;
+        const b = pick(B10, null, null).word;
+        truthy(B10.some((e) => e.word === a), "works without an rng or a recent list", a);
+        truthy(B10.some((e) => e.word === b), "works with null arguments", b);
+      });
+
+      // ---- updateRecentWords ----
+      test("updateRecentWords keeps at most min(8, bank size - 1) words, newest last", () => {
+        let r = [];
+        for (let i = 0; i < 12; i++) r = upd(r, "W" + i, 40);
+        deepEq(r, ["W4", "W5", "W6", "W7", "W8", "W9", "W10", "W11"], "bank of 40");
+        let s = [];
+        ["A", "B", "C"].forEach((w) => { s = upd(s, w, 3); });
+        deepEq(s, ["B", "C"], "bank of 3 keeps 2");
+        deepEq(upd([], "A", 1), [], "bank of 1 remembers nothing");
+        deepEq(upd(undefined, "A", 5), ["A"], "no list yet");
+      });
+      test("updateRecentWords moves a repeated word to the end instead of listing it twice", () => {
+        deepEq(upd(["A", "B", "C"], "A", 20), ["B", "C", "A"]);
+      });
+      test("over many New word clicks no word comes back within the last 8 (all four tiers)", () => {
+        tiers.forEach((t) => {
+          let recent = []; const seq = [];
+          for (let i = 0; i < 400; i++) {
+            const w = pick(bank[t], recent).word;
+            const k = Math.min(8, bank[t].length - 1);
+            truthy(seq.slice(-k).indexOf(w) < 0, "repeat within " + k + " words in " + t + " at click " + i, { word: w, last: seq.slice(-k) });
+            seq.push(w);
+            recent = upd(recent, w, bank[t].length);
+          }
+          truthy(new Set(seq).size >= 38, "only " + new Set(seq).size + " different words in 400 clicks in " + t);
+        });
+      });
+    }
+
+    // ===================================================================
+    section("11. Safety: the real progress key was never touched");
     test("this page is in test mode, on the test key", () => {
       eq(S.TEST_MODE, true, "TEST_MODE");
       eq(S.STORAGE_KEY, TEST_KEY, "STORAGE_KEY");

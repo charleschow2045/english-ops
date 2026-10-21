@@ -15,7 +15,12 @@ window.App = window.App || {};
 (function () {
   const { useState, useMemo } = React;
   const { INK, TYPE, PaperCard, InkButton, PaperBackButton, PaperRefreshButton, PaperTierBadge, MODULE_ACCENTS } = window.App.UI;
-  const { sampleArray } = window.App;
+  const { pickHangmanWord, updateRecentWords } = window.App;
+
+  // The last few words shown, per tier, so "New word" does not hand back one you just had.
+  // Kept in memory only (a module variable, not React state and not saved), so leaving and
+  // re-entering Hangman keeps it; a page reload starts afresh.
+  const recentWordsByTier = {};
 
   const ACCENT = MODULE_ACCENTS.hangman;
   // Lives scale with word length: short words get fewer (min 4), long words
@@ -63,7 +68,12 @@ window.App = window.App || {};
     const [runSeed, setRunSeed] = useState(0);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const { category, word } = useMemo(() => sampleArray(bank, 1)[0], [bank, runSeed]);
+    const { category, word } = useMemo(() => {
+      const recent = recentWordsByTier[tier] || [];
+      const pick = pickHangmanWord(bank, recent);
+      recentWordsByTier[tier] = updateRecentWords(recent, pick.word, bank.length);
+      return pick;
+    }, [bank, runSeed]);
     const wordLetters = useMemo(() => Array.from(new Set(word.split(""))), [word]);
 
     const [guessed, setGuessed] = useState([]);

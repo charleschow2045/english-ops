@@ -493,6 +493,29 @@ feature used elsewhere.
   `trackingStart`, `weekCells`, `mostPlayed`, `weekSummary`, `dueByModule`.
   Tests: section 9 of `tests/run.html`.
 
+## Hangman word bank and "New word"
+- **Word bank** (`src/content/hangmanContent.jsx`, `HANGMAN_WORDS`): 40 words per
+  tier (160 in all; the original 61 are kept unchanged, new words come after them
+  in each tier). Each word has a `category` shown above the blanks. Rules, all
+  checked by `tests/run.html` (section 10): capital letters A-Z only (no spaces,
+  hyphens, apostrophes, digits); no repeats inside a tier or across tiers; a
+  specific, capitalised English category (not "Things" or "Words"); length easy
+  3-4, medium 4-7, hard 6-8, expert 7-12, spread evenly; British spelling; everyday
+  words for a Hong Kong Primary 5 child, no proper nouns, brands, slang or
+  anything violent or frightening. Known spelling/vocabulary notes (left as they
+  were): `CIVILIZATION` (expert, -ize) and `SOCCER` (medium; the app says "football"
+  elsewhere).
+- **No immediate repeats**: the pick is the pure `window.App.pickHangmanWord(bank,
+  recentWords, rng)` in `src/util.jsx`: it leaves out `recentWords` and falls back
+  to the whole bank only if that leaves nothing; `rng` can be injected for tests.
+  `window.App.updateRecentWords(recent, word, bankSize)` keeps the last
+  `min(8, bankSize - 1)` words, newest last.
+- **Memory only**: `HangmanModule.jsx` keeps `recentWordsByTier` in a module
+  variable (not React state, not saved), so leaving and re-entering Hangman keeps
+  it; a page reload starts afresh. Used for the first word and for "New word" /
+  "Try another word". Lives, hints, scoring and the "I'm done for today" button are
+  unchanged.
+
 ## Level-up celebration
 - When finishing a module takes the child into a higher level, the home screen
   shows a celebration dialog once: a full-screen dim-teal overlay, a card with
