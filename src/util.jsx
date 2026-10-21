@@ -134,6 +134,87 @@ window.App = window.App || {};
     return p;
   }
 
+  // Numbers behind the Parent Report screen, all pure and read-only: they only
+  // look at state.activityLog (see storage.jsx "Activity log") and the existing
+  // mistakes data; nothing is written. `today` is a "YYYY-MM-DD" local date.
+  const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const ParentReport = {
+    // Earliest date in the log, or null when nothing has been tracked yet.
+    trackingStart(log) {
+      const days = Object.keys(log || {}).filter((d) => window.App.Storage.isValidDateStr(d)).sort();
+      return days.length ? days[0] : null;
+    },
+
+    // The last 7 days ending today, oldest first. status:
+    //   "done"       the day's missions were all done (streak counted)
+    //   "played"     something was finished but not the whole day (`played` = how many modules)
+    //   "none"       inside the tracked period but nothing finished
+    //   "untracked"  before tracking began (not the same as "did nothing")
+    weekCells(log, today) {
+      const { addDays } = window.App.Storage;
+      const start = ParentReport.trackingStart(log);
+      const cells = [];
+      for (let i = 6; i >= 0; i--) {
+        const date = addDays(today, -i);
+        const [y, m, d] = date.split("-").map(Number);
+        const entry = (log || {})[date];
+        let status;
+        if (start === null || date < start) status = "untracked";
+        else if (entry && entry.dayCompleted) status = "done";
+        else if (entry && entry.modules.length > 0) status = "played";
+        else status = "none";
+        cells.push({
+          date,
+          weekday: WEEKDAYS[new Date(Date.UTC(y, m - 1, d)).getUTCDay()],
+          day: d,
+          status,
+          played: entry ? entry.modules.length : 0,
+          isToday: i === 0,
+        });
+      }
+      return cells;
+    },
+
+    // The module(s) finished on the most days in the last 7 (all of them when tied,
+    // in module-list order; [] when nothing was finished).
+    mostPlayed(log, today) {
+      const { addDays, MODULES } = window.App.Storage;
+      const counts = {};
+      for (let i = 0; i < 7; i++) {
+        const entry = (log || {})[addDays(today, -i)];
+        if (entry) entry.modules.forEach((k) => { counts[k] = (counts[k] || 0) + 1; });
+      }
+      const max = Math.max(0, ...Object.values(counts));
+      return max === 0 ? [] : MODULES.map((m) => m.key).filter((k) => counts[k] === max);
+    },
+
+    // Totals for the last 7 days: modules finished, days with any play, days completed, top module(s).
+    weekSummary(log, today) {
+      const cells = ParentReport.weekCells(log, today);
+      let completions = 0;
+      cells.forEach((c) => { completions += c.played; });
+      return {
+        completions,
+        daysPlayed: cells.filter((c) => c.status === "played" || c.status === "done").length,
+        daysCompleted: cells.filter((c) => c.status === "done").length,
+        topModules: ParentReport.mostPlayed(log, today),
+      };
+    },
+
+    // Mistakes due for review today, by module (from the "<module>:" start of each
+    // notebook key): { total, byModule: [{ module, count }] } in module-list order.
+    dueByModule(state, today) {
+      const keys = window.App.Mistakes.dueEntries(state, today);
+      const counts = {};
+      keys.forEach((k) => { const m = k.split(":")[0]; counts[m] = (counts[m] || 0) + 1; });
+      return {
+        total: keys.length,
+        byModule: window.App.Storage.MODULES.map((m) => m.key).filter((k) => counts[k]).map((k) => ({ module: k, count: counts[k] })),
+      };
+    },
+  };
+
+  window.App.ParentReport = ParentReport;
   window.App.LEVELS = LEVELS;
   window.App.getLevel = getLevel;
   window.App.levelUpBetween = levelUpBetween;

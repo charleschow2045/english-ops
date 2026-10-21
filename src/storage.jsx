@@ -159,6 +159,60 @@ window.App = window.App || {};
     return { date: today, missions, done: missions.filter((k) => dp.completedModules.includes(k)) };
   }
 
+  // ---- Activity log (feeds the Parent Report) ----
+  // state.activityLog = { "YYYY-MM-DD": { modules: ["hangman", ...], dayCompleted: bool } }
+  //   modules       module keys finished that day, each once, in the order done
+  //   dayCompleted  that day's streak was counted (all 3 missions done)
+  // Dates are the same local dates the streak uses (todayStr(), so test mode's
+  // ?today= too). Only the last ACTIVITY_DAYS calendar days are kept: dates before
+  // (today - (ACTIVITY_DAYS - 1)) are dropped, today counting as day 1. Later
+  // dates are kept (a device clock that jumped back must not erase them).
+  const ACTIVITY_DAYS = 56;
+
+  // The oldest date still kept when "today" is `today`.
+  function activityWindowStart(today) {
+    return addDays(today, -(ACTIVITY_DAYS - 1));
+  }
+
+  // Pure: a clean activityLog from anything. Bad input gives {}; a bad entry is
+  // dropped on its own (the rest are kept). Bad = date that is not a real
+  // calendar date, modules that is not an array of known module keys, or
+  // dayCompleted that is not a boolean. Duplicate module keys are merged.
+  function sanitizeActivityLog(raw, today = todayStr()) {
+    const out = {};
+    if (!isPlainObject(raw)) return out;
+    const known = new Set(MODULES.map((m) => m.key));
+    const start = isValidDateStr(today) ? activityWindowStart(today) : null;
+    Object.keys(raw)
+      .filter((d) => isValidDateStr(d))
+      .sort()
+      .forEach((d) => {
+        if (start && d < start) return;
+        const e = raw[d];
+        if (!isPlainObject(e) || !Array.isArray(e.modules) || typeof e.dayCompleted !== "boolean") return;
+        if (!e.modules.every((k) => typeof k === "string" && known.has(k))) return;
+        out[d] = { modules: [...new Set(e.modules)], dayCompleted: e.dayCompleted };
+      });
+    return out;
+  }
+
+  // Pure: the log after `moduleKey` was finished on `today` (`dayCounted`: that
+  // day's streak is counted). A module already logged for the day is not added
+  // twice. If the log already has a later date (the device clock went back) it
+  // is returned unchanged. Dates older than the window are dropped.
+  function recordActivity(log, moduleKey, dayCounted, today) {
+    const base = sanitizeActivityLog(log, today);
+    if (Object.keys(base).some((d) => d > today)) return base;
+    const prev = base[today] || { modules: [], dayCompleted: false };
+    return {
+      ...base,
+      [today]: {
+        modules: prev.modules.includes(moduleKey) ? prev.modules : [...prev.modules, moduleKey],
+        dayCompleted: prev.dayCompleted || !!dayCounted,
+      },
+    };
+  }
+
   function defaultStats() {
     return {
       totalMissionsCompleted: 0,
@@ -191,6 +245,8 @@ window.App = window.App || {};
       },
       // Mistakes notebook (spaced re-review) — shape and rules in mistakes.jsx.
       mistakes: window.App.Mistakes.emptyMistakes(),
+      // Per-day record of what was finished (feeds the Parent Report) — see "Activity log" above.
+      activityLog: {},
     };
   }
 
@@ -332,6 +388,13 @@ window.App = window.App || {};
       streakFreezes,
       lastFreezeUsedOn: events.freezeUsed ? today : state.lastFreezeUsedOn,
       stats,
+      // The day counts as completed once it is the last counted streak date (also
+      // true when it was counted earlier today). Old saves without a log start one.
+      // If the device clock went back (a day was already counted later than today) nothing is logged.
+      activityLog:
+        isValidDateStr(streak.lastCompletedDate) && streak.lastCompletedDate > today
+          ? state.activityLog
+          : recordActivity(state.activityLog, moduleKey, allDone && streak.lastCompletedDate === today, today),
     };
     return { state: nextState, ...events };
   }
@@ -392,6 +455,8 @@ window.App = window.App || {};
     // Older saves have no notebook; also drops malformed entries and applies
     // the size cap (well-formed entries pass through unchanged).
     parsed.mistakes = window.App.Mistakes.sanitize(parsed.mistakes);
+    // Older saves have no activity log; also drops bad entries and anything older than 56 days.
+    parsed.activityLog = sanitizeActivityLog(parsed.activityLog, todayStr());
     return ensureToday(parsed);
   }
 
@@ -493,6 +558,8 @@ window.App = window.App || {};
     // The mistakes notebook is a known field: keep every well-formed entry,
     // drop only malformed ones (a non-object value just becomes empty).
     clean.mistakes = window.App.Mistakes.sanitize(raw.mistakes);
+    // Activity log: keep every good day, drop only the bad ones (never fails the whole file).
+    clean.activityLog = sanitizeActivityLog(raw.activityLog, todayStr());
     // `missions` is optional: a backup from before daily missions has none, and
     // normalizeState (ensureToday) then fills in that day's missions.
     clean.dailyProgress = { date: dp.date, completedModules: dp.completedModules.filter((k) => typeof k === "string") };
@@ -561,6 +628,10 @@ window.App = window.App || {};
     buildBackup,
     backupFileName,
     parseBackup,
+    ACTIVITY_DAYS,
+    activityWindowStart,
+    sanitizeActivityLog,
+    recordActivity,
     summarizeState,
     STORAGE_KEY,
     TEST_MODE,

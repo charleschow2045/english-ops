@@ -438,7 +438,9 @@ feature used elsewhere.
     comprehension: {},
     writing:       {},
     grammar:       {}
-  }
+  },
+  mistakes: { entries: { ... } },   // see "Mistakes notebook"
+  activityLog: { "YYYY-MM-DD": { modules: string[], dayCompleted: boolean } }  // last 56 days; see "Activity log and Parent report"
 }
 ```
 
@@ -459,6 +461,37 @@ feature used elsewhere.
   isMax }`; bad input counts as 0, fractions round down. The card is
   `LevelCard` in `DailyMissions.jsx`. Tests: section 7 of `tests/run.html`.
   Changing a threshold means changing the table and those tests together.
+
+## Activity log and Parent report
+- **New saved field** `state.activityLog` (the only schema addition since the
+  backup feature): `{ "YYYY-MM-DD": { modules: ["hangman", "grammar", ...],
+  dayCompleted: true | false } }`. `modules` = module keys finished that day,
+  each once, in order; `dayCompleted` = that day's streak was counted (all 3
+  missions done, or already counted earlier that day). Dates are the same local
+  dates the streak uses (`todayStr()`, so test mode's `?today=` too).
+- **Written in one place**: `Storage.markModuleComplete` (`storage.jsx`) calls
+  the pure `recordActivity(log, moduleKey, dayCounted, today)`. Its return value
+  and events are unchanged; only the returned state has the extra field. A repeat
+  of the same module the same day adds nothing; if the device clock went back
+  (a later date is already counted or logged) nothing is written.
+- **56 calendar days kept**: `ACTIVITY_DAYS = 56`, today counting as day 1
+  (`activityWindowStart(today)`); older dates are dropped on every write, on
+  load and on import. Later dates are kept.
+- **Validation / backup**: `sanitizeActivityLog(raw, today)` is used by
+  `normalizeState` (old saves get `{}`) and `sanitizeImportedState`. A bad entry
+  (date that is not a real calendar date, `modules` not an array of known module
+  keys, `dayCompleted` not a boolean) is dropped on its own; it never fails the
+  whole backup. The backup file is the whole state, so the field is exported and
+  restored with the rest; an old backup without it restores with `{}`.
+- **Parent report** (`src/ParentReport.jsx`, view `"report"` in `Root.jsx`, link
+  "Parent report" beside the Backup link at the bottom of the home screen):
+  read-only, writes nothing. Last 7 days (✅ day done, 🟡 some played with the
+  count, ⬜ nothing played, – "Not tracked yet" for days before the first record,
+  which is not the same as doing nothing), this week's totals, streak / best
+  streak / freezes / level / badges, and mistakes due today by module. The
+  numbers come from pure functions in `window.App.ParentReport` (`util.jsx`):
+  `trackingStart`, `weekCells`, `mostPlayed`, `weekSummary`, `dueByModule`.
+  Tests: section 9 of `tests/run.html`.
 
 ## Level-up celebration
 - When finishing a module takes the child into a higher level, the home screen

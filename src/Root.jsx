@@ -9,6 +9,7 @@ window.App = window.App || {};
     DailyMissions,
     BadgesScreen,
     BackupScreen,
+    ParentReportScreen,
     TestModeBanner,
     Mistakes,
     MistakesReview,
@@ -132,6 +133,7 @@ window.App = window.App || {};
               onOpenModule={openModule}
               onOpenBadges={() => setView("badges")}
               onOpenBackup={() => setView("backup")}
+              onOpenReport={() => setView("report")}
               dueCount={Mistakes.countDue(state, today)}
               onOpenReview={() => setView("review")}
               freezeBanner={freezeBanner}
@@ -143,6 +145,7 @@ window.App = window.App || {};
             <MistakesReview state={state} voicePref={state.voicePref} onBack={() => setView("home")} onAnswer={recordReview} />
           )}
           {view === "backup" &&<BackupScreen state={state} onBack={() => setView("home")} onRestore={restoreBackup} />}
+          {view === "report" && <ParentReportScreen state={state} today={today} onBack={() => setView("home")} />}
           {view === "listening" && (
             <ListeningModule
               onAnswer={recordAnswer}

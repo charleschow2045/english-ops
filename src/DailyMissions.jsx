@@ -371,7 +371,7 @@ window.App = window.App || {};
     );
   }
 
-  function DailyMissions({ state, today, onChangeTier, onOpenModule, onOpenBadges, onOpenBackup, dueCount, onOpenReview, freezeBanner, onDismissFreezeBanner }) {
+  function DailyMissions({ state, today, onChangeTier, onOpenModule, onOpenBadges, onOpenBackup, onOpenReport, dueCount, onOpenReview, freezeBanner, onDismissFreezeBanner }) {
     const daily = Storage.getDaily(state, today);
     const moduleByKey = Object.fromEntries(Storage.MODULES.map((m) => [m.key, m]));
     const completedCount = daily.done.length;
@@ -519,13 +519,20 @@ window.App = window.App || {};
         </div>
 
         {/* Parent-facing, kept low-key at the very bottom: easy to find, not competing with the missions. */}
-        <div className="text-center pt-2">
+        <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 pt-2">
           <button
             onClick={onOpenBackup}
             className={`text-[13px] underline decoration-dotted ${TYPE.caption}`}
             style={{ color: INK.mutedInk }}
           >
             💾 Backup / Restore progress (back up once a week)
+          </button>
+          <button
+            onClick={onOpenReport}
+            className={`text-[13px] underline decoration-dotted ${TYPE.caption}`}
+            style={{ color: INK.mutedInk }}
+          >
+            📊 Parent report
           </button>
         </div>
       </div>

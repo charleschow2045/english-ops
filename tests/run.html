@@ -140,6 +140,7 @@
         dailyProgress: { date: today, completedModules: [], missions: S.pickMissions(today) },
         moduleProgress: { grammar: { doneLevels: o.doneLevels || [] } },
         mistakes: o.mistakes || M.emptyMistakes(),
+        activityLog: o.activityLog || {}, // a full saved state now carries the per-day activity log
       };
     }
     // Completes the 3 missions of `day` one by one. Returns the last result
@@ -670,7 +671,229 @@
     }
 
     // ===================================================================
-    section("9. Safety: the real progress key was never touched");
+    section("9. Activity log and Parent Report numbers");
+    {
+      const san = S.sanitizeActivityLog;
+      const R = window.App.ParentReport;
+      const day = (n) => addDays(TODAY, n);
+      const en = (mods, done) => ({ modules: mods, dayCompleted: !!done });
+      const allMissions = (state, d) => completeDay(state, d).res;
+      const noLogState = (o) => { const s = mkState(o); delete s.activityLog; return s; };
+
+      // ---- window and cleaning ----
+      test("the window is 56 calendar days, today included", () => {
+        eq(S.ACTIVITY_DAYS, 56, "ACTIVITY_DAYS");
+        eq(S.activityWindowStart(TODAY), day(-55), "oldest kept date");
+        eq(S.activityWindowStart("2026-11-02"), "2026-09-08", "across a month end");
+      });
+      test("anything that is not an object cleans to {}", () => {
+        [undefined, null, 5, "x", [], true].forEach((junk) => deepEq(san(junk, TODAY), {}, "input " + show(junk)));
+      });
+      test("good entries pass through unchanged", () => {
+        const log = { [day(-3)]: en(["grammar"], false), [day(-1)]: en(["reading", "speaking", "hangman"], true), [TODAY]: en(["vocabulary"], false) };
+        deepEq(san(log, TODAY), log);
+      });
+      test("57 days ago and older are dropped; 56 days (the oldest kept day) stays", () => {
+        const log = { [day(-57)]: en(["grammar"]), [day(-56)]: en(["grammar"]), [day(-55)]: en(["grammar"]), [day(-54)]: en(["grammar"]), [TODAY]: en(["grammar"]) };
+        deepEq(Object.keys(san(log, TODAY)).sort(), [day(-55), day(-54), TODAY], "kept dates");
+      });
+      test("the cut-off also works across a month end (today 2 Nov)", () => {
+        const t = "2026-11-02";
+        const log = { "2026-09-07": en(["grammar"]), "2026-09-08": en(["grammar"]), "2026-10-31": en(["grammar"]), "2026-11-02": en(["grammar"]) };
+        deepEq(Object.keys(san(log, t)), ["2026-09-08", "2026-10-31", "2026-11-02"], "kept dates");
+      });
+      test("later dates are kept (a clock that jumped back must not erase them)", () => {
+        deepEq(Object.keys(san({ [day(2)]: en(["grammar"]) }, TODAY)), [day(2)]);
+      });
+      test("bad entries are dropped one by one and the good ones stay", () => {
+        const log = {
+          [day(-1)]: en(["grammar"], true),
+          "2026-02-30": en(["grammar"]), "2026-13-01": en(["grammar"]), "last tuesday": en(["grammar"]), "": en(["grammar"]),
+          [day(-2)]: en(["not-a-module"], false),
+          [day(-3)]: en(["grammar", 5], false),
+          [day(-4)]: { modules: ["grammar"], dayCompleted: "yes" },
+          [day(-5)]: { modules: ["grammar"], dayCompleted: 1 },
+          [day(-6)]: { modules: ["grammar"] },
+          [day(-7)]: { modules: "grammar", dayCompleted: false },
+          [day(-8)]: null,
+          [day(-9)]: "oops",
+          [day(-10)]: en(["hangman"], false),
+        };
+        deepEq(san(log, TODAY), { [day(-10)]: en(["hangman"], false), [day(-1)]: en(["grammar"], true) }, "survivors");
+      });
+      test("duplicate module keys in an entry are merged", () => {
+        deepEq(san({ [TODAY]: en(["grammar", "hangman", "grammar"], false) }, TODAY)[TODAY].modules, ["grammar", "hangman"]);
+      });
+
+      // ---- recording through markModuleComplete ----
+      test("finishing a module logs it for today; the day is not done yet", () => {
+        const s = mkState({ streak: { count: 2, lastCompletedDate: day(-1) } });
+        const r = S.markModuleComplete(s, "grammar", TODAY);
+        deepEq(r.state.activityLog, { [TODAY]: en(["grammar"], false) });
+      });
+      test("finishing all 3 missions marks the day done and logs every module once", () => {
+        const s = mkState({ streak: { count: 2, lastCompletedDate: day(-1) } });
+        const { res } = completeDay(s, TODAY);
+        eq(res.state.activityLog[TODAY].dayCompleted, true, "dayCompleted");
+        deepEq(res.state.activityLog[TODAY].modules, S.pickMissions(TODAY), "modules");
+      });
+      test("a module that is not a mission is logged too, and does not complete the day", () => {
+        const s = mkState();
+        const other = MODULE_KEYS.find((k) => !S.pickMissions(TODAY).includes(k));
+        const r = S.markModuleComplete(s, other, TODAY);
+        deepEq(r.state.activityLog[TODAY], en([other], false));
+      });
+      test("finishing the same module again the same day logs nothing new", () => {
+        const s = mkState();
+        const r1 = S.markModuleComplete(s, "grammar", TODAY);
+        const r2 = S.markModuleComplete(r1.state, "grammar", TODAY);
+        deepEq(r2.state.activityLog, r1.state.activityLog, "log after a repeat");
+        eq(r2.state.activityLog[TODAY].modules.length, 1, "entries for the module");
+      });
+      test("a day that completes after earlier partial play keeps the earlier modules", () => {
+        const missions = S.pickMissions(TODAY);
+        const other = MODULE_KEYS.find((k) => !missions.includes(k));
+        let r = S.markModuleComplete(mkState({ streak: { count: 1, lastCompletedDate: day(-1) } }), other, TODAY);
+        missions.forEach((k) => { r = S.markModuleComplete(r.state, k, TODAY); });
+        deepEq(r.state.activityLog[TODAY].modules, [other, ...missions], "modules in order");
+        eq(r.state.activityLog[TODAY].dayCompleted, true, "dayCompleted");
+      });
+      test("a device date that goes backwards changes nothing in the log", () => {
+        const log = { [day(-1)]: en(["grammar"], true), [TODAY]: en(["reading", "speaking", "hangman"], true) };
+        const s = mkState({ streak: { count: 5, lastCompletedDate: TODAY }, activityLog: log });
+        const earlier = addDays(TODAY, -2);
+        const { res } = completeDay(s, earlier);
+        deepEq(res.state.activityLog, log, "log after finishing on an earlier date");
+        const one = S.markModuleComplete(s, "grammar", earlier);
+        deepEq(one.state.activityLog, log, "log after one module on an earlier date");
+      });
+      test("writing drops dates older than 56 days", () => {
+        const s = mkState({ activityLog: { [day(-60)]: en(["grammar"]), [day(-56)]: en(["grammar"]), [day(-55)]: en(["grammar"]), [day(-3)]: en(["hangman"]) } });
+        const r = S.markModuleComplete(s, "grammar", TODAY);
+        deepEq(Object.keys(r.state.activityLog).sort(), [day(-55), day(-3), TODAY], "dates after writing");
+      });
+      test("a save from before the log existed starts one on the first completion", () => {
+        const r = S.markModuleComplete(noLogState(), "grammar", TODAY);
+        deepEq(r.state.activityLog, { [TODAY]: en(["grammar"], false) });
+      });
+      test("the return value is unchanged: same fields as before, same streak behaviour", () => {
+        const r = S.markModuleComplete(mkState({ streak: { count: 3, lastCompletedDate: day(-2) }, freezes: 1 }), "grammar", TODAY);
+        deepEq(Object.keys(r).sort(), ["dayCompleted", "freezeUsed", "freezesUsedNow", "state", "streakReset"], "result keys");
+        const full = allMissions(mkState({ streak: { count: 3, lastCompletedDate: day(-2) }, freezes: 1 }), TODAY);
+        deepEq([full.state.streak.count, full.state.streakFreezes, full.freezesUsedNow, full.dayCompleted], [4, 0, 1, true], "streak, freezes, freezesUsedNow, dayCompleted");
+      });
+      test("a day already counted earlier today shows as done when more is played", () => {
+        const missions = S.pickMissions(TODAY);
+        const s = mkState({ streak: { count: 4, lastCompletedDate: TODAY } });
+        s.dailyProgress.completedModules = missions.slice();
+        const other = MODULE_KEYS.find((k) => !missions.includes(k));
+        const r = S.markModuleComplete(s, other, TODAY);
+        eq(r.state.activityLog[TODAY].dayCompleted, true, "dayCompleted");
+      });
+
+      // ---- loading, backup and restore ----
+      test("an old backup with no activityLog restores without an error, with an empty log", () => {
+        const old = noLogState({ streak: { count: 2, lastCompletedDate: day(-1) } });
+        const x = S.parseBackup(JSON.stringify({ app: "english-ops", version: 1, exportedAt: "2026-09-01T10:00:00.000Z", data: { [S.STORAGE_KEY]: old } }));
+        eq(x.ok, true, "parse ok (" + x.reason + ")");
+        deepEq(x.state.activityLog, {}, "activityLog");
+      });
+      test("the activity log survives buildBackup -> parseBackup exactly", () => {
+        const log = { [day(-20)]: en(["grammar", "reading"], true), [day(-3)]: en(["hangman"], false), [TODAY]: en(["speaking", "listening"], false) };
+        const x = S.parseBackup(JSON.stringify(S.buildBackup(mkState({ activityLog: log }))));
+        eq(x.ok, true, "parse ok");
+        deepEq(x.state.activityLog, log, "activityLog after the round trip");
+      });
+      test("a backup with bad log entries still restores: only the bad entries are lost", () => {
+        const f = JSON.parse(JSON.stringify(S.buildBackup(mkState())));
+        f.data[S.STORAGE_KEY].activityLog = { [day(-1)]: en(["grammar"], true), "2026-02-30": en(["grammar"]), [day(-2)]: en(["nope"]), [day(-3)]: { modules: ["grammar"], dayCompleted: "x" }, [day(-100)]: en(["grammar"]) };
+        const x = S.parseBackup(JSON.stringify(f));
+        eq(x.ok, true, "parse ok (" + x.reason + ")");
+        deepEq(x.state.activityLog, { [day(-1)]: en(["grammar"], true) }, "kept");
+        f.data[S.STORAGE_KEY].activityLog = "garbage";
+        const y = S.parseBackup(JSON.stringify(f));
+        eq(y.ok, true, "garbage log still restores"); deepEq(y.state.activityLog, {}, "empty");
+      });
+      test("saving and loading through the test key keeps the log", () => {
+        const prev = localStorage.getItem(TEST_KEY);
+        try {
+          const log = { [day(-2)]: en(["grammar"], false) };
+          S.saveState(mkState({ activityLog: log }));
+          deepEq(S.loadState().activityLog, log, "activityLog after load");
+        } finally {
+          if (prev === null) localStorage.removeItem(TEST_KEY); else localStorage.setItem(TEST_KEY, prev);
+        }
+      });
+
+      // ---- the 7-day grid ----
+      test("no log at all: 7 untracked days ending today", () => {
+        const c = R.weekCells({}, TODAY);
+        eq(c.length, 7, "cells");
+        deepEq(c.map((x) => x.date), [-6, -5, -4, -3, -2, -1, 0].map(day), "dates oldest first");
+        deepEq(c.map((x) => x.status), Array(7).fill("untracked"), "statuses");
+        deepEq(c.map((x) => x.isToday), [false, false, false, false, false, false, true], "today flag");
+        deepEq(c.map((x) => x.weekday), ["Thu", "Fri", "Sat", "Sun", "Mon", "Tue", "Wed"], "weekdays (14 Oct 2026 is a Wednesday)");
+        eq(R.trackingStart({}), null, "trackingStart");
+      });
+      test("fewer than 7 days tracked: earlier days are 'untracked', not 'nothing'; gaps inside are 'none'", () => {
+        const log = { [day(-3)]: en(["grammar"], false), [day(-1)]: en(["reading", "speaking", "hangman"], true) };
+        const c = R.weekCells(log, TODAY);
+        deepEq(c.map((x) => x.status), ["untracked", "untracked", "untracked", "played", "none", "done", "none"], "statuses");
+        eq(c[3].played, 1, "played count");
+        eq(c[5].played, 3, "played count on a done day");
+        eq(R.trackingStart(log), day(-3), "trackingStart");
+      });
+      test("exactly 7 days tracked: nothing is untracked", () => {
+        const log = { [day(-6)]: en(["grammar"], false), [day(-3)]: en(["hangman"], false) };
+        const c = R.weekCells(log, TODAY);
+        deepEq(c.map((x) => x.status), ["played", "none", "none", "played", "none", "none", "none"], "statuses");
+      });
+      test("tracking that began long ago: all 7 days are tracked, empty ones are 'none'", () => {
+        const c = R.weekCells({ [day(-30)]: en(["grammar"], true) }, TODAY);
+        deepEq(c.map((x) => x.status), Array(7).fill("none"), "statuses");
+      });
+      test("the grid works across a month end (today 2 Nov)", () => {
+        const t = "2026-11-02";
+        const c = R.weekCells({ "2026-10-30": en(["grammar"], false), "2026-11-02": en(["reading"], true) }, t);
+        deepEq(c.map((x) => x.date), ["2026-10-27", "2026-10-28", "2026-10-29", "2026-10-30", "2026-10-31", "2026-11-01", "2026-11-02"], "dates");
+        deepEq(c.map((x) => x.day), [27, 28, 29, 30, 31, 1, 2], "day numbers");
+        eq(c[6].weekday, "Mon", "2 Nov 2026 is a Monday");
+        deepEq(c.map((x) => x.status), ["untracked", "untracked", "untracked", "played", "none", "none", "done"], "statuses");
+      });
+
+      // ---- most played and the week summary ----
+      test("most played: one winner, ties list all of them (module-list order), nothing gives []", () => {
+        deepEq(R.mostPlayed({}, TODAY), [], "empty");
+        deepEq(R.mostPlayed({ [day(-1)]: en(["hangman"]), [TODAY]: en(["hangman", "grammar"]) }, TODAY), ["hangman"], "one winner");
+        deepEq(R.mostPlayed({ [day(-1)]: en(["hangman", "reading"]), [TODAY]: en(["grammar", "reading", "hangman"]) }, TODAY), ["reading", "hangman"], "tie in MODULES order");
+        deepEq(R.mostPlayed({ [day(-1)]: en(["grammar"]), [TODAY]: en(["speaking"]) }, TODAY), ["speaking", "grammar"], "all tied at 1");
+      });
+      test("most played only looks at the last 7 days", () => {
+        const log = { [day(-7)]: en(["hangman"]), [day(-8)]: en(["hangman"]), [day(-1)]: en(["grammar"]) };
+        deepEq(R.mostPlayed(log, TODAY), ["grammar"], "older days ignored");
+      });
+      test("week summary: modules finished, days played, days done", () => {
+        const log = { [day(-6)]: en(["grammar", "reading"], false), [day(-4)]: en(["speaking", "reading", "hangman"], true), [day(-1)]: en(["reading"], false), [day(-9)]: en(["grammar"], true) };
+        const s = R.weekSummary(log, TODAY);
+        deepEq([s.completions, s.daysPlayed, s.daysCompleted], [6, 3, 1], "completions, daysPlayed, daysCompleted");
+        deepEq(s.topModules, ["reading"], "top module");
+        deepEq(R.weekSummary({}, TODAY), { completions: 0, daysPlayed: 0, daysCompleted: 0, topModules: [] }, "empty log");
+      });
+
+      // ---- mistakes by module ----
+      test("mistakes due today are counted by module from the key prefix", () => {
+        const ids = window.App.Content.GRAMMAR_PATHS[0].levels[0].items.slice(0, 3).map((i) => i.id);
+        let s = mkState();
+        s = M.recordWrong(s, "grammar:" + ids[0], day(-3));
+        s = M.recordWrong(s, "grammar:" + ids[1], day(-2));
+        s = M.recordWrong(s, "grammar:" + ids[2], TODAY); // due tomorrow, not today
+        deepEq(R.dueByModule(s, TODAY), { total: 2, byModule: [{ module: "grammar", count: 2 }] }, "due today");
+        deepEq(R.dueByModule(mkState(), TODAY), { total: 0, byModule: [] }, "nothing");
+      });
+    }
+
+    // ===================================================================
+    section("10. Safety: the real progress key was never touched");
     test("this page is in test mode, on the test key", () => {
       eq(S.TEST_MODE, true, "TEST_MODE");
       eq(S.STORAGE_KEY, TEST_KEY, "STORAGE_KEY");

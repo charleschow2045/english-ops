@@ -14,7 +14,8 @@ No install, no Node. It loads the real `src/storage.jsx`, `mistakes.jsx`, `util.
 6. **Grammar levels** — `GrammarLevels.progress` totals are 76 for easy/medium/hard and 77 for expert, and the visible levels of the 11 paths add up to the same totals; done keys for hidden or unknown levels are ignored; level numbers are continuous. If you add or remove Grammar levels, update these two numbers on purpose.
 7. **Explorer levels** — `getLevel` (`util.jsx`): the 6-level table (Explorer 0, Scout 15, Ranger 45, Navigator 90, Captain 150, Legend 240), every boundary and the value just before it, progress and remaining counts, the top level (full bar, "Max level"), odd inputs, and that a backup keeps the level.
 8. **Level-up detection** — `levelUpBetween(prev, next)` (`util.jsx`): every threshold crossing (14→15, 44→45, 89→90, 149→150, 239→240), non-crossings (same total, within a level, top level, going down), big jumps (one level-up to the final level), junk inputs, the real counter via `markModuleComplete` (a repeat of the same module the same day is not a level-up), and that `pendingLevelUp` is read once and never stored.
-9. **Safety** — the page is in test mode on `englishOps:test`, and nothing tried to write the real key.
+9. **Activity log and Parent Report** — `sanitizeActivityLog` (56-day window including month ends, bad dates / unknown modules / non-boolean `dayCompleted` dropped one by one), writing through `markModuleComplete` (once per module per day, day-done flag, clock going backwards, pruning, old saves without the field, unchanged return value), backup round trips and old backups, the 7-day grid (empty, fewer than 7 days, exactly 7, month end), most played (ties), the week summary and mistakes by module.
+10. **Safety** — the page is in test mode on `englishOps:test`, and nothing tried to write the real key.
 
 ## Why the URL needs `?today=2026-10-14`
 
