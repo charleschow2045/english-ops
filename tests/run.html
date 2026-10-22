@@ -999,10 +999,27 @@
         tiers.forEach((t) => bank[t].forEach((e) => { if (seen[e.word]) dup.push(e.word + " (" + seen[e.word] + " and " + t + ")"); else seen[e.word] = t; }));
         deepEq(dup, [], "words that appear in two tiers");
       });
-      test("all 61 original words are still there, in the same tier with the same category", () => {
+      // Two of the 61 were deliberately replaced (SOCCER -> HOCKEY: the app says "football", and FOOTBALL is
+      // too long for medium; CIVILIZATION -> CIVILISATION: British -ise spelling). Nothing else may change.
+      const REPLACED = ["SOCCER", "CIVILIZATION"];
+      test("the other 59 original words are still there, in the same tier with the same category", () => {
         eq(ORIGINAL.length, 61, "original words listed");
-        const missing = ORIGINAL.filter(([t, c, w]) => !bank[t].some((e) => e.word === w && e.category === c)).map((r) => r.join("/"));
+        const kept = ORIGINAL.filter(([t, c, w]) => REPLACED.indexOf(w) < 0);
+        eq(kept.length, 59, "original words that must be kept");
+        const missing = kept.filter(([t, c, w]) => !bank[t].some((e) => e.word === w && e.category === c)).map((r) => r.join("/"));
         deepEq(missing, [], "original words missing or changed");
+      });
+      test("the two replaced words are in, their old spellings are gone, and the tiers keep 40 words", () => {
+        truthy(bank.medium.some((e) => e.word === "HOCKEY" && e.category === "Sports"), "HOCKEY (Sports) is in medium");
+        truthy(bank.expert.some((e) => e.word === "CIVILISATION" && e.category === "History"), "CIVILISATION (History) is in expert");
+        const all = tiers.flatMap((t) => bank[t].map((e) => e.word));
+        deepEq(["SOCCER", "CIVILIZATION", "ENCYCLOPEDIA"].filter((w) => all.indexOf(w) >= 0), [], "words that should no longer be there");
+        tiers.forEach((t) => eq(bank[t].length, 40, t + " word count"));
+      });
+      test("SUPERMARKET (Places) replaced ENCYCLOPEDIA, and CLIMATE is filed under Geography, not Weather", () => {
+        truthy(bank.expert.some((e) => e.word === "SUPERMARKET" && e.category === "Places"), "SUPERMARKET (Places) is in expert");
+        const c = bank.expert.find((e) => e.word === "CLIMATE");
+        eq(c && c.category, "Geography", "CLIMATE category");
       });
 
       // ---- pickHangmanWord ----

@@ -178,12 +178,32 @@ window.App = window.App || {};
             🏷️ Category: {category}
           </p>
 
-          <p className="text-center text-3xl sm:text-4xl font-extrabold tracking-[0.3em] mb-6 break-all" style={{ color: INK.ink }}>
-            {word
-              .split("")
-              .map((l) => (guessed.includes(l) ? l : "_"))
-              .join(" ")}
-          </p>
+          {/* The answer as ONE row of letter boxes (never wraps, so a long word cannot look like two
+              words): each box shares the row equally, has a maximum width so short words stay
+              neat, and a line under it; found letters show inside, the rest stay empty. The type
+              size steps down with the word length (never below 18px). Read out as one label. */}
+          <div
+            role="img"
+            aria-label={`Word with ${word.length} letters: ${word.split("").map((l) => (guessed.includes(l) ? l : "_")).join(" ")}`}
+            className="flex flex-nowrap justify-center gap-1 sm:gap-1.5 mb-6"
+          >
+            {word.split("").map((l, i) => (
+              <div
+                key={i}
+                aria-hidden="true"
+                className={`flex-1 min-w-0 h-[46px] sm:h-[54px] flex items-end justify-center pb-0.5 font-extrabold leading-none ${
+                  word.length <= 4 ? "max-w-[60px]" : word.length <= 8 ? "max-w-[52px]" : "max-w-[44px]"
+                }`}
+                style={{
+                  color: INK.ink,
+                  borderBottom: `3px solid ${INK.ink}`,
+                  fontSize: word.length <= 5 ? 32 : word.length <= 8 ? 26 : word.length <= 10 ? 22 : 18,
+                }}
+              >
+                {guessed.includes(l) ? l : " "}
+              </div>
+            ))}
+          </div>
 
           <div className="flex flex-col gap-1.5 mb-3">
             {KEYBOARD_ROWS.map((row, i) => (

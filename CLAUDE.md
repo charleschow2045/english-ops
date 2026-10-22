@@ -502,9 +502,18 @@ feature used elsewhere.
   specific, capitalised English category (not "Things" or "Words"); length easy
   3-4, medium 4-7, hard 6-8, expert 7-12, spread evenly; British spelling; everyday
   words for a Hong Kong Primary 5 child, no proper nouns, brands, slang or
-  anything violent or frightening. Known spelling/vocabulary notes (left as they
-  were): `CIVILIZATION` (expert, -ize) and `SOCCER` (medium; the app says "football"
-  elsewhere).
+  anything violent or frightening. Avoid words with a British/American spelling
+  variant (e.g. encyclopaedia). Two of the original 61 were replaced on review:
+  `SOCCER` -> `HOCKEY` (the app says "football", and FOOTBALL is 8 letters, too long
+  for medium) and `CIVILIZATION` -> `CIVILISATION` (British -ise); the test lists
+  them as the only allowed changes. A word's category must not mislead (CLIMATE is
+  under Geography, not Weather).
+- **The answer is one row of letter boxes** (`HangmanModule.jsx`): `flex-nowrap`,
+  each box `flex-1 min-w-0` with a maximum width and a line under it; found letters
+  show inside, the rest stay empty. Type size steps down with length (32 / 26 / 22 /
+  18px, never below 18px). It never wraps, so a 12-letter word on a phone cannot
+  look like two words. The row has `role="img"` and one `aria-label` such as
+  "Word with 5 letters: C _ T _ _"; the boxes are `aria-hidden`.
 - **No immediate repeats**: the pick is the pure `window.App.pickHangmanWord(bank,
   recentWords, rng)` in `src/util.jsx`: it leaves out `recentWords` and falls back
   to the whole bank only if that leaves nothing; `rng` can be injected for tests.
